@@ -1,0 +1,2544 @@
+package ecolab.koerber.base;
+/////Forward = P; Single item = ''; Forklift= 'F', Staging ='S'
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import ecolab.koerber.utils.PropertyStorage;
+import ecolab.koerber.utils.RandomUtils;
+
+public class DBUtils {
+
+	private static Logger log = LoggerFactory.getLogger(DBUtils.class);
+
+	public List<String> getHU_Id_QC_TC(String locType, String itemClass) {
+		ResultSet resultSet = null;
+		List<String> finvalues = new ArrayList<String>();
+		String connectionUrl = PropertyStorage.getSQLConnectionUrl();
+		System.out.println("connectionUrl --> " + connectionUrl);
+
+		String query = getQueryForHUid(locType, itemClass);
+		System.out.println("Query from method --> " + query);
+		try (Connection connection = DriverManager.getConnection(connectionUrl);) {
+
+			Statement stmt = connection.createStatement();
+			resultSet = stmt.executeQuery(query);
+			ResultSetMetaData rsmd = resultSet.getMetaData();
+			int columnsNumber = rsmd.getColumnCount();
+			System.out.println("Output string: " + rsmd.toString());
+			System.out.println("Column count: " + columnsNumber);
+
+			while (resultSet.next()) {
+				String huID = resultSet.getString("hu_id");
+				finvalues.add(huID);
+				System.out.print("hu_ID" + " " + resultSet.getString("hu_id"));
+
+				String location_id = resultSet.getString("location_id");
+				finvalues.add(location_id);
+				System.out.print("location_id" + " " + resultSet.getString("location_id"));
+			}
+
+			connection.close();
+		}
+
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return finvalues;
+	}
+
+	public List<String> getItemNLocDetails_Empty_TC() {
+		ResultSet resultSet = null;
+		List<String> finvalues = new ArrayList<String>();
+		String connectionUrl = PropertyStorage.getSQLConnectionUrl();
+		System.out.println("connectionUrl --> " + connectionUrl);
+
+		String query = getQueryForItemNumNLoc();
+		System.out.println("Query from method --> " + query);
+
+		try (Connection connection = DriverManager.getConnection(connectionUrl);) {
+			Statement stmt = connection.createStatement();
+			resultSet = stmt.executeQuery(query);
+			ResultSetMetaData rsmd = resultSet.getMetaData();
+			int columnsNumber = rsmd.getColumnCount();
+			System.out.println("Output string: " + rsmd.toString());
+			System.out.println("Column count: " + columnsNumber);
+
+			while (resultSet.next()) {
+				String location_id = resultSet.getString("location_id");
+				finvalues.add(location_id);
+				System.out.print("location_id" + " " + resultSet.getString("location_id"));
+				String item_number = resultSet.getString("item_number");
+				finvalues.add(item_number);
+				System.out.print("item_number" + " " + resultSet.getString("item_number"));
+				String lot_number = resultSet.getString("lot_number");
+				finvalues.add(lot_number);
+			}
+			connection.close();
+		}
+
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return finvalues;
+	}
+
+	public String getEmptyLocDetailsForEmptyTC() {
+		ResultSet resultSet = null;
+		String connectionUrl = PropertyStorage.getSQLConnectionUrl();
+		System.out.println("connectionUrl --> " + connectionUrl);
+
+		String query = getQueryForEmptyLocation();
+		System.out.println("Query from method --> " + query);
+		String location_id = "";
+
+		try (Connection connection = DriverManager.getConnection(connectionUrl);) {
+			Statement stmt = connection.createStatement();
+			resultSet = stmt.executeQuery(query);
+			ResultSetMetaData rsmd = resultSet.getMetaData();
+			int columnsNumber = rsmd.getColumnCount();
+			System.out.println("Output string: " + rsmd.toString());
+			System.out.println("Column count: " + columnsNumber);
+
+			while (resultSet.next()) {
+				location_id = resultSet.getString("location_id");
+				System.out.print("location_id" + " " + resultSet.getString("location_id"));
+			}
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return location_id;
+	}
+
+	public List<String> getLotNExpirationDetailsForEmptyTC(String itemNumber) {
+		ResultSet resultSet = null;
+
+		List<String> finvalues = new ArrayList<>();
+		String connectionUrl = PropertyStorage.getSQLConnectionUrl();
+		System.out.println("connectionUrl --> " + connectionUrl);
+
+		String query = getQueryForLotNExpirationDetails(itemNumber);
+		System.out.println("Query from method --> " + query);
+
+		try (Connection connection = DriverManager.getConnection(connectionUrl);) {
+			Statement stmt = connection.createStatement();
+			resultSet = stmt.executeQuery(query);
+			ResultSetMetaData rsmd = resultSet.getMetaData();
+			int columnsNumber = rsmd.getColumnCount();
+			System.out.println("Output string: " + rsmd.toString());
+			System.out.println("Column count: " + columnsNumber);
+
+			while (resultSet.next()) {
+				String lot_num = resultSet.getString("lot_number");
+				finvalues.add(lot_num);
+				String exp_date = resultSet.getString("expiration_date");
+				finvalues.add(exp_date);
+				System.out.print("lot_number" + " " + resultSet.getString("lot_number"));
+				System.out.print("expiration_date" + " " + resultSet.getString("expiration_date"));
+			}
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return finvalues;
+	}
+
+	public List<String> getViewLPDetailsTC() {
+		ResultSet resultSet = null;
+
+		List<String> finvalues = new ArrayList<>();
+		String connectionUrl = PropertyStorage.getSQLConnectionUrl();
+		System.out.println("connectionUrl --> " + connectionUrl);
+
+		String query = getQueryForviewInventoryLPDetails();
+		System.out.println("Query from method --> " + query);
+
+		try (Connection connection = DriverManager.getConnection(connectionUrl);) {
+			Statement stmt = connection.createStatement();
+			resultSet = stmt.executeQuery(query);
+			ResultSetMetaData rsmd = resultSet.getMetaData();
+			int columnsNumber = rsmd.getColumnCount();
+			System.out.println("Output string: " + rsmd.toString());
+			System.out.println("Column count: " + columnsNumber);
+
+			while (resultSet.next()) {
+
+				String item_number = resultSet.getString("item_number");
+				finvalues.add(item_number);
+
+				String location_id = resultSet.getString("location_id");
+				finvalues.add(location_id);
+
+				String expiration_date = resultSet.getString("expiration_date");
+				finvalues.add(expiration_date);
+
+				String lot_number = resultSet.getString("lot_number");
+				finvalues.add(lot_number);
+
+				String hu_id = resultSet.getString("hu_id");
+				finvalues.add(hu_id);
+
+				String actual_qty = resultSet.getString("actual_qty");
+				finvalues.add(actual_qty);
+
+				String status = resultSet.getString("status");
+				finvalues.add(status);
+
+				System.out.print("item_number" + " " + resultSet.getString("item_number"));
+				System.out.print("location_id" + " " + resultSet.getString("location_id"));
+				System.out.print("expiration_date" + " " + resultSet.getString("expiration_date"));
+				System.out.print("lot_number" + " " + resultSet.getString("lot_number"));
+				System.out.print("hu_id" + " " + resultSet.getString("hu_id"));
+				System.out.print("actual_qty" + " " + resultSet.getString("actual_qty"));
+				System.out.print("status" + " " + resultSet.getString("status"));
+
+			}
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return finvalues;
+	}
+
+	public List<String> getViewItemDetailsTC(String itemNumber, String loc, String lot) {
+		ResultSet resultSet = null;
+
+		List<String> finvalues = new ArrayList<>();
+		String connectionUrl = PropertyStorage.getSQLConnectionUrl();
+		System.out.println("connectionUrl --> " + connectionUrl);
+
+		String query = getQueryForviewInventoryItemDetails(itemNumber, loc, lot);
+		System.out.println("Query from method --> " + query);
+
+		try (Connection connection = DriverManager.getConnection(connectionUrl);) {
+			Statement stmt = connection.createStatement();
+			resultSet = stmt.executeQuery(query);
+			ResultSetMetaData rsmd = resultSet.getMetaData();
+			int columnsNumber = rsmd.getColumnCount();
+			System.out.println("Output string: " + rsmd.toString());
+			System.out.println("Column count: " + columnsNumber);
+
+			while (resultSet.next()) {
+
+				String description = resultSet.getString("description");
+				finvalues.add(description);
+
+				String item_number = resultSet.getString("item_number");
+				finvalues.add(item_number);
+
+				String location_id = resultSet.getString("location_id");
+				finvalues.add(location_id);
+
+				String expiration_date = resultSet.getString("expiration_date");
+				finvalues.add(expiration_date);
+
+				String lot_number = resultSet.getString("lot_number");
+				finvalues.add(lot_number);
+
+				String hu_id = resultSet.getString("hu_id");
+				finvalues.add(hu_id);
+
+				String actual_qty = resultSet.getString("actual_qty");
+				finvalues.add(actual_qty);
+
+				String status = resultSet.getString("status");
+				finvalues.add(status);
+
+				System.out.print("description" + " " + resultSet.getString("description"));
+				System.out.print("item_number" + " " + resultSet.getString("item_number"));
+				System.out.print("location_id" + " " + resultSet.getString("location_id"));
+				System.out.print("expiration_date" + " " + resultSet.getString("expiration_date"));
+				System.out.print("lot_number" + " " + resultSet.getString("lot_number"));
+				System.out.print("hu_id" + " " + resultSet.getString("hu_id"));
+				System.out.print("actual_qty" + " " + resultSet.getString("actual_qty"));
+				System.out.print("status" + " " + resultSet.getString("status"));
+
+			}
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return finvalues;
+	}
+
+	public List<String> getViewSerialDetailsTC() {
+		ResultSet resultSet = null;
+		ResultSet resultSet2 = null;
+
+		List<String> finvalues = new ArrayList<>();
+		String connectionUrl = PropertyStorage.getSQLConnectionUrl();
+		System.out.println("connectionUrl --> " + connectionUrl);
+
+		String query1 = getQueryForviewInventorySerialNumberOnly();
+		System.out.println("Query from method --> " + query1);
+
+		try (Connection connection = DriverManager.getConnection(connectionUrl);) {
+			Statement stmt = connection.createStatement();
+			resultSet = stmt.executeQuery(query1);
+			ResultSetMetaData rsmd = resultSet.getMetaData();
+			int columnsNumber = rsmd.getColumnCount();
+			System.out.println("Output string: " + rsmd.toString());
+			System.out.println("Column count: " + columnsNumber);
+
+			while (resultSet.next()) {
+
+				String serial_number1 = resultSet.getString("serial_number");
+				finvalues.add(serial_number1);
+			}
+
+			String query2 = getQueryForviewInventorySerialDetails(finvalues.get(0));
+			System.out.println("Query from method --> " + query2);
+
+			resultSet2 = stmt.executeQuery(query2);
+			ResultSetMetaData rsmd21 = resultSet2.getMetaData();
+			int columnsNumber21 = rsmd.getColumnCount();
+			System.out.println("Output string: " + rsmd21.toString());
+			System.out.println("Column count: " + columnsNumber21);
+
+			while (resultSet2.next()) {
+
+				String item_number = resultSet2.getString("item_number");
+				finvalues.add(item_number);
+
+				String location_id = resultSet2.getString("location_id");
+				finvalues.add(location_id);
+
+				String description = resultSet2.getString("description");
+				finvalues.add(description);
+
+				String hu_id = resultSet2.getString("hu_id");
+				finvalues.add(hu_id);
+
+				String serial_number = resultSet2.getString("serial_number");
+				finvalues.add(serial_number);
+
+				String status = resultSet2.getString("status");
+				finvalues.add(status);
+
+				System.out.print("item_number" + " " + resultSet2.getString("item_number"));
+				System.out.print("location_id" + " " + resultSet2.getString("location_id"));
+				System.out.print("description" + " " + resultSet2.getString("description"));
+				System.out.print("hu_id" + " " + resultSet2.getString("hu_id"));
+				System.out.print("serial_number" + " " + resultSet2.getString("serial_number"));
+				System.out.print("status" + " " + resultSet2.getString("status"));
+
+			}
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return finvalues;
+	}
+
+	public List<String> getViewOrderDetailsTC() {
+		ResultSet resultSet = null;
+
+		List<String> finvalues = new ArrayList<>();
+		String connectionUrl = PropertyStorage.getSQLConnectionUrl();
+		System.out.println("connectionUrl --> " + connectionUrl);
+
+		String query = getQueryForviewInventoryOrderDetails();
+		System.out.println("Query from method --> " + query);
+
+		try (Connection connection = DriverManager.getConnection(connectionUrl);) {
+			Statement stmt = connection.createStatement();
+			resultSet = stmt.executeQuery(query);
+			ResultSetMetaData rsmd = resultSet.getMetaData();
+			int columnsNumber = rsmd.getColumnCount();
+			System.out.println("Output string: " + rsmd.toString());
+			System.out.println("Column count: " + columnsNumber);
+
+			while (resultSet.next()) {
+
+				String item_number = resultSet.getString("item_number");
+				finvalues.add(item_number);
+
+				String location_id = resultSet.getString("location_id");
+				finvalues.add(location_id);
+
+				String description = resultSet.getString("description");
+				finvalues.add(description);
+
+				String order_number = resultSet.getString("order_number");
+				finvalues.add(order_number);
+
+				String hu_id = resultSet.getString("hu_id");
+				finvalues.add(hu_id);
+
+				String actual_qty = resultSet.getString("actual_qty");
+				finvalues.add(actual_qty);
+
+				String customer_name = resultSet.getString("customer_name");
+				finvalues.add(customer_name);
+
+				System.out.print("item_number" + " " + resultSet.getString("item_number"));
+				System.out.print("location_id" + " " + resultSet.getString("location_id"));
+				System.out.print("description" + " " + resultSet.getString("description"));
+				System.out.print("order_number" + " " + resultSet.getString("order_number"));
+				System.out.print("hu_id" + " " + resultSet.getString("hu_id"));
+				System.out.print("actual_qty" + " " + resultSet.getString("actual_qty"));
+				System.out.print("customer_name" + " " + resultSet.getString("customer_name"));
+
+			}
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return finvalues;
+	}
+
+	public List<String> getViewLotDetailsTC() {
+		ResultSet resultSet = null;
+
+		List<String> finvalues = new ArrayList<>();
+		String connectionUrl = PropertyStorage.getSQLConnectionUrl();
+		System.out.println("connectionUrl --> " + connectionUrl);
+
+		String query = getQueryLotDetails();
+		System.out.println("Query from method --> " + query);
+
+		try (Connection connection = DriverManager.getConnection(connectionUrl);) {
+			Statement stmt = connection.createStatement();
+			resultSet = stmt.executeQuery(query);
+			ResultSetMetaData rsmd = resultSet.getMetaData();
+			int columnsNumber = rsmd.getColumnCount();
+			System.out.println("Output string: " + rsmd.toString());
+			System.out.println("Column count: " + columnsNumber);
+
+			while (resultSet.next()) {
+
+				String description = resultSet.getString("description");
+				finvalues.add(description);
+
+				String item_number = resultSet.getString("item_number");
+				finvalues.add(item_number);
+
+				String location_id = resultSet.getString("location_id");
+				finvalues.add(location_id);
+
+				String expiration_date = resultSet.getString("expiration_date");
+				finvalues.add(expiration_date);
+
+				String lot_number = resultSet.getString("lot_number");
+				finvalues.add(lot_number);
+
+				String hu_id = resultSet.getString("hu_id");
+				finvalues.add(hu_id);
+
+				String actual_qty = resultSet.getString("actual_qty");
+				finvalues.add(actual_qty);
+
+				String status = resultSet.getString("status");
+				finvalues.add(status);
+
+				System.out.print("description" + " " + resultSet.getString("description"));
+				System.out.print("item_number" + " " + resultSet.getString("item_number"));
+				System.out.print("location_id" + " " + resultSet.getString("location_id"));
+				System.out.print("expiration_date" + " " + resultSet.getString("expiration_date"));
+				System.out.print("lot_number" + " " + resultSet.getString("lot_number"));
+				System.out.print("hu_id" + " " + resultSet.getString("hu_id"));
+				System.out.print("actual_qty" + " " + resultSet.getString("actual_qty"));
+				System.out.print("status" + " " + resultSet.getString("status"));
+
+			}
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return finvalues;
+	}
+
+	public List<String> getViewLocDetailsTC(String lpNum) {
+		ResultSet resultSet = null;
+		ResultSet resultSet2 = null;
+
+		List<String> finvalues = new ArrayList<>();
+		String connectionUrl = PropertyStorage.getSQLConnectionUrl();
+		System.out.println("connectionUrl --> " + connectionUrl);
+
+		String query1 = getQueryForviewInventoryLocNum();
+		System.out.println("Query from method --> " + query1);
+
+		try (Connection connection = DriverManager.getConnection(connectionUrl);) {
+			Statement stmt = connection.createStatement();
+			resultSet = stmt.executeQuery(query1);
+			ResultSetMetaData rsmd = resultSet.getMetaData();
+			int columnsNumber = rsmd.getColumnCount();
+			System.out.println("Output string: " + rsmd.toString());
+			System.out.println("Column count: " + columnsNumber);
+
+			while (resultSet.next()) {
+
+				String location_id = resultSet.getString("location_id");
+				finvalues.add(location_id);
+			}
+
+			String query2 = getQueryForviewInventoryLocDetails(finvalues.get(0), lpNum);
+			System.out.println("Query from method --> " + query2);
+
+			while (resultSet.next()) {
+
+				String description = resultSet.getString("description");
+				finvalues.add(description);
+
+				String item_number = resultSet.getString("item_number");
+				finvalues.add(item_number);
+
+				String expiration_date = resultSet.getString("expiration_date");
+				finvalues.add(expiration_date);
+
+				String lot_number = resultSet.getString("lot_number");
+				finvalues.add(lot_number);
+
+				String hu_id = resultSet.getString("hu_id");
+				finvalues.add(hu_id);
+
+				String actual_qty = resultSet.getString("actual_qty");
+				finvalues.add(actual_qty);
+
+				String status = resultSet.getString("status");
+				finvalues.add(status);
+
+				System.out.print("description" + " " + resultSet.getString("description"));
+				System.out.print("item_number" + " " + resultSet.getString("item_number"));
+				System.out.print("expiration_date" + " " + resultSet.getString("expiration_date"));
+				System.out.print("lot_number" + " " + resultSet.getString("lot_number"));
+				System.out.print("hu_id" + " " + resultSet.getString("hu_id"));
+				System.out.print("actual_qty" + " " + resultSet.getString("actual_qty"));
+				System.out.print("status" + " " + resultSet.getString("status"));
+
+			}
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return finvalues;
+	}
+
+	public String get_LPN_ASN_TC(String poNum) {
+		ResultSet resultSet = null;
+		String connectionUrl = PropertyStorage.getSQLConnectionUrl();
+		System.out.println("connectionUrl --> " + connectionUrl);
+
+		String query = getQueryForLPNforTransferOrder(poNum);
+		System.out.println("Query from method --> " + query);
+		String lpn = "";
+		try (Connection connection = DriverManager.getConnection(connectionUrl);) {
+
+			Statement stmt = connection.createStatement();
+			resultSet = stmt.executeQuery(query);
+			ResultSetMetaData rsmd = resultSet.getMetaData();
+			int columnsNumber = rsmd.getColumnCount();
+			System.out.println("Output string: " + rsmd.toString());
+			System.out.println("Column count: " + columnsNumber);
+
+			while (resultSet.next()) {
+				lpn = resultSet.getString("handling_unit_number");
+				System.out.print("hu_ID" + " " + resultSet.getString("handling_unit_number"));
+			}
+
+			connection.close();
+		}
+
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return lpn;
+	}
+
+	public List<String> getLocDetailsForCycleCountTC() {
+		ResultSet resultSet = null;
+
+		List<String> finvalues = new ArrayList<>();
+		String connectionUrl = PropertyStorage.getSQLConnectionUrl();
+		System.out.println("connectionUrl --> " + connectionUrl);
+
+		String query = getQueryDetailsforCycleCount();
+		System.out.println("Query from method --> " + query);
+
+		try (Connection connection = DriverManager.getConnection(connectionUrl);) {
+			Statement stmt = connection.createStatement();
+			resultSet = stmt.executeQuery(query);
+			ResultSetMetaData rsmd = resultSet.getMetaData();
+			int columnsNumber = rsmd.getColumnCount();
+			System.out.println("Output string: " + rsmd.toString());
+			System.out.println("Column count: " + columnsNumber);
+
+			while (resultSet.next()) {
+
+				String location_id = resultSet.getString("location_id");
+				finvalues.add(location_id);
+
+				String item_number = resultSet.getString("item_number");
+				finvalues.add(item_number);
+
+				String lot_number = resultSet.getString("lot_number");
+				finvalues.add(lot_number);
+
+				String actual_qty = resultSet.getString("actual_qty");
+				finvalues.add(actual_qty);
+
+				String hu_id = resultSet.getString("hu_id");
+				finvalues.add(hu_id);
+
+				System.out.print("item_number" + " " + resultSet.getString("item_number"));
+				System.out.print("lot_number" + " " + resultSet.getString("lot_number"));
+				System.out.print("actual_qty" + " " + resultSet.getString("actual_qty"));
+				System.out.print("location_id" + " " + resultSet.getString("location_id"));
+				System.out.print("hu_id" + " " + resultSet.getString("hu_id"));
+			}
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return finvalues;
+	}
+
+	public List<String> get_Details_PO_TC(String poNum) {
+		ResultSet resultSet = null;
+		List<String> finvalues = new ArrayList<>();
+		String connectionUrl = PropertyStorage.getSQLConnectionUrl();
+		System.out.println("connectionUrl --> " + connectionUrl);
+
+		String query = getQueryDetailsforPurchaseOrder(poNum);
+		System.out.println("Query from method --> " + query);
+		try (Connection connection = DriverManager.getConnection(connectionUrl);) {
+
+			Statement stmt = connection.createStatement();
+			resultSet = stmt.executeQuery(query);
+			ResultSetMetaData rsmd = resultSet.getMetaData();
+			int columnsNumber = rsmd.getColumnCount();
+			System.out.println("Output string: " + rsmd.toString());
+			System.out.println("Column count: " + columnsNumber);
+
+			while (resultSet.next()) {
+				String item_number = resultSet.getString("item_number");
+				finvalues.add(item_number);
+
+				String lot_number = resultSet.getString("lot_number");
+				finvalues.add(lot_number);
+
+				String qty = resultSet.getString("qty");
+				finvalues.add(qty);
+
+				System.out.print("item_number" + " " + resultSet.getString("item_number"));
+				System.out.print("lot_number" + " " + resultSet.getString("lot_number"));
+				System.out.print("qty" + " " + resultSet.getString("qty"));
+			}
+
+			connection.close();
+		}
+
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return finvalues;
+	}
+
+	public String getViewLocDetailsTCForLocNumber() {
+		ResultSet resultSet = null;
+		String location_id = "";
+		String connectionUrl = PropertyStorage.getSQLConnectionUrl();
+		System.out.println("connectionUrl --> " + connectionUrl);
+
+		String query1 = getQueryForviewInventoryLocNum();
+		System.out.println("Query from method --> " + query1);
+
+		try (Connection connection = DriverManager.getConnection(connectionUrl);) {
+			Statement stmt = connection.createStatement();
+			resultSet = stmt.executeQuery(query1);
+			ResultSetMetaData rsmd = resultSet.getMetaData();
+			int columnsNumber = rsmd.getColumnCount();
+			System.out.println("Output string: " + rsmd.toString());
+			System.out.println("Column count: " + columnsNumber);
+
+			while (resultSet.next()) {
+
+				location_id = resultSet.getString("location_id");
+			}
+			connection.close();
+		}
+
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return location_id;
+	}
+
+//	
+
+	public String getItemNumber() {
+		ResultSet resultSet = null;
+		String item_number = "";
+		String connectionUrl = PropertyStorage.getSQLConnectionUrl();
+		System.out.println("connectionUrl --> " + connectionUrl);
+
+		String query1 = getQueryForItemNum();
+		System.out.println("Query from method --> " + query1);
+
+		try (Connection connection = DriverManager.getConnection(connectionUrl);) {
+			Statement stmt = connection.createStatement();
+			resultSet = stmt.executeQuery(query1);
+			ResultSetMetaData rsmd = resultSet.getMetaData();
+			int columnsNumber = rsmd.getColumnCount();
+			System.out.println("Output string: " + rsmd.toString());
+			System.out.println("Column count: " + columnsNumber);
+
+			while (resultSet.next()) {
+
+				item_number = resultSet.getString("item_number");
+			}
+			connection.close();
+		}
+
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return item_number;
+	}
+
+	public List<String> getViewLocDetailsTC(String loc, String lpNum) {
+		ResultSet resultSet = null;
+
+		List<String> finvalues = new ArrayList<>();
+		String connectionUrl = PropertyStorage.getSQLConnectionUrl();
+		System.out.println("connectionUrl --> " + connectionUrl);
+
+		String query = getQueryForviewInventoryLocDetails(loc, lpNum);
+		System.out.println("Query from method --> " + query);
+
+		try (Connection connection = DriverManager.getConnection(connectionUrl);) {
+			Statement stmt = connection.createStatement();
+			resultSet = stmt.executeQuery(query);
+			ResultSetMetaData rsmd = resultSet.getMetaData();
+			int columnsNumber = rsmd.getColumnCount();
+			System.out.println("Output string: " + rsmd.toString());
+			System.out.println("Column count: " + columnsNumber);
+
+			while (resultSet.next()) {
+
+				String description = resultSet.getString("description");
+				finvalues.add(description);
+
+				String item_number = resultSet.getString("item_number");
+				finvalues.add(item_number);
+
+				String expiration_date = resultSet.getString("expiration_date");
+				finvalues.add(expiration_date);
+
+				String lot_number = resultSet.getString("lot_number");
+				finvalues.add(lot_number);
+
+				String hu_id = resultSet.getString("hu_id");
+				finvalues.add(hu_id);
+
+				String actual_qty = resultSet.getString("actual_qty");
+				finvalues.add(actual_qty);
+
+				String status = resultSet.getString("status");
+				finvalues.add(status);
+
+				Log.message("description : " + " " + resultSet.getString("description"));
+				Log.message("item_number : " + " " + resultSet.getString("item_number"));
+				Log.message("expiration_date : " + " " + resultSet.getString("expiration_date"));
+				Log.message("lot_number : " + " " + resultSet.getString("lot_number"));
+				Log.message("hu_id : " + " " + resultSet.getString("hu_id"));
+				Log.message("actual_qty: " + " " + resultSet.getString("actual_qty"));
+				Log.message("status : " + " " + resultSet.getString("status"));
+
+			}
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return finvalues;
+	}
+
+	public String get_LPN_Tansaction_Table_Staged_Receipt_TC(String poNum) {
+		ResultSet resultSet = null;
+		String connectionUrl = PropertyStorage.getSQLConnectionUrl();
+		System.out.println("connectionUrl --> " + connectionUrl);
+
+		String query = getLPNFromTransactionTableforPurchaseOrder(poNum);
+		System.out.println("Query from method --> " + query);
+		String lpn = "";
+		try (Connection connection = DriverManager.getConnection(connectionUrl);) {
+
+			Statement stmt = connection.createStatement();
+			resultSet = stmt.executeQuery(query);
+			ResultSetMetaData rsmd = resultSet.getMetaData();
+			int columnsNumber = rsmd.getColumnCount();
+			System.out.println("Output string: " + rsmd.toString());
+			System.out.println("Column count: " + columnsNumber);
+
+			while (resultSet.next()) {
+				lpn = resultSet.getString("source_hu_id");
+				System.out.print("source_hu_id" + " " + resultSet.getString("source_hu_id"));
+			}
+
+			connection.close();
+		}
+
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return lpn;
+	}
+
+	public String getLocDetails() {
+		ResultSet resultSet = null;
+		String connectionUrl = PropertyStorage.getSQLConnectionUrl();
+		System.out.println("connectionUrl --> " + connectionUrl);
+
+		String query = getDetails();
+		System.out.println("Query from method --> " + query);
+		String lpn = "";
+		try (Connection connection = DriverManager.getConnection(connectionUrl);) {
+
+			Statement stmt = connection.createStatement();
+			resultSet = stmt.executeQuery(query);
+			ResultSetMetaData rsmd = resultSet.getMetaData();
+			int columnsNumber = rsmd.getColumnCount();
+			System.out.println("Output string: " + rsmd.toString());
+			System.out.println("Column count: " + columnsNumber);
+
+			while (resultSet.next()) {
+				lpn = resultSet.getString("location_id");
+				System.out.print("location_id" + " " + resultSet.getString("location_id"));
+			}
+
+			connection.close();
+		}
+
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return lpn;
+	}
+
+//	getLotDetails
+	public List<String> getDetailsPOBatchSplitTC(String loc, String lpNum) {
+		ResultSet resultSet = null;
+
+		List<String> finvalues = new ArrayList<>();
+		String connectionUrl = PropertyStorage.getSQLConnectionUrl();
+		System.out.println("connectionUrl --> " + connectionUrl);
+
+		String query = getLotDetails(loc, lpNum);
+		System.out.println("Query from method --> " + query);
+
+		try (Connection connection = DriverManager.getConnection(connectionUrl);) {
+			Statement stmt = connection.createStatement();
+			resultSet = stmt.executeQuery(query);
+			ResultSetMetaData rsmd = resultSet.getMetaData();
+			int columnsNumber = rsmd.getColumnCount();
+			System.out.println("Output string: " + rsmd.toString());
+			System.out.println("Column count: " + columnsNumber);
+
+			while (resultSet.next()) {
+				String item_number = resultSet.getString("item_number");
+				finvalues.add(item_number);
+
+				String lot_number = resultSet.getString("lot_number");
+				finvalues.add(lot_number);
+
+				String hu_id = resultSet.getString("hu_id");
+				finvalues.add(hu_id);
+
+				String location_id = resultSet.getString("location_id");
+				finvalues.add(location_id);
+
+				String actual_qty = resultSet.getString("actual_qty");
+				finvalues.add(actual_qty);
+
+				System.out.print("item_number" + " " + resultSet.getString("item_number"));
+				System.out.print("lot_number" + " " + resultSet.getString("lot_number"));
+				System.out.print("hu_id" + " " + resultSet.getString("hu_id"));
+				System.out.print("location_id" + " " + resultSet.getString("location_id"));
+				System.out.print("actual_qty" + " " + resultSet.getString("actual_qty"));
+			}
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return finvalues;
+	}
+
+	public List<String> getDetailsOverrideLocTC() {
+		ResultSet resultSet = null;
+
+		List<String> finvalues = new ArrayList<>();
+		String connectionUrl = PropertyStorage.getSQLConnectionUrl();
+		System.out.println("connectionUrl --> " + connectionUrl);
+
+		String query = getQueryForHUid();
+		System.out.println("Query from method --> " + query);
+
+		try (Connection connection = DriverManager.getConnection(connectionUrl);) {
+			Statement stmt = connection.createStatement();
+			resultSet = stmt.executeQuery(query);
+			ResultSetMetaData rsmd = resultSet.getMetaData();
+			int columnsNumber = rsmd.getColumnCount();
+			System.out.println("Output string: " + rsmd.toString());
+			System.out.println("Column count: " + columnsNumber);
+
+			while (resultSet.next()) {
+				String item_number = resultSet.getString("item_number");
+				finvalues.add(item_number);
+
+				String lot_number = resultSet.getString("lot_number");
+				finvalues.add(lot_number);
+
+				String hu_id = resultSet.getString("hu_id");
+				finvalues.add(hu_id);
+
+				String location_id = resultSet.getString("location_id");
+				finvalues.add(location_id);
+
+				String actual_qty = resultSet.getString("actual_qty");
+				finvalues.add(actual_qty);
+
+				System.out.print("item_number" + " " + resultSet.getString("item_number"));
+				System.out.print("lot_number" + " " + resultSet.getString("lot_number"));
+				System.out.print("hu_id" + " " + resultSet.getString("hu_id"));
+				System.out.print("location_id" + " " + resultSet.getString("location_id"));
+				System.out.print("actual_qty" + " " + resultSet.getString("actual_qty"));
+			}
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return finvalues;
+	}
+
+	public List<String> getDetailsOverrideLocTC2(String loc, String lpNum) {
+		ResultSet resultSet = null;
+
+		List<String> finvalues = new ArrayList<>();
+		String connectionUrl = PropertyStorage.getSQLConnectionUrl();
+		System.out.println("connectionUrl --> " + connectionUrl);
+
+		String query = getLocDetails(loc, lpNum);
+		System.out.println("Query from method --> " + query);
+
+		try (Connection connection = DriverManager.getConnection(connectionUrl);) {
+			Statement stmt = connection.createStatement();
+			resultSet = stmt.executeQuery(query);
+			ResultSetMetaData rsmd = resultSet.getMetaData();
+			int columnsNumber = rsmd.getColumnCount();
+			System.out.println("Output string: " + rsmd.toString());
+			System.out.println("Column count: " + columnsNumber);
+
+			while (resultSet.next()) {
+				String item_number = resultSet.getString("item_number");
+				finvalues.add(item_number);
+
+				String lot_number = resultSet.getString("lot_number");
+				finvalues.add(lot_number);
+
+				String hu_id = resultSet.getString("hu_id");
+				finvalues.add(hu_id);
+
+				String location_id = resultSet.getString("location_id");
+				finvalues.add(location_id);
+
+				String actual_qty = resultSet.getString("actual_qty");
+				finvalues.add(actual_qty);
+
+				System.out.print("item_number" + " " + resultSet.getString("item_number"));
+				System.out.print("lot_number" + " " + resultSet.getString("lot_number"));
+				System.out.print("hu_id" + " " + resultSet.getString("hu_id"));
+				System.out.print("location_id" + " " + resultSet.getString("location_id"));
+				System.out.print("actual_qty" + " " + resultSet.getString("actual_qty"));
+			}
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return finvalues;
+	}
+
+	public List<String> getLocDetailsForValidation(String loc) {
+		ResultSet resultSet = null;
+
+		List<String> finvalues = new ArrayList<>();
+		String connectionUrl = PropertyStorage.getSQLConnectionUrl();
+		System.out.println("connectionUrl --> " + connectionUrl);
+
+		String query = getLocDetails(loc);
+		System.out.println("Query from method --> " + query);
+
+		try (Connection connection = DriverManager.getConnection(connectionUrl);) {
+			Statement stmt = connection.createStatement();
+			resultSet = stmt.executeQuery(query);
+			ResultSetMetaData rsmd = resultSet.getMetaData();
+			int columnsNumber = rsmd.getColumnCount();
+			System.out.println("Output string: " + rsmd.toString());
+			System.out.println("Column count: " + columnsNumber);
+
+			while (resultSet.next()) {
+
+				String location_id = resultSet.getString("location_id");
+				finvalues.add(location_id);
+
+				String item_number = resultSet.getString("item_number");
+				finvalues.add(item_number);
+
+				String lot_number = resultSet.getString("lot_number");
+				finvalues.add(lot_number);
+
+				String actual_qty = resultSet.getString("actual_qty");
+				finvalues.add(actual_qty);
+
+				String hu_id = resultSet.getString("hu_id");
+				finvalues.add(hu_id);
+
+				System.out.print("item_number" + " " + resultSet.getString("item_number"));
+				System.out.print("lot_number" + " " + resultSet.getString("lot_number"));
+				System.out.print("actual_qty" + " " + resultSet.getString("actual_qty"));
+				System.out.print("location_id" + " " + resultSet.getString("location_id"));
+				System.out.print("hu_id" + " " + resultSet.getString("hu_id"));
+			}
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return finvalues;
+	}
+
+	public List<String> getLocDetailsForCycleCountForItem2(String item) {
+		ResultSet resultSet = null;
+
+		List<String> finvalues = new ArrayList<>();
+		String connectionUrl = PropertyStorage.getSQLConnectionUrl();
+		System.out.println("connectionUrl --> " + connectionUrl);
+
+		String query = getDetailsForCycleCountSecondItem(item);
+		System.out.println("Query from method --> " + query);
+
+		try (Connection connection = DriverManager.getConnection(connectionUrl);) {
+			Statement stmt = connection.createStatement();
+			resultSet = stmt.executeQuery(query);
+			ResultSetMetaData rsmd = resultSet.getMetaData();
+			int columnsNumber = rsmd.getColumnCount();
+			System.out.println("Output string: " + rsmd.toString());
+			System.out.println("Column count: " + columnsNumber);
+
+			while (resultSet.next()) {
+
+				String location_id = resultSet.getString("location_id");
+				finvalues.add(location_id);
+
+				String item_number = resultSet.getString("item_number");
+				finvalues.add(item_number);
+
+				String lot_number = resultSet.getString("lot_number");
+				finvalues.add(lot_number);
+
+				String actual_qty = resultSet.getString("actual_qty");
+				finvalues.add(actual_qty);
+
+				String hu_id = resultSet.getString("hu_id");
+				finvalues.add(hu_id);
+
+				System.out.print("item_number" + " " + resultSet.getString("item_number"));
+				System.out.print("lot_number" + " " + resultSet.getString("lot_number"));
+				System.out.print("actual_qty" + " " + resultSet.getString("actual_qty"));
+				System.out.print("location_id" + " " + resultSet.getString("location_id"));
+//				System.out.print("hu_id" + " " + resultSet.getString("hu_id"));
+			}
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return finvalues;
+	}
+
+	public String getLoadIdDetails() {
+		ResultSet resultSet = null;
+		String connectionUrl = PropertyStorage.getSQLConnectionUrl();
+		System.out.println("connectionUrl --> " + connectionUrl);
+
+		String query = getDetails();
+		System.out.println("Query from method --> " + query);
+		String lpn = "";
+		try (Connection connection = DriverManager.getConnection(connectionUrl);) {
+
+			Statement stmt = connection.createStatement();
+			resultSet = stmt.executeQuery(query);
+			ResultSetMetaData rsmd = resultSet.getMetaData();
+			int columnsNumber = rsmd.getColumnCount();
+			System.out.println("Output string: " + rsmd.toString());
+			System.out.println("Column count: " + columnsNumber);
+
+			while (resultSet.next()) {
+				lpn = resultSet.getString("load_id");
+				System.out.print("load_id" + " " + resultSet.getString("load_id"));
+			}
+
+			connection.close();
+		}
+
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return lpn;
+	}
+
+	public String getcontrolTypeValue() {
+		ResultSet resultSet = null;
+		String connectionUrl = PropertyStorage.getSQLConnectionUrl();
+		System.out.println("connectionUrl --> " + connectionUrl);
+
+		String query = getcontrolValue();
+		System.out.println("Query from method --> " + query);
+		String c1 = "";
+
+		try (Connection connection = DriverManager.getConnection(connectionUrl);) {
+			Statement stmt = connection.createStatement();
+			resultSet = stmt.executeQuery(query);
+			ResultSetMetaData rsmd = resultSet.getMetaData();
+			int columnsNumber = rsmd.getColumnCount();
+			System.out.println("Output string: " + rsmd.toString());
+			System.out.println("Column count: " + columnsNumber);
+
+			while (resultSet.next()) {
+				c1 = resultSet.getString("c1");
+				System.out.print("c1" + " " + resultSet.getString("c1"));
+			}
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return c1;
+	}
+
+	public String getQueryForHUid() {
+		String query = null;
+		String locationType = "I";
+		String itemClassId = "GENERAL";
+		String stoStatus = "A";
+		query = "select TOP(1) sto.hu_id, sto.lot_number, sto.item_number, sto.status,sto.location_id, sto.actual_qty from t_stored_item sto(nolock) \r\n"
+				+ "JOIN t_location loc(nolock) ON loc.location_id=sto.location_id AND sto.wh_id=loc.wh_id\r\n"
+				+ "JOIN t_item_master itm (nolock) ON itm.item_number=sto.item_number AND itm.wh_id =loc.wh_id\r\n"
+				+ "where loc.type='" + locationType + "' and loc.wh_id='" + PropertyStorage.getWarehouseId()
+				+ "' and itm.class_id='" + itemClassId + "' and sto.status='" + stoStatus
+				+ "' and sto.hu_id IS NOT NULL and sto.lot_number is NOT NULL order by sto.hu_id, sto.actual_qty;";
+		return query;
+	}
+
+	public String getQueryForHUid(String locationType, String itemClassId) {
+		String query = null;
+
+		query = "select TOP(1) sto.hu_id, sto.lot_number, sto.item_number, sto.status,sto.location_id, sto.actual_qty from t_stored_item sto(nolock) \r\n"
+				+ "JOIN t_location loc(nolock) ON loc.location_id=sto.location_id AND sto.wh_id=loc.wh_id\r\n"
+				+ "JOIN t_item_master itm (nolock) ON itm.item_number=sto.item_number AND itm.wh_id =loc.wh_id\r\n"
+				+ "where loc.type='" + locationType + "' and loc.wh_id='" + PropertyStorage.getWarehouseId()
+				+ "' and itm.class_id='" + itemClassId + "' and sto.status='A'" + " and sto.hu_id IS NOT NULL;";
+		return query;
+	}
+
+	public String getQueryForItemNumNLoc() {
+		String query = null;
+
+//		query = "declare @from_record int=30\r\n"
+//				+ "select sto.hu_id, sto.status, sto.location_id, sto.item_number from t_stored_item sto(nolock) \r\n"
+//				+ "JOIN t_location loc(nolock) ON loc.location_id=sto.location_id AND sto.wh_id=loc.wh_id \r\n"
+//				+ "WHERE sto.wh_id='" + PropertyStorage.getWarehouseId().toString()
+//				+ "' and sto.status = 'A' and loc.type='I' \r\n" + "ORDER by item_number \r\n"
+//				+ "OFFSET @from_record-20 ROWS \r\n" + "FETCH NEXT 1 ROW ONLY";
+
+		query = "select top 1 location_id,item_number,hu_id,lot_number,wh_id  from t_stored_item(NOLOCK)\r\n"
+				+ "where wh_id='" + PropertyStorage.getWarehouseId().toString()
+				+ "' AND  status = 'A' AND  item_number in  (select item_number from t_item_master(nolock) \r\n"
+				+ "where expiration_date_control='Y' and wh_id = '" + PropertyStorage.getWarehouseId().toString()
+				+ "')";
+
+		return query;
+	}
+
+	public String getQueryForEmptyLocation() {
+		String query = null;
+		query = "select top 1 * from t_location(nolock) where status ='E' and wh_id='"
+				+ PropertyStorage.getWarehouseId().toString() + "'" + " and type = 'I'";
+		return query;
+	}
+
+	public String getQueryForLotNExpirationDetails(String itemNumber) {
+		String query = null;
+		query = "declare @from_record int=2\r\n"
+				+ "select distinct sto.item_number, x.lot_number, x.expiration_date  from t_stored_item sto(nolock) \r\n"
+				+ "JOIN (select * from t_lot_master(nolock) )x ON sto.item_number=x.item_number\r\n"
+				+ "where  sto.wh_id='" + PropertyStorage.getWarehouseId().toString() + "'"
+				+ " and sto.status='A' and sto.item_number='" + itemNumber + "'" + " \r\n" + "ORDER by item_number \r\n"
+				+ "OFFSET @from_record-1 ROWS\r\n" + "FETCH NEXT 1 ROW ONLY";
+		return query;
+	}
+
+	public String getQueryForviewInventoryLPDetails() {
+		String query = null;
+
+//		query = "declare @from_record int=50\r\n"
+//				+ "select item_number, location_id, expiration_date, lot_number, hu_id, actual_qty, status from t_stored_item (nolock) \r\n"
+//				+ "WHERE wh_id='" + PropertyStorage.getWarehouseId().toString()
+//				+ "' and  hu_id IS NOT NULL and location_id NOT LIKE 'RESET%' and location_id NOT LIKE 'LOST%'\r\n"
+//				+ "ORDER by item_number\r\n" + "OFFSET @from_record-10 ROWS \r\n" + "FETCH NEXT 1 ROW ONLY";
+
+		query = "select item_number, location_id, expiration_date, lot_number, hu_id, actual_qty, status from t_stored_item (nolock) \r\n"
+				+ "WHERE wh_id='" + PropertyStorage.getWarehouseId().toString()
+				+ "' and  hu_id IS NOT NULL and location_id NOT LIKE 'RESET%' and location_id NOT LIKE 'LOST%'\r\n"
+				+ "ORDER by item_number\r\n" + "OFFSET 0 ROWS \r\n" + "FETCH NEXT 1 ROW ONLY";
+		return query;
+	}
+
+	public String getQueryForviewInventoryItemDetails(String itemNumber, String loc, String lot) {
+		String query = null;
+
+//		query = "declare @from_record int=10\r\n"
+//				+ "select itm.description, sto.item_number, sto.location_id, sto.expiration_date, sto.lot_number, sto.hu_id, sto.actual_qty, sto.status, itm.uom  from t_stored_item sto(nolock) \r\n"
+//				+ "JOIN t_location loc(nolock) ON loc.location_id=sto.location_id AND sto.wh_id=loc.wh_id\r\n"
+//				+ "Join t_item_master itm(nolock) ON itm.item_number=sto.item_number \r\n" + "WHERE sto.wh_id='"
+//				+ PropertyStorage.getWarehouseId().toString() + "' and sto.item_number= '" + itemNumber
+//				+ "' and sto.location_id = '" + loc + "' and sto.lot_number= '" + lot + "'\r\n"
+//				+ "ORDER by item_number\r\n" + "OFFSET @from_record-3 ROWS\r\n" + "FETCH NEXT 1 ROW ONLY";
+
+		// Purolite
+		query = "select itm.description, sto.item_number, sto.location_id, sto.expiration_date, sto.lot_number, sto.hu_id, sto.actual_qty, sto.status, itm.uom  from t_stored_item sto(nolock) \r\n"
+				+ "JOIN t_location loc(nolock) ON loc.location_id=sto.location_id AND sto.wh_id=loc.wh_id\r\n"
+				+ "Join t_item_master itm(nolock) ON itm.item_number=sto.item_number \r\n" + "WHERE sto.wh_id='"
+				+ PropertyStorage.getWarehouseId().toString() + "' and sto.item_number= '" + itemNumber
+				+ "' and sto.location_id = '" + loc + "' and sto.lot_number= '" + lot + "'";
+		return query;
+	}
+
+	public String getQueryLotDetails() {
+		String query = null;
+
+		query = "select top(1) itm.description, sto.item_number, sto.location_id, sto.expiration_date, sto.lot_number, sto.hu_id, sto.actual_qty, sto.status, itm.uom  from t_stored_item sto(nolock) \r\n"
+				+ "	JOIN t_location loc(nolock) ON loc.location_id=sto.location_id AND sto.wh_id=loc.wh_id\r\n"
+				+ "	Join t_item_master itm(nolock) ON itm.item_number=sto.item_number \r\n" + "	WHERE loc.location_id NOT LIKE '%LOST%' and loc.type = 'I' and sto.wh_id='"
+				+ PropertyStorage.getWarehouseId().toString() + "'";
+
+		return query;
+	}
+
+	public String getQueryForviewInventoryOrderDetails() {
+		String query = null;
+
+		query = "select TOP 1 pick.order_number, sto.item_number, sto.location_id, sto.lot_number, sto.hu_id, sto.actual_qty,itm.description,ord.customer_name from t_pick_detail pick(nolock)\r\n"
+				+ "JOIN t_stored_item sto(nolock)  on  pick.pick_id=sto.type join t_item_master itm(nolock) on  pick.item_number=itm.item_number and sto.item_number=itm.item_number\r\n"
+				+ "join t_order ord(nolock) on ord.order_number=pick.order_number\r\n"
+				+ "where pick.status  in('PICKED','STAGED','LOADED') and planned_quantity >0 and pick.wh_id = '"
+				+ PropertyStorage.getWarehouseId().toString() + "'";
+		return query;
+	}
+
+	public String getQueryForviewInventorySerialNumberOnly() {
+		String serialNum = null;
+
+		serialNum = "select TOP 1 x.serial_number from t_stored_item sto(nolock) \r\n"
+				+ "JOIN (select serial_number,sto_id from t_serial_number(nolock) )x ON sto.sto_id=x.sto_id\r\n"
+				+ "where sto.wh_id='" + PropertyStorage.getWarehouseId().toString() + "'";
+		return serialNum;
+	}
+
+	public String getQueryForviewInventorySerialDetails(String serialNumber) {
+		String serialNum = null;
+
+		serialNum = "select  TOP 1 sto.item_number,sto.location_id,sto.status,x.serial_number, sto.hu_id, sto.status, itm.description from t_stored_item sto(nolock) \r\n"
+				+ "Join t_item_master itm(nolock) ON itm.item_number=sto.item_number \r\n"
+				+ "JOIN (select serial_number,sto_id from t_serial_number(nolock) )x ON sto.sto_id=x.sto_id\r\n"
+				+ "where sto.status='A' and sto.wh_id='" + PropertyStorage.getWarehouseId().toString()
+				+ "' and x.serial_number = '" + serialNumber + "'";
+		return serialNum;
+	}
+
+	public String getQueryForviewInventoryLocNum() {
+		String location = null;
+
+//		location = "declare @from_record int=100  \r\n"
+//				+ "select itm.description, sto.item_number, sto.location_id, sto.expiration_date, sto.lot_number, \r\n"
+//				+ "sto.hu_id, sto.actual_qty, sto.status, itm.uom  \r\n" + "from t_stored_item sto(nolock) \r\n"
+//				+ "JOIN t_location loc(nolock) ON loc.location_id=sto.location_id AND sto.wh_id=loc.wh_id \r\n"
+//				+ "Join t_item_master itm(nolock) ON itm.item_number=sto.item_number \r\n" + "WHERE sto.wh_id='"
+//				+ PropertyStorage.getWarehouseId().toString()
+//				+ "' and sto.hu_id is not NULL and sto.actual_qty >0  \r\n"
+//				+ "ORDER by item_number OFFSET @from_record-50 ROWS FETCH NEXT 1 ROW ONLY";
+
+		// purolite
+		location = "select itm.description, sto.item_number, sto.location_id, sto.expiration_date, sto.lot_number, \r\n"
+				+ "sto.hu_id, sto.actual_qty, sto.status, itm.uom  \r\n" + "from t_stored_item sto(nolock) \r\n"
+				+ "JOIN t_location loc(nolock) ON loc.location_id=sto.location_id AND sto.wh_id=loc.wh_id \r\n"
+				+ "Join t_item_master itm(nolock) ON itm.item_number=sto.item_number \r\n" + "WHERE sto.wh_id='"
+				+ PropertyStorage.getWarehouseId().toString()
+				+ "' and sto.hu_id is not NULL and sto.actual_qty >0  and loc.type = 'I' \r\n"
+				+ "ORDER by item_number OFFSET 0 ROWS FETCH NEXT 1 ROW ONLY";
+		return location;
+	}
+
+	public String getQueryForItemNum() {
+		String item = null;
+
+		item = "select top(1) item_number from t_stored_item sto(nolock) where wh_id = '"
+				+ PropertyStorage.getWarehouseId().toString() + "' AND status = 'A'";
+		return item;
+	}
+	
+	public String pickWorkQueuePriority() {
+		String query = null;
+
+		query = "UPDATE t_work_q SET priority = 20 WHERE priority >= 90 AND wh_id = '"+ PropertyStorage.getWarehouseId().toString() + "' AND work_status = 'U'";
+		return query;
+	}
+
+	public String getQueryForviewInventoryLocDetails(String location, String lp) {
+		String details = null;
+
+//		details = "select itm.description, sto.item_number, sto.expiration_date, sto.lot_number, \r\n"
+//				+ "sto.hu_id, sto.actual_qty, sto.status, itm.uom  \r\n" + "from t_stored_item sto(nolock) \r\n"
+//				+ "JOIN t_location loc(nolock) ON loc.location_id=sto.location_id AND sto.wh_id=loc.wh_id \r\n"
+//				+ "Join t_item_master itm(nolock) ON itm.item_number=sto.item_number \r\n" + "WHERE sto.wh_id='"
+//				+ PropertyStorage.getWarehouseId().toString() + "' and sto.location_id ='" + location
+//				+ "' and sto.hu_id = '" + lp + "'";
+
+		// purolite
+		details = "select itm.description, sto.item_number, sto.expiration_date, sto.lot_number, \r\n"
+				+ "sto.hu_id, sto.actual_qty, sto.status, itm.uom  \r\n" + "from t_stored_item sto(nolock) \r\n"
+				+ "JOIN t_location loc(nolock) ON loc.location_id=sto.location_id AND sto.wh_id=loc.wh_id \r\n"
+				+ "Join t_item_master itm(nolock) ON itm.item_number=sto.item_number \r\n" + "WHERE sto.wh_id='"
+				+ PropertyStorage.getWarehouseId().toString() + "' and sto.location_id ='" + location
+				+ "' and sto.hu_id LIKE '" + lp + "%" + "'";
+
+		return details;
+	}
+
+	public String getQueryForLPNforTransferOrder(String poNum) {
+		String lpn = null;
+
+		lpn = "select TOP 1 handling_unit_number from t_po_detail (nolock) where po_number = '" + poNum + "'";
+		return lpn;
+	}
+
+	public String getQueryDetailsforCycleCount() {
+		String cycleCountDetails = null;
+
+//		cycleCountdetails = "declare @from_record int=300 \r\n"
+//				+ "select sto.hu_id, sto.location_id, sto.item_number, sto.lot_number, sto.actual_qty from t_stored_item sto(nolock) \r\n"
+//				+ "JOIN t_location loc(nolock) ON loc.location_id=sto.location_id AND sto.wh_id=loc.wh_id \r\n"
+//				+ "	JOIN t_item_master itm (nolock) ON itm.wh_id =loc.wh_id\r\n" + " WHERE sto.wh_id= '"
+//				+ PropertyStorage.getWarehouseId().toString() + "' and itm.class_id='GENERAL' and itm.uom= 'PC' \r\n"
+//				+ "	and sto.status = 'A' and loc.type='I' and sto.lot_number IS NOT NULL and sto.actual_qty >0 and sto.hu_id IS NOT NULL ORDER by NEWID() \r\n"
+//				+ "	OFFSET @from_record-188 ROWS FETCH NEXT 1 ROW ONLY";
+
+		cycleCountDetails = "SELECT sto.hu_id, sto.location_id, sto.item_number, sto.lot_number, sto.actual_qty \r\n"
+				+ "FROM t_stored_item sto (NOLOCK)\r\n"
+				+ "JOIN t_location loc (NOLOCK) ON	sto.location_id = loc.location_id\r\n"
+				+ "AND sto.wh_id = loc.wh_id AND loc.[type] = 'I'\r\n"
+				+ "JOIN t_item_master itm (NOLOCK) ON	itm.wh_id = sto.wh_id\r\n"
+				+ "AND	itm.item_number = sto.item_number AND itm.class_id = 'GENERAL' AND itm.uom = 'PC' \r\n"
+				+ "WHERE sto.wh_id = '" + PropertyStorage.getWarehouseId().toString() + "' AND sto.[status] = 'A' \r\n"
+				+ "AND sto.lot_number IS NOT NULL AND sto.actual_qty > 0\r\n" + "AND sto.hu_id IS NOT NULL\r\n"
+				+ "GROUP BY sto.hu_id, sto.location_id, sto.item_number, sto.lot_number, sto.actual_qty\r\n"
+				+ "HAVING COUNT(sto.hu_id) < 2 ORDER BY NEWID()\r\n" + "OFFSET 0 ROWS FETCH NEXT 1 ROW ONLY";
+
+		return cycleCountDetails;
+	}
+
+	public String getQueryDetailsforPurchaseOrder(String poNum) {
+		String details = null;
+
+		details = "select item_number, lot_number, qty from t_po_detail (nolock) where po_number = '" + poNum + "'";
+		return details;
+	}
+
+	public String getLPNFromTransactionTableforPurchaseOrder(String poNum) {
+		String details = null;
+
+		details = "select source_hu_id from t_tran_log(nolock) where inbound_order_number ='" + poNum + "'";
+		return details;
+	}
+
+	public String getLotDetails(String loc, String hu_id) {
+		String details = null;
+
+		details = "select lot_number, item_number, hu_id, location_id, actual_qty from t_stored_item(nolock) where wh_id ='"
+				+ PropertyStorage.getWarehouseId().toString() + "' and location_id = '" + loc + "' and hu_id = '"
+				+ hu_id + "'";
+		return details;
+	}
+
+	public String getLocDetails(String loc, String hu_id) {
+		String details = null;
+
+		details = "select lot_number, item_number, hu_id, location_id, actual_qty from t_stored_item(nolock) where wh_id ='"
+				+ PropertyStorage.getWarehouseId().toString() + "' and location_id = '" + loc + "' and hu_id = '"
+				+ hu_id + "'";
+		return details;
+	}
+
+	public String getDetails() {
+		String details = null;
+
+//		details = "select Top(1) loc.location_id from t_location loc(nolock) \r\n"
+//				+ "JOIN t_item_master itm (nolock) ON itm.wh_id =loc.wh_id where loc.type='I' and loc.wh_id='"
+//				+ PropertyStorage.getWarehouseId().toString() + "' and itm.class_id='GENERAL' and loc.status = 'E'\r\n"
+//				+ "ORDER BY NewID(); ";
+
+//		details = "select top(1) location_id from t_location(nolock) where type='I' and status='E' and wh_id in (select wh_id from t_item_master where class_id='GENERAL' and wh_id='"
+//				+ PropertyStorage.getWarehouseId().toString() + "')and wh_id='"
+//				+ PropertyStorage.getWarehouseId().toString() + "'";
+
+//		details = "SELECT TOP 1\r\n"
+//				+ "    distinct_locations.location_id, \r\n"
+//				+ "    distinct_locations.status \r\n"
+//				+ "	\r\n"
+//				+ "FROM \r\n"
+//				+ "    (SELECT DISTINCT \r\n"
+//				+ "        loc.location_id, \r\n"
+//				+ "        loc.status\r\n"
+//				+ "     FROM \r\n"
+//				+ "        t_location loc (NOLOCK) \r\n"
+//				+ "     INNER JOIN \r\n"
+//				+ "        t_class_loca itm (NOLOCK) \r\n"
+//				+ "        ON itm.wh_id = loc.wh_id \r\n"
+//				+ "     WHERE \r\n"
+//				+ "         loc.wh_id = '"+ PropertyStorage.getWarehouseId().toString() + "' \r\n"
+//				+ "        AND itm.wh_id = '" + PropertyStorage.getWarehouseId().toString() +  "' \r\n"
+//				+ "        AND itm.class_id = 'GENERAL' \r\n"
+//				+ "        AND loc.status = 'E'\r\n"
+//				+ "    ) AS distinct_locations\r\n"
+//				+ "ORDER BY \r\n"
+//				+ "    distinct_locations.location_id;";
+
+		details = "Select top 1 loc.wh_id,loc.location_id,loc.type,loc.status,cl.class_id from t_location loc(nolock) JOIN t_class_loca cl (nolock)\r\n"
+				+ "	ON loc.wh_id=cl.wh_id and loc.location_id=cl.location_id\r\n" + " \r\n" + "	where  loc.wh_id='"
+				+ PropertyStorage.getWarehouseId().toString() + "' and cl.wh_id = '"
+				+ PropertyStorage.getWarehouseId().toString()
+				+ "' and cl.class_id='GENERAL' and loc.status='E' and loc.type='I'";
+
+		return details;
+
+	}
+
+	public String insertingNewLotRecord(String itemNum, String lotNumber) {
+		String details = null;
+
+		details = "INSERT INTO t_lot_master (item_number, lot_number, expiration_date, mfg_date)\r\n" + "VALUES ('"
+				+ itemNum + "', '" + lotNumber + "', '2027-03-18', '2025-03-18');";
+		return details;
+	}
+
+	public String getDetailsForCycleCountSecondItem(String itemNumber) {
+		String details = null;
+
+		details = "declare @from_record int=200 \r\n"
+				+ "	select sto.hu_id, sto.location_id, sto.item_number, sto.lot_number, sto.actual_qty from t_stored_item sto(nolock) \r\n"
+				+ "	JOIN t_location loc(nolock) ON loc.location_id=sto.location_id AND sto.wh_id=loc.wh_id \r\n"
+				+ "	JOIN t_item_master itm (nolock) ON itm.wh_id =loc.wh_id\r\n" + "	WHERE sto.wh_id= '"
+				+ PropertyStorage.getWarehouseId().toString()
+				+ "' and itm.class_id='GENERAL' and sto.item_number Not LIKE '" + itemNumber
+				+ "' and itm.uom = 'PC'\r\n"
+				+ "	and sto.status = 'A' and loc.type='I' and sto.lot_number IS NOT NULL and sto.actual_qty >0 and sto.hu_id IS NOT NULL ORDER by item_number\r\n"
+				+ "	OFFSET @from_record-161 ROWS FETCH NEXT 1 ROW ONLY";
+		return details;
+	}
+
+	public String getLocDetails(String loc) {
+		String details = null;
+
+		details = "select lot_number, item_number, hu_id, location_id, actual_qty from t_stored_item(nolock) where wh_id ='"
+				+ PropertyStorage.getWarehouseId().toString() + "' and location_id = '" + loc + "'";
+		return details;
+	}
+
+	public String getcontrolValue() {
+		String details = null;
+
+		details = "Select c1 from t_whse_control(nolock) where control_type = 'SUPERVISOR_SCR' and wh_id ='"
+				+ PropertyStorage.getWarehouseId().toString() + "'";
+		return details;
+	}
+
+	private Connection getConnection() throws SQLException {
+		String connectionUrl = PropertyStorage.getSQLConnectionUrl();
+		return DriverManager.getConnection(connectionUrl);
+	}
+
+	private List<String> executeQuery(String query, String... columns) {
+		List<String> results = new ArrayList<>();
+		try (Connection connection = getConnection();
+				Statement stmt = connection.createStatement();
+				ResultSet resultSet = stmt.executeQuery(query)) {
+
+			ResultSetMetaData rsmd = resultSet.getMetaData();
+			int columnsNumber = rsmd.getColumnCount();
+			System.out.println("Output string: " + rsmd.toString());
+			System.out.println("Column count: " + columnsNumber);
+
+			while (resultSet.next()) {
+				for (String column : columns) {
+					results.add(resultSet.getString(column));
+					System.out.print(column + " " + resultSet.getString(column));
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return results;
+	}
+
+	public String addNewLotRecord(String itemNum) {
+		String lot = RandomUtils.generateLot(1000);
+		ResultSet resultSet = null;
+		String connectionUrl = PropertyStorage.getSQLConnectionUrl();
+		System.out.println("connectionUrl --> " + connectionUrl);
+
+		String query = insertingNewLotRecord(itemNum, lot);
+		System.out.println("Query from method --> " + query);
+
+		try (Connection connection = DriverManager.getConnection(connectionUrl);) {
+
+			Statement stmt = connection.createStatement();
+			ResultSet jjhg = stmt.executeQuery(query);
+			connection.close();
+		}
+
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return lot;
+	}
+	
+	public String getQueryForLOtNumber(String itemNum, String loc_id) {
+		String query = null;
+		query = "Select lot_number from t_stored_item where item_number='"+ itemNum + "'" + " and location_id='"+ loc_id +"'" + " and status='A'";
+		return query;
+	}
+	
+	public String checkingLotNumberStatus(String itemNum, String loc_id) {
+		String query = null;
+		query = "select lot_control from t_item_master(nolock) where item_number in (select item_number from t_stored_item(nolock) where  location_id='"+ loc_id + "' " + " and wh_id='"+ PropertyStorage.getWarehouseId().toString() +"'" + " and item_number='" + itemNum + "' " + ")AND wh_id='" + PropertyStorage.getWarehouseId().toString() + "'";
+		return query;
+	}
+	
+	public String getLotNumber(String item, String loc) {
+		ResultSet resultSet = null;
+		ResultSet resultSet1 = null;
+		String Lot_Number = "";
+		String Lot_Control = "";
+		String connectionUrl = PropertyStorage.getSQLConnectionUrl();
+		System.out.println("connectionUrl --> " + connectionUrl);
+ 
+		String query = getQueryForLOtNumber(item, loc);
+		String query1 = checkingLotNumberStatus(item,loc);
+		
+		System.out.println("Query from method --> " + query);
+		System.out.println("Query from method --> " + query1);
+ 
+		try (Connection connection = DriverManager.getConnection(connectionUrl);) {
+			Statement stmt = connection.createStatement();
+			// First query to get Lot_Control
+			resultSet1 = stmt.executeQuery(query1);
+			ResultSetMetaData rsmd1 = resultSet1.getMetaData();
+			int columnsNumber1 = rsmd1.getColumnCount();
+			System.out.println("Output string: " + rsmd1.toString());
+			System.out.println("Column count: " + columnsNumber1);
+			while (resultSet1.next()) {
+				Lot_Control = resultSet1.getString("lot_control");
+				System.out.println("lot_control =" + " " + resultSet1.getString("lot_control"));
+			}
+ 
+	        // Decision based on Lot_Control
+	        if ("N".equalsIgnoreCase(Lot_Control)) {
+	            System.out.println("There is no lot number for this item number.");
+	        } else if ("F".equalsIgnoreCase(Lot_Control)) {
+			resultSet = stmt.executeQuery(query);
+			ResultSetMetaData rsmd = resultSet.getMetaData();
+			int columnsNumber = rsmd.getColumnCount();
+			System.out.println("Output string: " + rsmd.toString());
+			System.out.println("Column count: " + columnsNumber);
+ 
+			while (resultSet.next()) {
+				Lot_Number = resultSet.getString("lot_number");
+				System.out.println("lotNumber =" + " " + resultSet.getString("lot_number"));
+			}
+	        }
+ 
+	        else {
+            System.out.println("Unknown lot_control value: " + Lot_Control);
+            }
+ 
+			
+			connection.close();
+		}
+ 
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return Lot_Number;
+	}
+	
+	public String Details_LPN_Using_TIBCO_Load_ID(String load_id) {
+		String details = null;
+		details = "select top(1) destination_hu_id from t_tran_log(nolock) where load_id = '"+load_id+"' and "
+				+ "destination_location_id = 'S101' and wh_id = '"+ PropertyStorage.getWarehouseId().toString()+"'"; 
+		return details;
+	}
+	
+	public String get_Details_LPN_Using_TIBCO_Load_ID(String load_id) {
+	    String lpn = "";
+	    String connectionUrl = PropertyStorage.getSQLConnectionUrl();
+	    System.out.println("connectionUrl --> " + connectionUrl);
+
+	    String query = Details_LPN_Using_TIBCO_Load_ID(load_id);
+	    System.out.println("Query from method --> " + query);
+
+	    try (Connection connection = DriverManager.getConnection(connectionUrl);
+	         Statement stmt = connection.createStatement();
+	         ResultSet result = stmt.executeQuery(query)) {
+
+	        if (result.next()) {
+	            lpn = result.getString("destination_hu_id");
+	        } else {
+	            System.out.println("No data found for load_id: " + load_id);
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+
+	    return lpn;
+	}
+	
+	public String getQueryDetails(String loc, String item_number) {
+		String details = null;
+
+		details = "select lot_number, hu_id, actual_qty from t_stored_item(nolock) where wh_id ='"
+				+ PropertyStorage.getWarehouseId().toString() + "' and location_id = '" + loc + "' and item_number = '"
+				+ item_number + "'";
+		return details;
+	}
+		
+	public List<String> getItemDetails(String loc, String item_number) {
+		ResultSet resultSet = null;
+		String connectionUrl = PropertyStorage.getSQLConnectionUrl();
+		System.out.println("connectionUrl --> " + connectionUrl);
+
+		String query = getQueryDetails(loc,item_number);
+		System.out.println("Query from method --> " + query);
+		List<String> finvalues = new ArrayList<>();
+		
+		try (Connection connection = DriverManager.getConnection(connectionUrl);) {
+
+			Statement stmt = connection.createStatement();
+			resultSet = stmt.executeQuery(query);
+			ResultSetMetaData rsmd = resultSet.getMetaData();
+			int columnsNumber = rsmd.getColumnCount();
+			System.out.println("Output string: " + rsmd.toString());
+			System.out.println("Column count: " + columnsNumber);
+
+			while (resultSet.next()) {
+				String lot_number = resultSet.getString("lot_number");
+				finvalues.add(lot_number);
+				System.out.print("lot_number" + " " + resultSet.getString("lot_number"));
+				String hu_id = resultSet.getString("hu_id");
+				finvalues.add(hu_id);
+				System.out.print("hu_id" + " " + resultSet.getString("hu_id"));
+				String qty = resultSet.getString("actual_qty");
+				finvalues.add(qty);
+				System.out.print("actual_qty" + " " + resultSet.getString("actual_qty"));
+			}
+			
+
+			connection.close();
+		}
+
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return finvalues;
+	}
+	
+	public String getQueryDetailsForLocationStatusAndPalletWidth(String suggestedLocation) {
+		String details = null;
+		details = "select width,status from t_location loc(nolock) where location_id = '" +suggestedLocation+"'";
+		return details;
+	}
+	
+	public List<String> getLocationPalletWidthDetails(String suggestedLocation) {
+		ResultSet resultSet = null;
+		String connectionUrl = PropertyStorage.getSQLConnectionUrl();
+		System.out.println("connectionUrl --> " + connectionUrl);
+
+		String query = getQueryDetailsForLocationStatusAndPalletWidth(suggestedLocation);
+		System.out.println("Query from method --> " + query);
+		List<String> finvalues = new ArrayList<>();
+		
+		try (Connection connection = DriverManager.getConnection(connectionUrl);) {
+
+			Statement stmt = connection.createStatement();
+			resultSet = stmt.executeQuery(query);
+			ResultSetMetaData rsmd = resultSet.getMetaData();
+			int columnsNumber = rsmd.getColumnCount();
+			System.out.println("Output string: " + rsmd.toString());
+			System.out.println("Column count: " + columnsNumber);
+
+			while (resultSet.next()) {
+				String width = resultSet.getString("width");
+				finvalues.add(width);
+				System.out.print("width" + " " + resultSet.getString("width"));
+				String status = resultSet.getString("status");
+				finvalues.add(status);
+				System.out.print("status" + " " + resultSet.getString("status"));
+			}
+			
+
+			connection.close();
+		}
+
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return finvalues;
+	}
+	
+	public void executePickWorkQueueQuery() {
+//		ResultSet resultSet = null;
+	    String connectionUrl = PropertyStorage.getSQLConnectionUrl();
+	    System.out.println("connectionUrl --> " + connectionUrl);
+
+	    String query = pickWorkQueuePriority();
+	    System.out.println("Query from method --> " + query);
+
+	    try (Connection connection = DriverManager.getConnection(connectionUrl);)
+	    		{
+	    	PreparedStatement stmt = connection.prepareStatement(query);
+//	         Statement stmt = connection.createStatement();
+	          int result = stmt.executeUpdate();
+	    	Log.message("Query Executed Successfully. Updated records : "+ result );
+
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        Log.message("Query not executed successfully" + e.getMessage());
+	    }
+	}
+	
+	public String getQueryDetailsForLocationDescription(String suggestedLocation) {
+		String details = null;
+		details = "Select description from t_location where wh_id ='"+ PropertyStorage.getWarehouseId().toString() +"' and location_id = '" +suggestedLocation+"'";
+		return details;
+	}
+	
+	public List<String> getLocationClassDetails(String suggestedLocation) {
+		ResultSet resultSet = null;
+		String connectionUrl = PropertyStorage.getSQLConnectionUrl();
+		System.out.println("connectionUrl --> " + connectionUrl);
+
+		String query = getQueryDetailsForLocationDescription(suggestedLocation);
+		System.out.println("Query from method --> " + query);
+		List<String> finvalues = new ArrayList<>();
+		
+		try (Connection connection = DriverManager.getConnection(connectionUrl);) {
+
+			Statement stmt = connection.createStatement();
+			resultSet = stmt.executeQuery(query);
+			ResultSetMetaData rsmd = resultSet.getMetaData();
+			int columnsNumber = rsmd.getColumnCount();
+			System.out.println("Output string: " + rsmd.toString());
+			System.out.println("Column count: " + columnsNumber);
+
+			while (resultSet.next()) {
+				String description = resultSet.getString("description");
+				finvalues.add(description);
+				System.out.print("class description" + " " + resultSet.getString("description"));
+			}
+			connection.close();
+		}
+
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return finvalues;
+	}
+	
+	//new
+	public String getQueryDetailsForLocationCapacity(String suggestedLocation) {
+		String details = null;
+		details = "select weight_capacity from t_location loc(nolock) where wh_id ='"+ PropertyStorage.getWarehouseId().toString() +"' and location_id = '" +suggestedLocation+"'";
+		return details;
+	}
+	
+	public List<String> getLocationCapacityDetails(String suggestedLocation) {
+		ResultSet resultSet = null;
+		String connectionUrl = PropertyStorage.getSQLConnectionUrl();
+		System.out.println("connectionUrl --> " + connectionUrl);
+
+		String query = getQueryDetailsForLocationCapacity(suggestedLocation);
+		System.out.println("Query from method --> " + query);
+		List<String> finvalues = new ArrayList<>();
+		
+		try (Connection connection = DriverManager.getConnection(connectionUrl);) {
+
+			Statement stmt = connection.createStatement();
+			resultSet = stmt.executeQuery(query);
+			ResultSetMetaData rsmd = resultSet.getMetaData();
+			int columnsNumber = rsmd.getColumnCount();
+			System.out.println("Output string: " + rsmd.toString());
+			System.out.println("Column count: " + columnsNumber);
+
+			while (resultSet.next()) {
+				String weight_capacity = resultSet.getString("weight_capacity");
+				finvalues.add(weight_capacity);
+				System.out.print("Location weight_capacity" + " " + resultSet.getString("weight_capacity"));
+			}
+			connection.close();
+		}
+
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return finvalues;
+	}
+	
+	
+	public String getQueryDetailsForItemCapacity(String ItemNo) {
+		String details = null;
+		details = "SELECT si.actual_qty,si.hu_id,si.lot_number,im.unit_weight,si.actual_qty * im.unit_weight AS total_weight FROM t_stored_item si (NOLOCK) JOIN t_item_master im (NOLOCK) ON si.item_number = im.item_number AND si.wh_id = im.wh_id WHERE si.item_number = '" +ItemNo+"' AND si.wh_id ='"+ PropertyStorage.getWarehouseId().toString()+"'";
+		return details;
+	}
+	
+	public List<String> getItemCapacity(String ItemNo) {
+		ResultSet resultSet = null;
+		String connectionUrl = PropertyStorage.getSQLConnectionUrl();
+		System.out.println("connectionUrl --> " + connectionUrl);
+
+		String query = getQueryDetailsForItemCapacity(ItemNo);
+		System.out.println("Query from method --> " + query);
+		List<String> finvalues = new ArrayList<>();
+		
+		try (Connection connection = DriverManager.getConnection(connectionUrl);) {
+
+			Statement stmt = connection.createStatement();
+			resultSet = stmt.executeQuery(query);
+			ResultSetMetaData rsmd = resultSet.getMetaData();
+			int columnsNumber = rsmd.getColumnCount();
+			System.out.println("Output string: " + rsmd.toString());
+			System.out.println("Column count: " + columnsNumber);
+
+			while (resultSet.next()) {
+				String total_weight = resultSet.getString("total_weight");
+				finvalues.add(total_weight);
+				System.out.print("Item " +ItemNo+" " +resultSet.getString("total_weight"));
+			}
+			connection.close();
+		}
+
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return finvalues;
+	}
+	
+	public String getQueryDetailsForHuIDForCreatePickUp() {
+		String details = null;
+		details = "Select top 1  hu_id from t_stored_item where wh_id='"+ PropertyStorage.getWarehouseId().toString()+"' and hu_id not in (Select pick_ref_number from t_work_q where wh_id='"+ PropertyStorage.getWarehouseId().toString()+"' and work_type='06')";
+		return details;
+	}
+	
+	
+	public List<String> gethu_idToCreatePickup() {
+		ResultSet resultSet = null;
+		String connectionUrl = PropertyStorage.getSQLConnectionUrl();
+		Log.message("connectionUrl --> " + connectionUrl);
+
+		String query = getQueryDetailsForHuIDForCreatePickUp();
+		Log.message("Query from method --> " + query);
+		List<String> finvalues = new ArrayList<>();
+		
+		try (Connection connection = DriverManager.getConnection(connectionUrl);) {
+
+			Statement stmt = connection.createStatement();
+			resultSet = stmt.executeQuery(query);
+			ResultSetMetaData rsmd = resultSet.getMetaData();
+			int columnsNumber = rsmd.getColumnCount();
+			Log.message("Output string: " + rsmd.toString());
+			Log.message("Column count: " + columnsNumber);
+
+			while (resultSet.next()) {
+				String hu_id = resultSet.getString("hu_id");
+				finvalues.add(hu_id);
+				Log.message("HU ID " +hu_id+" " +resultSet.getString("hu_id"));
+			}
+			connection.close();
+		}
+
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return finvalues;
+	}
+	
+	public String getQueryDetailsForhu_idPriorityFromWorkQueue(String hu_id) {
+		String details = null;
+		details = "Select priority,pick_ref_number from t_work_q where wh_id='"+ PropertyStorage.getWarehouseId().toString()+"' and pick_ref_number= '"+ hu_id+"' and work_type='06'";
+		return details;
+	}
+	
+	
+	public List<String> gethu_idPriorityFromWorkQueue(String hu_id) {
+		ResultSet resultSet = null;
+		String connectionUrl = PropertyStorage.getSQLConnectionUrl();
+		Log.message("connectionUrl --> " + connectionUrl);
+
+		String query = getQueryDetailsForhu_idPriorityFromWorkQueue(hu_id);
+		Log.message("Query from method --> " + query);
+		List<String> finvalues = new ArrayList<>();
+		
+		try (Connection connection = DriverManager.getConnection(connectionUrl);) {
+
+			Statement stmt = connection.createStatement();
+			resultSet = stmt.executeQuery(query);
+			ResultSetMetaData rsmd = resultSet.getMetaData();
+			int columnsNumber = rsmd.getColumnCount();
+			Log.message("Output string: " + rsmd.toString());
+			Log.message("Column count: " + columnsNumber);
+
+			while (resultSet.next()) {
+				String pick_ref_number = resultSet.getString("pick_ref_number");
+				finvalues.add(pick_ref_number);
+				Log.message("Pick reference number in DB " +pick_ref_number+" " +resultSet.getString("pick_ref_number"));
+				String priority = resultSet.getString("priority");
+				finvalues.add(priority);
+				Log.message("Priority in DB" +priority+" " +resultSet.getString("priority"));
+				
+			}
+			connection.close();
+		}
+
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return finvalues;
+	}
+	
+	public String get_query_for_location_without_classes() {
+		String details = null;
+		details = "Select * from t_class_loca where class_id is null and wh_id='"+ PropertyStorage.getWarehouseId().toString()+"'";
+		return details;
+	}
+	
+	
+	public boolean get_location_without_classes() {
+
+		String connectionUrl = PropertyStorage.getSQLConnectionUrl();
+		Log.message("connectionUrl --> " + connectionUrl);
+
+		String query = get_query_for_location_without_classes();
+		Log.message("Query from method --> " + query);
+
+		try (Connection connection = DriverManager.getConnection(connectionUrl);
+				Statement stmt = connection.createStatement();
+				ResultSet resultSet = stmt.executeQuery(query)) {
+
+        // If resultSet has at least one row, return false
+        if (resultSet.next()) {
+            Log.message("Query returned rows, Fail");
+            return false;
+        } else {
+            Log.message("Query returned no rows, PASS");
+            return true;
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+ 
+        return false;
+      }
+	}
+	
+	public String get_query_for_location_without_zones() {
+		String details = null;
+		details = "select * from t_zone_loca where zone is null and wh_id='"+ PropertyStorage.getWarehouseId().toString()+"'";
+		return details;
+	}
+	
+	
+	public boolean get_location_without_zones() {
+
+		String connectionUrl = PropertyStorage.getSQLConnectionUrl();
+		Log.message("connectionUrl --> " + connectionUrl);
+
+		String query = get_query_for_location_without_zones();
+		Log.message("Query from method --> " + query);
+
+		try (Connection connection = DriverManager.getConnection(connectionUrl);
+				Statement stmt = connection.createStatement();
+				ResultSet resultSet = stmt.executeQuery(query)) {
+
+        // If resultSet has at least one row, return false
+        if (resultSet.next()) {
+            Log.message("Query returned rows, Fail");
+            return false;
+        } else {
+            Log.message("Query returned no rows, PASS");
+            return true;
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+ 
+        return false;
+      }
+	}
+	
+	
+	public String get_query_for_lot_check() {
+		String details = null;
+		details = "SELECT itm.lot_control,sto.lot_number,* FROM t_stored_item sto WITH(NOLOCK) INNER JOIN t_item_master itm WITH(NOLOCK) ON itm.item_number = sto.item_number AND itm.wh_id = sto.wh_id WHERE itm.lot_control = 'F' and sto.wh_id = '"+ PropertyStorage.getWarehouseId().toString()+"' and itm.wh_id = '"+ PropertyStorage.getWarehouseId().toString()+"' AND ISNULL(sto.lot_number, '') = ''";
+		return details;
+	}
+	
+	
+	public boolean get_lot_check_details() {
+
+		String connectionUrl = PropertyStorage.getSQLConnectionUrl();
+		Log.message("connectionUrl --> " + connectionUrl);
+
+		String query = get_query_for_lot_check();
+		Log.message("Query from method --> " + query);
+
+		try (Connection connection = DriverManager.getConnection(connectionUrl);
+				Statement stmt = connection.createStatement();
+				ResultSet resultSet = stmt.executeQuery(query)) {
+
+        // If resultSet has at least one row, return false
+        if (resultSet.next()) {
+            Log.message("Query returned rows, Fail");
+            return false;
+        } else {
+            Log.message("Query returned no rows, PASS");
+            return true;
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+ 
+        return false;
+      }
+	}
+	
+	public String get_query_for_serial_number_check() {
+		String details = null;
+		details = "SELECT * FROM t_stored_item sto WITH(NOLOCK) INNER JOIN t_item_master itm WITH(NOLOCK) ON itm.item_number = sto.item_number AND itm.wh_id = sto.wh_id WHERE itm.serial_control = 'F' AND sto.wh_id = '"+ PropertyStorage.getWarehouseId().toString()+"' AND sto.actual_qty >0 AND sto.sto_id not in (select sto_id from t_serial_number) ";
+		return details;
+	}
+	
+	
+	public boolean get_serial_number_check() {
+
+		String connectionUrl = PropertyStorage.getSQLConnectionUrl();
+		Log.message("connectionUrl --> " + connectionUrl);
+
+		String query = get_query_for_serial_number_check();
+		Log.message("Query from method --> " + query);
+
+		try (Connection connection = DriverManager.getConnection(connectionUrl);
+				Statement stmt = connection.createStatement();
+				ResultSet resultSet = stmt.executeQuery(query)) {
+
+        // If resultSet has at least one row, return false
+        if (resultSet.next()) {
+            Log.message("Query returned rows, Fail");
+            return false;
+        } else {
+            Log.message("Query returned no rows, PASS");
+            return true;
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+ 
+        return false;
+      }
+	}
+	
+	
+	public String get_query_for_inventory_exp_check() {
+		String details = null;
+		details = "select * from t_stored_item where expiration_date is NULL and lot_number is NOT NULL AND wh_id = '"+ PropertyStorage.getWarehouseId().toString()+"'";
+		return details;
+	}
+	
+	
+	public boolean get_inventory_exp_check() {
+
+		String connectionUrl = PropertyStorage.getSQLConnectionUrl();
+		Log.message("connectionUrl --> " + connectionUrl);
+
+		String query = get_query_for_inventory_exp_check();
+		Log.message("Query from method --> " + query);
+
+		try (Connection connection = DriverManager.getConnection(connectionUrl);
+				Statement stmt = connection.createStatement();
+				ResultSet resultSet = stmt.executeQuery(query)) {
+
+        // If resultSet has at least one row, return false
+        if (resultSet.next()) {
+            Log.message("Query returned rows, Fail");
+            return false;
+        } else {
+            Log.message("Query returned no rows, PASS");
+            return true;
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+ 
+        return false;
+      }
+	}
+	
+	public String get_query_for_all_inventory_has_FIFO_date_check() {
+		String details = null;
+		details = "select * from t_stored_item where fifo_date is NULL AND wh_id = '"+ PropertyStorage.getWarehouseId().toString()+"'";
+		return details;
+	}
+	
+	
+	public boolean get_all_inventory_has_FIFO_date() {
+
+		String connectionUrl = PropertyStorage.getSQLConnectionUrl();
+		Log.message("connectionUrl --> " + connectionUrl);
+
+		String query = get_query_for_all_inventory_has_FIFO_date_check();
+		Log.message("Query from method --> " + query);
+
+		try (Connection connection = DriverManager.getConnection(connectionUrl);
+				Statement stmt = connection.createStatement();
+				ResultSet resultSet = stmt.executeQuery(query)) {
+
+        // If resultSet has at least one row, return false
+        if (resultSet.next()) {
+            Log.message("Query returned rows, Fail");
+            return false;
+        } else {
+            Log.message("Query returned no rows, PASS");
+            return true;
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+ 
+        return false;
+      }
+	}
+	
+	public String get_query_for_all_locations_with_inventory_are_not_listed_as_non_empty_check() {
+		String details = null;
+		details = "Select * from t_stored_item sto INNER JOIN t_location loc ON sto.location_id = loc.location_id Where loc.status = 'E' And sto.actual_qty >0 and sto.wh_id='"+ PropertyStorage.getWarehouseId().toString()+"' and loc.wh_id='"+ PropertyStorage.getWarehouseId().toString()+"'";
+		return details;
+	}
+	
+	
+	public boolean get_all_locations_with_inventory_are_not_listed_as_non_empty() {
+
+		String connectionUrl = PropertyStorage.getSQLConnectionUrl();
+		Log.message("connectionUrl --> " + connectionUrl);
+
+		String query = get_query_for_all_locations_with_inventory_are_not_listed_as_non_empty_check();
+		Log.message("Query from method --> " + query);
+
+		try (Connection connection = DriverManager.getConnection(connectionUrl);
+				Statement stmt = connection.createStatement();
+				ResultSet resultSet = stmt.executeQuery(query)) {
+
+        // If resultSet has at least one row, return false
+        if (resultSet.next()) {
+            Log.message("Query returned rows, Fail");
+            return false;
+        } else {
+            Log.message("Query returned no rows, PASS");
+            return true;
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+ 
+        return false;
+      }
+	}
+	
+	public String getDetailsForLocForSTOExp() {
+		String details = null;
+
+		details = "SELECT top(1) loc.location_id FROM t_location AS loc WITH (NOLOCK) INNER JOIN t_class_loca AS cl WITH (NOLOCK) ON cl.location_id = loc.location_id AND cl.wh_id = loc.wh_id loc.wh_id = '"+ PropertyStorage.getWarehouseId().toString() +"' AND (loc.status = 'E' or loc.status = 'P') AND cl.class_id = 'CORROSIVE' ORDER BY loc.capacity_qty desc";
+
+		return details;
+
+	}
+	
+	public String getLocDetailsForSTOExp() {
+		ResultSet resultSet = null;
+		String connectionUrl = PropertyStorage.getSQLConnectionUrl();
+		System.out.println("connectionUrl --> " + connectionUrl);
+
+		String query = getDetailsForLocForSTOExp();
+		System.out.println("Query from method --> " + query);
+		String loc = "";
+		try (Connection connection = DriverManager.getConnection(connectionUrl);) {
+
+			Statement stmt = connection.createStatement();
+			resultSet = stmt.executeQuery(query);
+			ResultSetMetaData rsmd = resultSet.getMetaData();
+			int columnsNumber = rsmd.getColumnCount();
+			System.out.println("Output string: " + rsmd.toString());
+			System.out.println("Column count: " + columnsNumber);
+
+			while (resultSet.next()) {
+				loc = resultSet.getString("location_id");
+				System.out.print("location_id" + " " + resultSet.getString("location_id"));
+			}
+
+			connection.close();
+		}
+
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return loc;
+	}
+	
+	public String getQueryForqtyforTransferOrder(String poNum) {
+		String qty = null;
+
+		qty = "select TOP 1 qty from t_po_detail (nolock) where po_number = '" + poNum + "'";
+		return qty;
+	}
+	
+	public String get_qty_ASN_TC(String poNum) {
+		ResultSet resultSet = null;
+		String connectionUrl = PropertyStorage.getSQLConnectionUrl();
+		System.out.println("connectionUrl --> " + connectionUrl);
+
+		String query = getQueryForqtyforTransferOrder(poNum);
+		System.out.println("Query from method --> " + query);
+		String qty = "";
+		try (Connection connection = DriverManager.getConnection(connectionUrl);) {
+
+			Statement stmt = connection.createStatement();
+			resultSet = stmt.executeQuery(query);
+			ResultSetMetaData rsmd = resultSet.getMetaData();
+			int columnsNumber = rsmd.getColumnCount();
+			System.out.println("Output string: " + rsmd.toString());
+			System.out.println("Column count: " + columnsNumber);
+
+			while (resultSet.next()) {
+				qty = resultSet.getString("qty");
+				System.out.print("qty" + " " + resultSet.getString("qty"));
+			}
+
+			connection.close();
+		}
+
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return qty;
+	}
+	
+	public String getQueryDetailsForItemReceiedStatusAndQty(String loc) {
+		String details = null;
+		details = "select status,actual_qty,item_number from t_stored_item(nolock) where wh_id = '"+ PropertyStorage.getWarehouseId().toString() +"' and location_id = '" +loc+"'";
+		return details;
+	}
+	
+	public List<String> getItemReceiedStatusAndQty(String loc) {
+		ResultSet resultSet = null;
+		String connectionUrl = PropertyStorage.getSQLConnectionUrl();
+		System.out.println("connectionUrl --> " + connectionUrl);
+
+		String query = getQueryDetailsForItemReceiedStatusAndQty(loc);
+		System.out.println("Query from method --> " + query);
+		List<String> finvalues = new ArrayList<>();
+		
+		try (Connection connection = DriverManager.getConnection(connectionUrl);) {
+
+			Statement stmt = connection.createStatement();
+			resultSet = stmt.executeQuery(query);
+			ResultSetMetaData rsmd = resultSet.getMetaData();
+			int columnsNumber = rsmd.getColumnCount();
+			System.out.println("Output string: " + rsmd.toString());
+			System.out.println("Column count: " + columnsNumber);
+
+			while (resultSet.next()) {
+				String status = resultSet.getString("status");
+				finvalues.add(status);
+				String qty = resultSet.getString("actual_qty");
+				finvalues.add(qty);
+				String item_number = resultSet.getString("item_number");
+				finvalues.add(item_number);
+				System.out.print("Status of item" + " " + resultSet.getString("status"));
+			}
+			connection.close();
+		}
+
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return finvalues;
+	}
+	
+	public String getQueryForLochu_idItemqty() {
+		String query = null;
+		String locationType = "I";
+		//String itemClassId = "GENERAL";
+		String stoStatus = "A";
+		query = "select TOP(1) sto.hu_id, sto.lot_number, sto.item_number, sto.status,sto.location_id, sto.actual_qty from t_stored_item sto(nolock) \r\n"
+				+ "JOIN t_location loc(nolock) ON loc.location_id=sto.location_id AND sto.wh_id=loc.wh_id\r\n"
+				+ "JOIN t_item_master itm (nolock) ON itm.item_number=sto.item_number AND itm.wh_id =loc.wh_id\r\n"
+				+ "where loc.type='" + locationType + "' and loc.wh_id='" + PropertyStorage.getWarehouseId()
+				+ "' and loc.pick_area != 'RESERVE'  and sto.status='" + stoStatus
+				+ "' and sto.hu_id IS NOT NULL and sto.lot_number is NOT NULL order by sto.hu_id, sto.actual_qty;";
+		return query;
+	}
+	
+	public List<String> getDetailsForLochu_idItemqty() {
+		ResultSet resultSet = null;
+		String connectionUrl = PropertyStorage.getSQLConnectionUrl();
+		System.out.println("connectionUrl --> " + connectionUrl);
+
+		String query = getQueryForLochu_idItemqty();
+		System.out.println("Query from method --> " + query);
+		List<String> finvalues = new ArrayList<>();
+		
+		try (Connection connection = DriverManager.getConnection(connectionUrl);) {
+
+			Statement stmt = connection.createStatement();
+			resultSet = stmt.executeQuery(query);
+			ResultSetMetaData rsmd = resultSet.getMetaData();
+			int columnsNumber = rsmd.getColumnCount();
+			System.out.println("Output string: " + rsmd.toString());
+			System.out.println("Column count: " + columnsNumber);
+
+			while (resultSet.next()) {
+				String location_id = resultSet.getString("location_id");
+				finvalues.add(location_id);
+				String hu_id = resultSet.getString("hu_id");
+				finvalues.add(hu_id);
+				String item_number = resultSet.getString("item_number");
+				finvalues.add(item_number);
+				String lot_number = resultSet.getString("lot_number");
+				finvalues.add(lot_number);
+				String actual_qty = resultSet.getString("actual_qty");
+				finvalues.add(actual_qty);
+				
+				System.out.print("Status of item" + " " + resultSet.getString("status"));
+			}
+			connection.close();
+		}
+
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return finvalues;
+	}
+	
+	//getDetailsForItemLotHu_idQty
+	public String getQueryForForItemLotHu_idQty(String suggested_location,String hu_id) {
+		String query = null;
+		String locationType = "I";
+		//String itemClassId = "GENERAL";
+		String stoStatus = "A";
+		query = "select item_number, lot_number, hu_id, actual_qty from t_stored_item where hu_id = '"+hu_id+"' and location_id = '"+suggested_location+"';";
+		return query;
+	}
+	
+	public List<String> getDetailsForItemLotHu_idQty(String suggested_location,String hu_id) {
+		ResultSet resultSet = null;
+		String connectionUrl = PropertyStorage.getSQLConnectionUrl();
+		System.out.println("connectionUrl --> " + connectionUrl);
+
+		String query = getQueryForForItemLotHu_idQty(suggested_location,hu_id);
+		System.out.println("Query from method --> " + query);
+		List<String> finvalues = new ArrayList<>();
+		
+		try (Connection connection = DriverManager.getConnection(connectionUrl);) {
+
+			Statement stmt = connection.createStatement();
+			resultSet = stmt.executeQuery(query);
+			ResultSetMetaData rsmd = resultSet.getMetaData();
+			int columnsNumber = rsmd.getColumnCount();
+			System.out.println("Output string: " + rsmd.toString());
+			System.out.println("Column count: " + columnsNumber);
+
+			while (resultSet.next()) {
+				String item_number = resultSet.getString("item_number");
+				finvalues.add(item_number);
+				String lot_number = resultSet.getString("lot_number");
+				finvalues.add(lot_number);
+				String actual_qty = resultSet.getString("actual_qty");
+				if (actual_qty.endsWith(".0")) {
+					actual_qty = actual_qty.substring(0, actual_qty.length() - 2); 
+		        }
+				finvalues.add(actual_qty);
+			}
+			connection.close();
+		}
+
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return finvalues;
+	}
+	
+	public String getQueryDetailsForStagedReceipt(String hu_id,String stagged_location) {
+		String query = null;
+		query = "select item_number, lot_number, actual_qty from t_stored_item where hu_id = '"+hu_id+"' and location_id = '"+stagged_location+"' and wh_id ='"+PropertyStorage.getWarehouseId()+"';";
+		return query;
+	}
+	
+	public List<String> getDetailsForStagedReceipt(String hu_id,String stagged_location) {
+		ResultSet resultSet = null;
+		String connectionUrl = PropertyStorage.getSQLConnectionUrl();
+		System.out.println("connectionUrl --> " + connectionUrl);
+
+		String query = getQueryDetailsForStagedReceipt(hu_id,stagged_location);
+		System.out.println("Query from method --> " + query);
+		List<String> finvalues = new ArrayList<>();
+		
+		try (Connection connection = DriverManager.getConnection(connectionUrl);) {
+
+			Statement stmt = connection.createStatement();
+			resultSet = stmt.executeQuery(query);
+			ResultSetMetaData rsmd = resultSet.getMetaData();
+			int columnsNumber = rsmd.getColumnCount();
+			System.out.println("Output string: " + rsmd.toString());
+			System.out.println("Column count: " + columnsNumber);
+
+			while (resultSet.next()) {
+				String item_number = resultSet.getString("item_number");
+				finvalues.add(item_number);
+				String lot_number = resultSet.getString("lot_number");
+				finvalues.add(lot_number);
+				String actual_qty = resultSet.getString("actual_qty");
+				if (actual_qty.endsWith(".0")) {
+					actual_qty = actual_qty.substring(0, actual_qty.length() - 2); 
+		        }
+				finvalues.add(actual_qty);
+			}
+			connection.close();
+		}
+
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return finvalues;
+	}
+	
+	
+	public String getQueryDetailsFort_ReceiptDetails(String hu_id) {
+		String query = null;
+		query = "Select item_number,lot_number, qty_received from t_receipt where hu_id = '"+hu_id+"' and wh_id ='"+PropertyStorage.getWarehouseId()+"';";
+		return query;
+	}
+	
+	public List<String> gett_ReceiptDetails(String hu_id) {
+		ResultSet resultSet = null;
+		String connectionUrl = PropertyStorage.getSQLConnectionUrl();
+		System.out.println("connectionUrl --> " + connectionUrl);
+
+		String query = getQueryDetailsFort_ReceiptDetails(hu_id);
+		System.out.println("Query from method --> " + query);
+		List<String> finvalues = new ArrayList<>();
+		
+		try (Connection connection = DriverManager.getConnection(connectionUrl);) {
+
+			Statement stmt = connection.createStatement();
+			resultSet = stmt.executeQuery(query);
+			ResultSetMetaData rsmd = resultSet.getMetaData();
+			int columnsNumber = rsmd.getColumnCount();
+			System.out.println("Output string: " + rsmd.toString());
+			System.out.println("Column count: " + columnsNumber);
+
+			while (resultSet.next()) {
+				String item_number = resultSet.getString("item_number");
+				finvalues.add(item_number);
+				String lot_number = resultSet.getString("lot_number");
+				finvalues.add(lot_number);
+				String qty_received = resultSet.getString("qty_received");
+				if (qty_received.endsWith(".0")) {
+					qty_received = qty_received.substring(0, qty_received.length() - 2); 
+		        }
+				finvalues.add(qty_received);
+			}
+			connection.close();
+		}
+
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return finvalues;
+	}
+
+	
+	public boolean receipt_details_after_void_receipt(String hu_id) {
+
+		String connectionUrl = PropertyStorage.getSQLConnectionUrl();
+		Log.message("connectionUrl --> " + connectionUrl);
+
+		String query = getQueryDetailsFort_ReceiptDetails(hu_id);
+		Log.message("Query from method --> " + query);
+
+		try (Connection connection = DriverManager.getConnection(connectionUrl);
+				Statement stmt = connection.createStatement();
+				ResultSet resultSet = stmt.executeQuery(query)) {
+
+        // If resultSet has at least one row, return false
+        if (resultSet.next()) {
+            Log.message("Entry present in t_receipt table after performing void receipt for lpn "+hu_id);
+            return false;
+        } else {
+            Log.message("No entry present in t_receipt table after performing void receipt for lpn "+hu_id);
+            return true;
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+ 
+        return false;
+      }
+	}
+}
