@@ -1,0 +1,424 @@
+package ecolab.koerber.base;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import ecolab.koerber.utils.PropertyReader;
+import ecolab.koerber.utils.PropertyStorage;
+
+public class KoerberUtils {
+
+	private static Logger log = LoggerFactory.getLogger(KoerberUtils.class);
+
+	public KoerberUtils() {
+		PageFactory.initElements(DriverManager.getDriver(), this);
+	}
+
+	private static final String GEN_TEXT = "//span[text()='%s']";
+
+	public String txt_Input = "//div[@data-hj-test-id ='active-workspace-page-container']//*[text()='%s']/ancestor::div[@data-hj-test-id='field-cell']//*[@class='k-textbox']";
+
+	public String errorMessage = "(//*[text()='%s']/ancestor::div[@data-hj-test-id='field-cell']//span[@data-bind='text: errorMessage'])[1]";
+
+	public String errorMessage1 = "(//*[text()='%s']/ancestor::div[@data-hj-test-id='field-cell']//span[@data-bind='text: errorMessage'])[2]";
+
+//	(//span[text()='Warehouse ID']/ancestor::div[@data-hj-test-id='field-cell']//span[text()='<ANY>'])
+
+	public String dp_SelectDropdown = "//*[text()='%s']/ancestor::div[@data-hj-test-id='field-cell']//span[contains(@class,'k-dropdown') and @aria-disabled='false']";
+	// ul[@class='k-list k-reset']//li[@class='k-item k-state-selected
+	// k-state-focused' and text()='<SELECT A YARD>']/following-sibling::li
+	public String dp_SelectDropdownOption = "//ul[@class='k-list k-reset' and @aria-hidden='false']//li[text()='%s']";
+	public String dp_SelectDropdownOptionUsingContains = "//ul[@class='k-list k-reset' and @aria-hidden='false']//li[contains(text(),'%s')]";
+	public String dp_SelectDropdownOption2 = "//ul[@class='k-list k-reset']//li[@class='k-item k-state-selected k-state-focused' and text()='%s']/following-sibling::li";
+
+	public String btn_Click = "//span[text()='%s']/ancestor::a";
+
+	public String btn_Popup = "//hj-button//span[text()='%s']";
+
+	public String row_Record = "(//*[@class='k-grid-content k-auto-scrollable']//tr)['%s']//td";
+
+//	@FindBy(xpath = "(//*[@class='k-grid-content k-auto-scrollable']//tr)['%s']//td")
+//	public static List<WebElement> rows;
+
+	@FindBy(xpath = "(//*[@role='columnheader'])[1]")
+	public static WebElement hdr_Table_1;
+
+	@FindBy(xpath = "//th[@role='columnheader']")
+	static List<WebElement> lst_ColumnHeaders;
+
+	@FindBy(xpath = "(//*[@class='k-grid-content k-auto-scrollable']//tr)[1]//td")
+	static List<WebElement> lbl_FirstColumnData;
+
+	@FindBy(xpath = "(//*[@class='k-grid-content k-auto-scrollable']//tr)[1]//td")
+	static List<WebElement> lbl_ColumnData;
+
+	@FindBy(xpath = "(//*[@class='k-grid-content k-auto-scrollable']//tr)[1]//td[1]//a")
+	static WebElement lnk_FirstRowRecord;
+
+	@FindBy(xpath = "//input[@class='k-textbox' and @type='text']")
+	static WebElement inputField;
+
+	@FindBy(xpath = "//*[@data-hj-test-id='hj-active-page-title']")
+	static WebElement lbl_pageName;
+
+	@FindBy(xpath = "(//*[@class='k-grid-content k-auto-scrollable']//tr)")
+	static List<WebElement> lbl_rowCount;
+
+	public String dateConversion(String inputFormat, String expectedFormat, String inputDate) {
+		String outputDate = null;
+		try {
+			SimpleDateFormat inFormat = new SimpleDateFormat(inputFormat);// Feb 23 2026 //MMM dd yyyy
+			SimpleDateFormat outFormat = new SimpleDateFormat(expectedFormat);// 2013-09-02, 2026-02-23 //yyyy-MM-dd
+
+			String inDate = inputDate.strip();
+			Date date = inFormat.parse(inDate);
+
+			outputDate = outFormat.format(date);
+			System.out.println("Converted date: " + outputDate);
+		} catch (Exception e) {
+			e.printStackTrace();
+
+		}
+		return outputDate;
+	}
+
+	public boolean clickOnButton(String button) {
+		boolean flag = false;
+		try {
+			Log.message("Clicking on " + button + " button");
+			WebElement ele = DriverManager.getWrapperClass()
+					.waitForElementToBeClickableByClass(By.xpath(String.format(btn_Click, button)));
+			flag = DriverManager.getWrapperClass().clickElementJavaScript(ele);
+//			flag = DriverManager.getWrapperClass().waitForElementToBeVisible1(hdr_Table_1);
+			Log.message("Clicked on " + button + " button");
+		} catch (Exception e) {
+			Log.message("Unable to click on button " + button + " " + e.getMessage());
+		}
+		return flag;
+	}
+
+	public List<String> getRowHeaders() {
+		Log.message("Getting Row headers");
+		List<String> headers = new ArrayList<String>();
+		try {
+			for (WebElement headerEle : lst_ColumnHeaders) {
+				headers.add(headerEle.getAttribute("data-title").trim());
+			}
+		} catch (Exception e) {
+			Log.message("Unable to get column headers : " + e.getMessage());
+		}
+		return headers;
+	}
+
+	public int getColumnNumber(String header) {
+		int colNum = 0;
+		try {
+			for (int i = 0; i < lst_ColumnHeaders.size(); i++) {
+				String headerName = lst_ColumnHeaders.get(i).getAttribute("data-title").trim();
+				if (headerName.equalsIgnoreCase(header)) {
+					colNum = i;
+					Log.message("Header column number of " + header + " " + colNum);
+					break;
+				}
+			}
+		} catch (Exception e) {
+			Log.message("Unable to get column number");
+		}
+		return colNum;
+	}
+
+//	public String getFirstRowCellDataUsingHeader(String headerName) {
+//		String data = null;
+//		int columnNumber = getColumnNumber(headerName);
+//		data = lbl_FirstColumnData.get(columnNumber).getText();
+//		return data;
+//	}
+
+	public Map<String, String> getFirstRowData() {
+		Log.message("Getting First Row Data");
+		Map<String, String> rowDataMap = new HashMap<String, String>();
+		List<String> headers = getRowHeaders();
+		try {
+			for (int i = 0; i < headers.size(); i++) {
+				String data = getRowCellDataUsingHeader("1", headers.get(i));
+				Log.message(headers.get(i) + " : " + data);
+				rowDataMap.put(headers.get(i), data);
+			}
+		} catch (Exception e) {
+			Log.message("Unable to get column headers : " + e.getMessage());
+		}
+		return rowDataMap;
+	}
+
+	public String getRowCellDataUsingHeader(String rowNo, String headerName) {
+		String data = null;
+		int columnNumber = getColumnNumber(headerName);
+		List<WebElement> ele = DriverManager.getDriver().findElements(By.xpath(String.format(row_Record, rowNo)));
+		data = ele.get(columnNumber).getText();
+		return data;
+	}
+
+	public String getRowNumberWhichHasHeaderData(String header) {
+		String rowNum = "";
+		String pageName = DriverManager.getWrapperClass().getText(lbl_pageName);
+		Log.message("Getting row number from table " + pageName + " which has " + header);
+		try {
+			for (int i = 1; i <= lbl_rowCount.size(); i++) {
+				String data = getRowCellDataUsingHeader(String.valueOf(i), header);
+				if (!data.equalsIgnoreCase("") || data != null) {
+					rowNum = String.valueOf(i);
+					Log.message("Row " + i + " has " + header);
+					break;
+				}
+			}
+		} catch (Exception e) {
+			Log.message("Unable to get row number from table " + pageName + "which has " + header + e.getMessage());
+		}
+		return rowNum;
+	}
+
+	public Map<String, String> getRowDataIfHeaderHasValue(String header) {
+		Log.message("Getting Row Data if " + header + " has value");
+		Map<String, String> rowDataMap = new HashMap<String, String>();
+		List<String> headers = getRowHeaders();
+		String rowNum = getRowNumberWhichHasHeaderData(header);
+		try {
+			for (int i = 0; i < headers.size(); i++) {
+				String data = getRowCellDataUsingHeader(rowNum, headers.get(i));
+				Log.message(headers.get(i) + " : " + data);
+				rowDataMap.put(headers.get(i), data);
+			}
+		} catch (Exception e) {
+			Log.message("Unable to get row Data if " + header + " has value : " + e.getMessage());
+		}
+		return rowDataMap;
+	}
+
+	public boolean clickOnFirstRowItem() {
+		boolean flag = false;
+		try {
+			Log.message("Click on first record to open");
+			flag = DriverManager.getWrapperClass().clickElement(lnk_FirstRowRecord);
+			Log.message("Clicked on First row item");
+			flag = true;
+		} catch (Exception e) {
+			Log.message("Unable to click on first row item");
+		}
+		return flag;
+	}
+
+	// To send input to text field
+	public boolean enterValueInField(String field, String value) {
+		boolean flag = false;
+		try {
+			Log.message("Entering value in " + field + " : " + value);
+			WebElement ele = DriverManager.getWrapperClass().waitForElementToBeVisible(
+					DriverManager.getDriver().findElement(By.xpath(String.format(txt_Input, field))));
+			flag = DriverManager.getWrapperClass().enterTextByElement(ele, value);
+			if (flag)
+				Log.message("Value entered in " + field + " Field successfully : " + value);
+		} catch (Exception e) {
+			Log.message("Unable to Enter " + field + " Value " + e.getMessage());
+		}
+		return flag;
+	}
+
+	public boolean verifyErrorMessageOfField(String field, String message1, String message2) {
+		boolean flag = false;
+		try {
+			Log.message("Verifying error messages of field" + field);
+			WebElement ele = DriverManager.getWrapperClass().waitForElementToBeVisible(
+					DriverManager.getDriver().findElement(By.xpath(String.format(errorMessage, field))));
+			WebElement ele1 = DriverManager.getWrapperClass().waitForElementToBeVisible(
+					DriverManager.getDriver().findElement(By.xpath(String.format(errorMessage1, field))));
+			flag = ele.getText().trim().equalsIgnoreCase(message1) && ele1.getText().trim().equalsIgnoreCase(message2);
+			if (flag)
+				Log.message("Error message verified successfully : " + message1 + message2);
+		} catch (Exception e) {
+			Log.message("Unable to verify error message of " + field + "" + e.getMessage());
+		}
+
+		return flag;
+	}
+
+	public boolean selectOptionFromDropdown(String field, String value) {
+		boolean flag = false;
+		try {
+			Log.message("Selecting field : " + field);
+			WebElement ele = DriverManager.getWrapperClass().waitForElementToBeVisible(
+					DriverManager.getDriver().findElement(By.xpath(String.format(dp_SelectDropdown, field))));
+			DriverManager.getWrapperClass().clickWithJS(ele);
+			WebElement ele1 = DriverManager.getWrapperClass().waitForElementToBeVisible(
+					DriverManager.getDriver().findElement(By.xpath(String.format(dp_SelectDropdownOption, value))));
+			DriverManager.getWrapperClass().clickWithJS(ele1);
+			flag = true;
+			Log.message("Selected option : " + value);
+		} catch (Exception e) {
+			Log.message("Unable to select warehouse : " + e.getMessage());
+		}
+		return flag;
+	}
+
+	public boolean selectOptionFromDropdownUsingContains(String field, String value) {
+		boolean flag = false;
+		try {
+			Log.message("Selecting field : " + field);
+			WebElement ele = DriverManager.getWrapperClass().waitForElementToBeVisible(
+					DriverManager.getDriver().findElement(By.xpath(String.format(dp_SelectDropdown, field))));
+			DriverManager.getWrapperClass().clickWithJS(ele);
+			WebElement ele1 = DriverManager.getWrapperClass().waitForElementToBeVisible(DriverManager.getDriver()
+					.findElement(By.xpath(String.format(dp_SelectDropdownOptionUsingContains, value))));
+			DriverManager.getWrapperClass().clickWithJS(ele1);
+			flag = true;
+			Log.message("Selected option : " + value);
+		} catch (Exception e) {
+			Log.message("Unable to select warehouse : " + e.getMessage());
+		}
+		return flag;
+	}
+
+	public boolean selectOptionFromDropdownAndClickQuery(String field, String value) {
+		boolean flag = false;
+		try {
+			Log.message("Selecting field : " + field);
+			WebElement ele = DriverManager.getWrapperClass().waitForElementToBeVisible(
+					DriverManager.getDriver().findElement(By.xpath(String.format(dp_SelectDropdown, field))));
+			DriverManager.getWrapperClass().clickWithJS(ele);
+			WebElement ele1 = DriverManager.getWrapperClass().waitForElementToBeVisible(DriverManager.getDriver()
+					.findElement(By.xpath(String.format(dp_SelectDropdownOptionUsingContains, value))));
+			DriverManager.getWrapperClass().clickWithJS(ele1);
+			DriverManager.getDriver().findElement(By.xpath(String.format(GEN_TEXT, "Query"))).click();
+			flag = true;
+			Log.message("Selected option : " + value);
+		} catch (Exception e) {
+			Log.message("Unable to select warehouse : " + e.getMessage());
+		}
+		return flag;
+	}
+
+	// To select the first value from the dropdown
+	public boolean selectFirstOptionFromDropdown(String field) {
+		boolean flag = false;
+		try {
+			Log.message("Selecting field : " + field);
+			WebElement ele = DriverManager.getWrapperClass().waitForElementToBeVisible(
+					DriverManager.getDriver().findElement(By.xpath(String.format(dp_SelectDropdown, field))));
+			DriverManager.getWrapperClass().clickWithJS(ele);
+			WebElement ele1 = DriverManager.getWrapperClass().waitForElementToBeVisible(
+					DriverManager.getDriver().findElement(By.xpath(String.format(dp_SelectDropdownOption2, field))));
+			DriverManager.getWrapperClass().clickWithJS(ele1);
+			flag = true;
+			Log.message("Selected option : ");
+		} catch (Exception e) {
+			Log.message("Unable to select warehouse : " + e.getMessage());
+		}
+		return flag;
+	}
+
+	public boolean waitForTableLoad() {
+		boolean flag = false;
+		try {
+			Log.message("Waiting for table load");
+			flag = DriverManager.getWrapperClass().waitForElementToBeVisible1(hdr_Table_1);
+		} catch (Exception e) {
+			Log.message("Unable to wait for table load : " + e.getMessage());
+		}
+		return flag;
+	}
+
+	public boolean selectWarehouseAndClickbutton(String button) {
+		Log.message("Selecting Warehouse ID and clicking on " + button + " button");
+		boolean flag = false;
+		try {
+			flag = DriverManager.getWrapperClass().selectWarehouse1();
+			clickOnButton(button);
+			waitForTableLoad();
+		} catch (Exception e) {
+			Log.message("Unable to select Warehouse and " + button + " : " + e.getMessage());
+		}
+		return flag;
+	}
+
+	public boolean selectWarehouse() {
+		Log.message("Selecting Warehouse ID");
+		boolean flag = false;
+		try {
+			flag = DriverManager.getWrapperClass().selectWarehouse1();
+		} catch (Exception e) {
+			Log.message("Unable to select Warehouse : " + e.getMessage());
+		}
+		return flag;
+	}
+
+	public boolean clickOnPopupButton(String button) {
+		boolean flag = false;
+		try {
+			Log.message("Clicking on " + button + " popup button");
+			WebElement ele = DriverManager.getWrapperClass()
+					.waitForElementToBeClickableByClass(By.xpath(String.format(btn_Popup, button)));
+			flag = DriverManager.getWrapperClass().clickElementJavaScript(ele);
+			flag = DriverManager.getWrapperClass().waitForElementToBeVisible1(hdr_Table_1);
+
+			Log.message("Clicked on " + button + " popup button");
+		} catch (Exception e) {
+			Log.message("Unable to click on popup button " + button + " " + e.getMessage());
+		}
+		return flag;
+	}
+
+	// Use this method while sending input to text field in K1 mobile screen
+	public boolean enterValueInField(String value) {
+		boolean flag = false;
+		try {
+			Log.message("Entering value in K1 mobile input field : " + value);
+			DriverManager.getWrapperClass().waitForElementToBeVisible(inputField);
+			flag = DriverManager.getWrapperClass().enterTextByElementAndClickEnter(inputField, value);
+			if (flag)
+				Log.message("Value entered in K1 mobile input field successfully : " + value);
+		} catch (Exception e) {
+			Log.message("Unable to Enter K1 mobile input field Value " + e.getMessage());
+		}
+		return flag;
+	}
+
+	// Scroll element into view clear and enter text
+	public boolean scrollClearAndType(WebElement element, String text) {
+		boolean flag = false;
+		try {
+			DriverManager.getWrapperClass().scrollIntoView(element);
+			flag = DriverManager.getWrapperClass().enterTextByElement(element, text);
+			if (flag) {
+				Log.message("Entered text '" + text + "' in element successfully.");
+			}
+		} catch (Exception e) {
+			Log.message("Failed to enter text in element: " + e.getMessage());
+		}
+		return flag;
+	}
+	
+	public boolean getRowDetailsAndWriteInPropertyFile(String fileName, String header) {
+		boolean flag = false;
+		try {
+			Map<String, String> rowData = getRowDataIfHeaderHasValue(header);
+			rowData.put("Updated Expiration Date", DriverManager.getWrapperClass().getTargetDate());
+			PropertyReader.getInstance().writeProperty(rowData, fileName);
+			flag = true;
+		} catch (Exception e) {
+			Log.message("Unable to write row details in property file : " + e.getMessage());
+		}
+		return flag;
+	}
+
+}
