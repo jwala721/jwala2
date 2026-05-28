@@ -1,0 +1,4676 @@
+package ecolab.koerber.pages.module.outbound;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.FindAll;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
+import org.testng.Assert;
+import com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter;
+
+import ecolab.koerber.base.DBUtils;
+import ecolab.koerber.base.DriverManager;
+import ecolab.koerber.base.KoerberUtils;
+import ecolab.koerber.base.WrapperClass;
+import ecolab.koerber.pages.module.inbound.InboundPages;
+import ecolab.koerber.pages.module.inventory.InventoryPages;
+import ecolab.koerber.pages.navigation.MainNavigation;
+import ecolab.koerber.utils.RandomUtils;
+import io.cucumber.java.en.Then;
+import ecolab.koerber.base.Log;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.StaleElementReferenceException;
+import java.util.function.Supplier;
+import org.openqa.selenium.WebDriver;
+
+import java.util.function.Supplier;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
+public class OutboundPages {
+	private static Logger log = LoggerFactory.getLogger(DBUtils.class);
+
+	public OutboundPages() {
+		PageFactory.initElements(DriverManager.getDriver(), this);
+	}
+
+	MainNavigation mainNavigation = new MainNavigation();
+	InventoryPages inventoryPages = new InventoryPages();
+	DBUtils dbutils = new DBUtils();
+	KoerberUtils koerberUtils = new KoerberUtils();
+	public static String trailerNumber;
+	public static String doorGlo;
+	public static String doorLoc;
+	public static String Item1;
+	public static String lotNumber1;
+	public static String ItemQty1;
+	public static String Item2;
+	public static String lotNumber2;
+	public static String ItemQty2;
+	public static String LP_Num;
+
+	public static String loadGlo;
+	public static String loadId;
+	public static String Pallet_Number1;
+	public static String itemNumber_1;
+	public static String Lot_Number1;
+	public static String Pallet_Number2;
+	public static String itemNumber_2;
+	public static String Lot_Number2;
+	public static String Destination_Loc;
+	private static final String USERNAME = "//span[text()='Login' and @data-hj-test-id='hj-active-page-title']";
+	private static final String text_Gen = "//span[text()='%s']";
+	private static final String LP = "//td[text()='%s']";
+	private static final String GEN_TEXT = "//span[text()='%s']";
+	private static final String CHECK_OUT = "//td[text()='%s']//following-sibling::td//span[text()='Check Out']";
+	private static final String GEN_TEXT_DIV = "//div[@class='listButton']//div[@class='noselect' and text()='%s']";
+
+	@FindBy(xpath = "//span[text()='Tibco Load Id']/ancestor::div[@data-hj-test-id='field-cell']//hj-template")
+	WebElement tibcoLoadIdField;
+
+	@FindBy(xpath = "//span[text()='Tibco Load Id']/ancestor::div[@data-hj-test-id='field-cell']//hj-template//hj-textbox//input")
+	WebElement tibcoLoadIdFieldValue;
+
+	@FindBy(xpath = "//span[text()='Load ID']/ancestor::div[@data-hj-test-id='field-cell']//hj-template")
+	WebElement loadIdField;
+	
+	@FindBy(xpath = "//span[text()='Load Id']/ancestor::div[@data-hj-test-id='field-cell']//hj-textbox/input[@class='k-textbox']")
+	WebElement load_Id_Field;
+
+//	@FindBy(xpath = "//span[text()='Staging Location']/ancestor::div[@data-hj-test-id='field-cell']//span[text()='<ANY>']/following-sibling::span[@class='k-select']")
+//	WebElement statusDropdown;
+
+	@FindBy(xpath = "//ul[@class='k-list k-reset']//li[@class='k-item k-state-selected k-state-focused' and text()='<ANY>']/following-sibling::li[text()='Shipped']")
+	WebElement statusDropdownShippedOption;
+
+	@FindBy(xpath = "//span[text()='Load ID']/ancestor::div[@data-hj-test-id='field-cell']//hj-template//hj-textbox//input")
+	WebElement loadIdFieldValue;
+
+	@FindBy(xpath = "//span[text()='Item Number']/ancestor::div[@data-hj-test-id='field-cell']//hj-template")
+	WebElement itemNumberField;
+
+	@FindBy(xpath = "//span[text()='Item Number']/ancestor::div[@data-hj-test-id='field-cell']//hj-template//hj-textbox//input")
+	WebElement itemNumberFieldValue;
+
+	@FindBy(xpath = "//span[text()='Location ID']/ancestor::div[@data-hj-test-id='field-cell']//hj-template")
+	WebElement locationField;
+
+	@FindBy(xpath = "//span[text()='Tibco Load Id']/ancestor::div[@data-hj-test-id='field-cell']//hj-template//hj-textbox//input")
+	WebElement locationFieldValue;
+
+	@FindBy(xpath = "//span[text()='New']")
+	WebElement newStatus;
+
+	@FindBy(xpath = "//tbody/tr[1]/td[10]")
+	WebElement viewLoadLoadId;
+
+	@FindBy(xpath = "//span[text()='Release']")
+	WebElement release;
+
+	@FindBy(xpath = "//a[contains(text(),'F8:LST')]")
+	WebElement lstFunctionKey;
+
+	@FindBy(xpath = "//div[@class='listButton']")
+	WebElement listFunctionKeyOptions;
+
+	@FindBy(xpath = "//a[contains(text(),'F8:Skip')]")
+	public WebElement skipFunctionKey;
+
+	@FindBy(xpath = "//div[@data-bind='foreach: lines']")
+	WebElement locationText;
+
+	@FindBy(xpath = "//span[text()='Status']/ancestor::div[@data-hj-test-id='field-cell']//span[text()='<ANY>']")
+	WebElement statusDropdown;
+
+	@FindBy(xpath = "//ul[@class='k-list k-reset']//li[@class='k-item k-state-selected k-state-focused' and text()='<ANY>']/following-sibling::li[text()='P - Partial']")
+	WebElement partialDropdownValue;
+
+	@FindBy(xpath = "//span[text()='Current Inventory']")
+	WebElement currentInventory;
+
+	@FindBy(xpath = "//*[contains(text(),'Submit')]")
+	public WebElement submitBtn;
+
+	@FindBy(xpath = "//div[contains (text(),'Load ID: ')]")
+	WebElement loadIdK1Mobile;
+
+	@FindBy(xpath = "//input[@class='k-textbox' and @type='text']")
+	WebElement inputField;
+	
+	@FindBy(xpath = "//input[@class='k-textbox' and @type='password']")
+	WebElement PasswordField;
+
+	@FindBy(xpath = "//span[text()='Released']")
+	WebElement releasedStatus;
+
+	@FindBy(xpath = "//span[text()='Ship']")
+	WebElement shipStatus;
+	
+	@FindBy(xpath = "//span[text()='Confirm']")
+	WebElement confirmButton;
+
+	@FindBy(xpath = "//span[text()='OK']")
+	WebElement okButton;
+
+	@FindBy(xpath = "//a[@class='k-link']//following::div//SPAN[text()='Shipped']")
+	WebElement shippedStatus;
+	
+	@FindBy(xpath = "//i[@class='icon-without-text fa fa-fw fa-refresh']")
+	WebElement refresh_page;
+	
+	@FindBy(xpath = "//div[text()='TESTK1']")
+	WebElement TESTK1_Key;
+	
+	@FindBy(xpath = "//span[text()='QUANTITY']")
+	WebElement Quantity;
+	
+	@FindBy(xpath = "//span[text()='Check In Trailer']")
+	WebElement checkInTrailer;
+	
+	@FindBy(xpath = "//span[text()='*Trailer Number']/ancestor::div[@data-hj-test-id='field-cell']//hj-template//hj-textbox//input")
+	WebElement trailerNumFieldValue;
+	
+	@FindBy(xpath = "//span[text()='Sent to Location']/ancestor::div[@data-hj-test-id='field-cell']//span[text()='<Select One>']/following-sibling::span[@class='k-select']")
+	WebElement locationDropdown;
+	
+	@FindBy(xpath = "//ul[@class='k-list k-reset']//li[@class='k-item k-state-selected k-state-focused' and text()='<Select One>']/following-sibling::li[starts-with(text(),'D')]")
+	WebElement locationDropDownOption;
+	
+	@FindBy(xpath = "//span[text()='Trailer Number']/ancestor::div[@data-hj-test-id='field-cell']//hj-template//hj-textbox//input")
+	WebElement trailerNumFieldValueSearchPage;
+	
+	@FindBy(xpath = "//span[text()='Check Out']")
+	public WebElement checkOutButton;
+	
+	@FindBy(xpath = "(//div[contains(@data-bind,'attr: {style: _inputStyle}')])[4]")
+	WebElement confirmShortShipCheckbox;
+	
+	@FindBy(xpath = "//div[contains(text(),'LP:')]")
+	WebElement lpTextElement;
+	
+	@FindBy(xpath = "//div[@class='listButton'][.//div[text()='TESTK1']]")
+	WebElement testK1Button;
+	
+	@FindBy(xpath = "//div[@class='entryarea']//div[contains(text(),'Qty:')]")
+	WebElement qtyTextElement;
+	
+	@FindBy(xpath = "//span[text()='Priority']/following::input[1]")
+	WebElement priorityTextInput;
+	
+	@FindBy(xpath = "(//span[text()='Location ID']/following::input)[1]")
+	WebElement location_Id;
+	
+	@FindBy(xpath = "//span[text()='LP']")
+	WebElement LP_Text;
+	
+	@FindBy(xpath = "//span[text()='Loading Successful.']")
+	WebElement lOading_Success_msg;
+	
+	@FindBy(xpath = "//span[text()='LOAD/DOOR']")
+	WebElement load_Door_txt;
+	
+	@FindBy(xpath = "//span[@data-hj-test-id='field-error' and text()='Must confirm short ship']")
+	WebElement shortShipError;
+	
+	@FindBy(xpath = "//scan[text()='INVALID INPUT']")
+	WebElement Invalid_msg;
+	
+	@FindBy(xpath = "//scan[text()='INVALID LOCATION']")
+	WebElement Invalid_Location;
+	
+	@FindBy(xpath = "(//span[text()='PRINT'])[5]")
+	WebElement Print_Button;
+	
+	@FindBy(xpath = "//a[text()='Delivery BOL']")
+	WebElement Delivery_BOL;
+	
+	@FindBy(xpath = "//span[text()='Number of Copies']//following :: input[@class='k-textbox']")
+	WebElement Number_of_Copy;
+	
+	@FindBy(xpath = "//span[text()='Print']")
+	WebElement Final_Print;
+	
+	@FindBy(xpath = "//div[@class='name']")
+	WebElement userId;
+	
+	@FindBy(xpath = "//span[text()='Employee ID']//following::input[@class='k-textbox'][1]")
+	WebElement Employee_Id;
+	
+	@FindBy(xpath = "//tbody/tr/td[text()='402']")
+	WebElement Trans_Type;
+	
+	@FindBy(xpath = "//tbody/tr/td[text()='Trailer Check Out']")
+	WebElement Trailer_Checkout;
+	
+	@FindBy(xpath = "//a[text()='Source Location Id']//following::td[29]")
+	WebElement Source_Location;
+	
+	@FindBy(xpath = "//div[@data-bind='text: $data' and normalize-space(text())='Sep: Y']")
+	WebElement sepYDiv;
+	
+	@FindBy(xpath = "//span[text()='Cycle Count']")
+	WebElement namespanCycleCount;
+	
+	@FindBy(xpath = "//span[text()='Hold']")
+	public WebElement hold_link;
+	
+	@FindBy(xpath = "//div[text()='Antimicrobial Handwash Jug']")
+	public WebElement antimicrobialHandwashJug;
+	
+	@FindBy(xpath = "//span[contains(text(),'Application Server Name:')]")
+	WebElement applicationServerName;
+	
+	@FindBy(xpath = "//a[text()='F3:Done']")
+	WebElement doneButton;
+	
+	@FindBy(xpath = "//*[contains(text(), '1 of 2 pallets')]")
+	WebElement palletsInfo;
+	
+	@FindBy(xpath = "//span[text()='LOCATION']")
+	WebElement Location;
+	
+	@FindBy(xpath = "//span[text()='CONFIRM(Y/N)']")
+	WebElement Confirm_msg;
+	
+	@FindBy(xpath = "//span[text()='ENTER:Confirm']")
+	WebElement Enter_Confirm_msg;
+	
+	@FindBy(xpath = "(//div[@class='k-grid-content k-auto-scrollable'])[2]/table/tbody/tr")
+	private List<WebElement> tableRows;
+	
+	@FindBy(xpath = "(//div[@class='k-grid-content k-auto-scrollable'])[2]/table/tbody/tr/td[4]")
+	private List<WebElement> itemCells;
+	
+	@FindBy(xpath = "//span[text()='Door Location']/ancestor::div[@data-hj-test-id='field-cell']//span[text()='<None>']/following-sibling::span[@class='k-select']")
+	private WebElement doorLocationDropdownArrow;
+
+	@FindBy(xpath = "//ul[@class='k-list k-reset']//li[@class='k-item k-state-selected k-state-focused' and text()='<None>']/following-sibling::li[starts-with(text(),'D')][1]")
+	private WebElement firstDoorOption;
+	
+	@FindBy(xpath = "//div[normalize-space(text())='CHEP PALLETS REQUIRED']")
+	public WebElement chepPalletsRequiredLabel;
+	
+	@FindBy(xpath = "//span[normalize-space()='Delete']")
+	WebElement deleteSpan;
+	
+	@FindBy(xpath = "//span[normalize-space(text())='PALLET']")
+	WebElement palletLabel;
+
+
+	
+	public WebElement getDivByClassAndText(String label) {
+        String xpath = String.format(GEN_TEXT_DIV, label);
+        return DriverManager.getDriver().findElement(By.xpath(xpath));
+    }
+
+	public boolean selectTibcoLoadId(String tibcoLoadID) {
+		boolean flag = false;
+		try {
+		DriverManager.getWrapperClass().click(tibcoLoadIdField);
+		tibcoLoadIdFieldValue.sendKeys(tibcoLoadID);
+		tibcoLoadIdFieldValue.sendKeys(Keys.ENTER);
+		boolean newStatusVisible = newStatus.isDisplayed();
+
+		if (newStatusVisible) {
+			ExtentCucumberAdapter.addTestStepLog("✅ New status is displayed");
+		} else {
+			ExtentCucumberAdapter.addTestStepLog("❌ New status is NOT displayed");
+		}
+		loadId = viewLoadLoadId.getText();
+		System.out.println("loadId   " + loadId);
+
+		DriverManager.getWrapperClass().click(release);
+		DriverManager.getWrapperClass().waitForElementToBeVisible(priorityTextInput);		
+		koerberUtils.scrollClearAndType(priorityTextInput, "90");	
+		DriverManager.getWrapperClass().click(release);
+		DriverManager.getWrapperClass().waitForTimeOutInSec(20);
+		DriverManager.getWrapperClass().clickWithJS(inventoryPages.refresh_page);
+		DriverManager.getWrapperClass().clickWithJS(inventoryPages.refresh_page);
+		DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+
+		boolean releasedStatusVisible = releasedStatus.isDisplayed();
+        if (releasedStatusVisible) {
+            ExtentCucumberAdapter.addTestStepLog("Verified the released status of new load");
+        } else {
+            ExtentCucumberAdapter.addTestStepLog("Released status is not displayed");
+        }
+        
+        flag = newStatusVisible && releasedStatusVisible;
+		}
+
+		catch (Exception e) {
+        ExtentCucumberAdapter.addTestStepLog("Exception occurred: " + e.getMessage());
+        flag = false;
+    }
+    return flag;
+
+	}
+
+	public void pickingNStaging() {
+		// ------------------
+//		Actions actions = new Actions(DriverManager.getDriver());
+//		actions.sendKeys(Keys.ENTER).build().perform();
+//		mainNavigation.inputField.click();
+//		mainNavigation.inputField.sendKeys(Keys.ENTER);	
+		// -----------------------------------
+
+		List<String> loc = Arrays.asList(locationText.getText().split("\\W+"));
+		DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+		String reqLoc = loc.get(2);
+		System.out.println("reqLoc" + reqLoc);
+		inputField.sendKeys(reqLoc);
+		inputField.sendKeys(Keys.ENTER);
+
+//item
+		List<String> item = Arrays.asList(locationText.getText().split("\\W+"));
+		DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+		String reqItem = item.get(3);
+		System.out.println("reqItem" + reqItem);
+		inputField.sendKeys(reqItem);
+		inputField.sendKeys(Keys.ENTER);
+
+//		lot number
+		List<String> lot = Arrays.asList(locationText.getText().split("\\W+"));
+		DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+		String reqLot = lot.get(3);
+		System.out.println("reqLot" + reqLot);
+		inputField.sendKeys(reqLot);
+		DriverManager.getWrapperClass().click(submitBtn);
+
+		List<String> qty = Arrays.asList(locationText.getText().split("\\W+"));
+		DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+		String reqQty = qty.get(3);
+		System.out.println("reqQty" + reqQty);
+		inputField.sendKeys(reqQty);
+		DriverManager.getWrapperClass().click(submitBtn);
+
+		DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		lstFunctionKey.click();
+		DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		listFunctionKeyOptions.click();
+		DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+
+//		print successfully
+		DriverManager.getWrapperClass().click(submitBtn);
+
+//		skip wrapping
+		skipFunctionKey.click();
+		DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+
+//		pallet type
+		lstFunctionKey.click();
+		listFunctionKeyOptions.click();
+
+		DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		inputField.sendKeys("WLANE 1");
+		inputField.sendKeys(Keys.ENTER);
+//		transaction complete
+		DriverManager.getWrapperClass().click(submitBtn);
+
+	}
+	
+	
+public void csPickingNStaging() {
+		
+		Actions actions = new Actions(DriverManager.getDriver());
+		actions.sendKeys(Keys.ENTER).build().perform();
+		DriverManager.getWrapperClass().clickWithJS(inputField);
+		mainNavigation.inputField.sendKeys(Keys.ENTER);
+		DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		mainNavigation.inputField.sendKeys(Keys.ENTER);
+		
+//Location
+		DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		List<String> loc = Arrays.asList(locationText.getText().split("\\W+"));
+		DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		String reqLoc = loc.get(2);
+		System.out.println("reqLoc:" + reqLoc);
+		inputField.sendKeys(reqLoc);
+		inputField.sendKeys(Keys.ENTER);
+ 
+//item
+		DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		List<String> item = Arrays.asList(locationText.getText().split("\\W+"));
+		DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		String reqItem = item.get(3);
+		System.out.println("reqItem:" + reqItem);
+		inputField.sendKeys(reqItem);
+		inputField.sendKeys(Keys.ENTER);
+ 
+//lot number
+		DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		String lotNumber= dbutils.getLotNumber(reqItem, reqLoc);
+		System.out.println("Retrieved Lot Number: " + lotNumber);
+		inputField.sendKeys(lotNumber);
+		DriverManager.getWrapperClass().click(submitBtn);
+		
+//QTY		
+		DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		List<String> qty = Arrays.asList(locationText.getText().split("\\W+"));
+		DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		String reqQty = qty.get(1);
+		System.out.println("reqQty is =" + reqQty);
+		inputField.sendKeys(reqQty);
+		DriverManager.getWrapperClass().click(submitBtn);
+		DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		DriverManager.getWrapperClass().click(mainNavigation.f3FunctionKey);
+		
+		if(DriverManager.getWrapperClass().isPresent(Quantity))
+		{
+			DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+			inputField.sendKeys("12");
+			DriverManager.getWrapperClass().click(submitBtn);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+			inputField.sendKeys("2");
+			DriverManager.getWrapperClass().click(submitBtn);
+		}
+		else
+		{
+			System.out.println("There is No Quantity field is found");
+		}
+		
+			/*//Location
+			DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+			List<String> loc2 = Arrays.asList(locationText.getText().split("\\W+"));
+			DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+			String reqLoc2 = loc2.get(2);
+			System.out.println("reqLoc2:" + reqLoc2);
+			inputField.sendKeys(reqLoc2);
+			inputField.sendKeys(Keys.ENTER);
+ 
+	//item
+			DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+			List<String> item2 = Arrays.asList(locationText.getText().split("\\W+"));
+			DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+			String reqItem2 = item2.get(3);
+			System.out.println("reqItem:" + reqItem2);
+			inputField.sendKeys(reqItem2);
+			inputField.sendKeys(Keys.ENTER);
+ 
+	//lot number
+			DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+			String lotNumber2= dbutils.getLotNumber(reqItem2, reqLoc2);
+			System.out.println("Retrieved Lot Number: " + lotNumber2);
+			inputField.sendKeys(lotNumber2);
+			DriverManager.getWrapperClass().click(submitBtn);
+			
+	//QTY		
+			DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+			List<String> qty2 = Arrays.asList(locationText.getText().split("\\W+"));
+			DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+			String reqQty2 = qty2.get(1);
+			System.out.println("reqQty is =" + reqQty2);
+			inputField.sendKeys(reqQty2);
+			DriverManager.getWrapperClass().click(submitBtn);*/
+		
+		
+		DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		lstFunctionKey.click();
+		
+		DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		TESTK1_Key.click();
+		
+		DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		DriverManager.getWrapperClass().click(submitBtn);
+		
+//skip wrapping
+		DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		skipFunctionKey.click();
+		
+		DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		inputField.sendKeys("S100");
+		inputField.sendKeys(Keys.ENTER);
+//transaction complete
+		DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		DriverManager.getWrapperClass().click(submitBtn);
+		DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+ 
+	}
+
+
+public void csPickingNStaging_Single_Item() {
+	
+	Actions actions = new Actions(DriverManager.getDriver());
+	actions.sendKeys(Keys.ENTER).build().perform();
+	DriverManager.getWrapperClass().clickWithJS(inputField);
+	mainNavigation.inputField.sendKeys(Keys.ENTER);
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	mainNavigation.inputField.sendKeys(Keys.ENTER);
+	
+//Location
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	List<String> loc = Arrays.asList(locationText.getText().split("\\W+"));
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	String reqLoc = loc.get(2);
+	System.out.println("reqLoc:" + reqLoc);
+	inputField.sendKeys(reqLoc);
+	inputField.sendKeys(Keys.ENTER);
+
+//item
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	List<String> item = Arrays.asList(locationText.getText().split("\\W+"));
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	String reqItem = item.get(3);
+	System.out.println("reqItem:" + reqItem);
+	inputField.sendKeys(reqItem);
+	inputField.sendKeys(Keys.ENTER);
+
+//lot number
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	String lotNumber= dbutils.getLotNumber(reqItem, reqLoc);
+	System.out.println("Retrieved Lot Number: " + lotNumber);
+	inputField.sendKeys(lotNumber);
+	DriverManager.getWrapperClass().click(submitBtn);
+	
+//QTY		
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	List<String> qty = Arrays.asList(locationText.getText().split("\\W+"));
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	String reqQty = qty.get(1);
+	System.out.println("reqQty is =" + reqQty);
+	inputField.sendKeys(reqQty);
+	DriverManager.getWrapperClass().click(submitBtn);
+	DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+	
+	if(DriverManager.getWrapperClass().isPresent(Quantity))
+	{
+		DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		inputField.sendKeys("12");
+		DriverManager.getWrapperClass().click(submitBtn);
+		DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		inputField.sendKeys("2");
+		DriverManager.getWrapperClass().click(submitBtn);
+	}
+	else
+	{
+		System.out.println("There is No Quantity field is found");
+	}
+	
+	
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	lstFunctionKey.click();
+	
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	TESTK1_Key.click();
+	
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	DriverManager.getWrapperClass().click(submitBtn);
+	
+//skip wrapping
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	skipFunctionKey.click();
+	
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	inputField.sendKeys("S100");
+	inputField.sendKeys(Keys.ENTER);
+//transaction complete
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	DriverManager.getWrapperClass().click(submitBtn);
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+
+}
+
+
+
+public void full_PickingNStaging() {
+	
+	Actions actions = new Actions(DriverManager.getDriver());
+	actions.sendKeys(Keys.ENTER).build().perform();
+	DriverManager.getWrapperClass().clickWithJS(inputField);
+	mainNavigation.inputField.sendKeys(Keys.ENTER);
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	mainNavigation.inputField.sendKeys(Keys.ENTER);
+	
+//Location
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	List<String> loc = Arrays.asList(locationText.getText().split("\\W+"));
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	String reqLoc = loc.get(2);
+	System.out.println("reqLoc:" + reqLoc);
+	inputField.sendKeys(reqLoc);
+	inputField.sendKeys(Keys.ENTER);
+
+//item
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	List<String> item = Arrays.asList(locationText.getText().split("\\W+"));
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	String reqItem = item.get(3);
+	System.out.println("reqItem:" + reqItem);
+	inputField.sendKeys(reqItem);
+	inputField.sendKeys(Keys.ENTER);
+
+//lot number
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	String lotNumber= dbutils.getLotNumber(reqItem, reqLoc);
+	System.out.println("Retrieved Lot Number: " + lotNumber);
+	inputField.sendKeys(lotNumber);
+	DriverManager.getWrapperClass().click(submitBtn);
+	
+//QTY		
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	List<String> qty = Arrays.asList(locationText.getText().split("\\W+"));
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	String reqQty = qty.get(1);
+	System.out.println("reqQty is =" + reqQty);
+	inputField.sendKeys(reqQty);
+	DriverManager.getWrapperClass().click(submitBtn);
+	DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+	
+	if(DriverManager.getWrapperClass().isPresent(Quantity))
+	{
+		DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		inputField.sendKeys("12");
+		DriverManager.getWrapperClass().click(submitBtn);
+		DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		inputField.sendKeys("2");
+		DriverManager.getWrapperClass().click(submitBtn);
+	}
+	else
+	{
+		System.out.println("There is No Quantity field is found");
+	}
+	
+		//Location
+		DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		List<String> loc2 = Arrays.asList(locationText.getText().split("\\W+"));
+		DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		String reqLoc2 = loc2.get(2);
+		System.out.println("reqLoc2:" + reqLoc2);
+		inputField.sendKeys(reqLoc2);
+		inputField.sendKeys(Keys.ENTER);
+
+//item
+		DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		List<String> item2 = Arrays.asList(locationText.getText().split("\\W+"));
+		DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		String reqItem2 = item2.get(3);
+		System.out.println("reqItem:" + reqItem2);
+		inputField.sendKeys(reqItem2);
+		inputField.sendKeys(Keys.ENTER);
+
+//lot number
+		DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		String lotNumber2= dbutils.getLotNumber(reqItem2, reqLoc2);
+		System.out.println("Retrieved Lot Number: " + lotNumber2);
+		inputField.sendKeys(lotNumber2);
+		DriverManager.getWrapperClass().click(submitBtn);
+		
+//QTY		
+		DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		List<String> qty2 = Arrays.asList(locationText.getText().split("\\W+"));
+		DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		String reqQty2 = qty2.get(1);
+		System.out.println("reqQty is =" + reqQty2);
+		inputField.sendKeys(reqQty2);
+		DriverManager.getWrapperClass().click(submitBtn);
+	
+	
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	lstFunctionKey.click();
+	
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	TESTK1_Key.click();
+	
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	DriverManager.getWrapperClass().click(submitBtn);
+	
+//skip wrapping
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	skipFunctionKey.click();
+	
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	inputField.sendKeys("S100");
+	inputField.sendKeys(Keys.ENTER);
+//transaction complete
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	DriverManager.getWrapperClass().click(submitBtn);
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+
+}
+
+public void PickingNStagingForpalletAudit() {
+	
+	Actions actions = new Actions(DriverManager.getDriver());
+	actions.sendKeys(Keys.ENTER).build().perform();
+	DriverManager.getWrapperClass().clickWithJS(inputField);
+	mainNavigation.inputField.sendKeys(Keys.ENTER);
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	mainNavigation.inputField.sendKeys(Keys.ENTER);
+	
+//Location
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	List<String> loc = Arrays.asList(locationText.getText().split("\\W+"));
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	String reqLoc = loc.get(2);
+	System.out.println("reqLoc:" + reqLoc);
+	inputField.sendKeys(reqLoc);
+	inputField.sendKeys(Keys.ENTER);
+
+//item
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	List<String> item = Arrays.asList(locationText.getText().split("\\W+"));
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	Item1 = item.get(3);
+	System.out.println("reqItem:" + Item1);
+	inputField.sendKeys(Item1);
+	inputField.sendKeys(Keys.ENTER);
+
+//lot number
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	lotNumber1= dbutils.getLotNumber(Item1, reqLoc);
+	System.out.println("Retrieved Lot Number: " + lotNumber1);
+	inputField.sendKeys(lotNumber1);
+	DriverManager.getWrapperClass().click(submitBtn);
+	
+//QTY		
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	List<String> qty = Arrays.asList(locationText.getText().split("\\W+"));
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	ItemQty1 = qty.get(1);
+	System.out.println("reqQty is =" + ItemQty1);
+	inputField.sendKeys(ItemQty1);
+	DriverManager.getWrapperClass().click(submitBtn);
+	DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+	
+	if(DriverManager.getWrapperClass().isPresent(Quantity))
+	{
+		DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		inputField.sendKeys("12");
+		DriverManager.getWrapperClass().click(submitBtn);
+		DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		inputField.sendKeys("2");
+		DriverManager.getWrapperClass().click(submitBtn);
+	}
+	else
+	{
+		System.out.println("There is No Quantity field is found");
+	}
+	
+		//Location
+		DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		List<String> loc2 = Arrays.asList(locationText.getText().split("\\W+"));
+		DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		String reqLoc2 = loc2.get(2);
+		System.out.println("reqLoc2:" + reqLoc2);
+		inputField.sendKeys(reqLoc2);
+		inputField.sendKeys(Keys.ENTER);
+
+//item
+		DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		List<String> item2 = Arrays.asList(locationText.getText().split("\\W+"));
+		DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		Item2 = item2.get(3);
+		System.out.println("reqItem:" + Item2);
+		inputField.sendKeys(Item2);
+		inputField.sendKeys(Keys.ENTER);
+
+//lot number
+		DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		lotNumber2= dbutils.getLotNumber(Item2, reqLoc2);
+		System.out.println("Retrieved Lot Number: " + lotNumber2);
+		inputField.sendKeys(lotNumber2);
+		DriverManager.getWrapperClass().click(submitBtn);
+		
+//QTY		
+		DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		List<String> qty2 = Arrays.asList(locationText.getText().split("\\W+"));
+		DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		ItemQty2 = qty2.get(1);
+		System.out.println("reqQty is =" + ItemQty2);
+		inputField.sendKeys(ItemQty2);
+		DriverManager.getWrapperClass().click(submitBtn);
+	
+	
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	lstFunctionKey.click();
+	
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	TESTK1_Key.click();
+	
+	DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+	List<String> LP = Arrays.asList(locationText.getText().split("\\W+"));
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	LP_Num = LP.get(5).replace("?", "");
+	System.out.println("LP is =" + LP_Num);
+	
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	DriverManager.getWrapperClass().click(submitBtn);
+	
+//skip wrapping
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	skipFunctionKey.click();
+	
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	inputField.sendKeys("S100");
+	inputField.sendKeys(Keys.ENTER);
+//transaction complete
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	DriverManager.getWrapperClass().click(submitBtn);
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+
+}
+
+public void PickingNStagingForOtherEcolabSite() {
+	
+	Actions actions = new Actions(DriverManager.getDriver());
+	actions.sendKeys(Keys.ENTER).build().perform();
+	DriverManager.getWrapperClass().clickWithJS(inputField);
+	mainNavigation.inputField.sendKeys(Keys.ENTER);
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	mainNavigation.inputField.sendKeys(Keys.ENTER);
+	
+//Location
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	List<String> loc = Arrays.asList(locationText.getText().split("\\W+"));
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	String reqLoc = loc.get(2);
+	System.out.println("reqLoc:" + reqLoc);
+	inputField.sendKeys(reqLoc);
+	inputField.sendKeys(Keys.ENTER);
+
+//item
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	List<String> item = Arrays.asList(locationText.getText().split("\\W+"));
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	String reqItem = item.get(3);
+	System.out.println("reqItem:" + reqItem);
+	inputField.sendKeys(reqItem);
+	inputField.sendKeys(Keys.ENTER);
+
+//lot number
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	String lotNumber= dbutils.getLotNumber(reqItem, reqLoc);
+	System.out.println("Retrieved Lot Number: " + lotNumber);
+	inputField.sendKeys(lotNumber);
+	DriverManager.getWrapperClass().click(submitBtn);
+	
+//QTY		
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	List<String> qty = Arrays.asList(locationText.getText().split("\\W+"));
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	String reqQty = qty.get(1);
+	System.out.println("reqQty is =" + reqQty);
+	inputField.sendKeys(reqQty);
+	DriverManager.getWrapperClass().click(submitBtn);
+	
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	lstFunctionKey.click();
+	
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	TESTK1_Key.click();
+	
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	DriverManager.getWrapperClass().click(submitBtn);
+	
+//skip wrapping
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	skipFunctionKey.click();
+	
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	inputField.sendKeys("S100");
+	inputField.sendKeys(Keys.ENTER);
+//transaction complete
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	DriverManager.getWrapperClass().click(submitBtn);
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+
+}
+
+public void PickingNStagingForFedexOrder() {
+	
+	Actions actions = new Actions(DriverManager.getDriver());
+	actions.sendKeys(Keys.ENTER).build().perform();
+	DriverManager.getWrapperClass().clickWithJS(inputField);
+	mainNavigation.inputField.sendKeys(Keys.ENTER);
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	mainNavigation.inputField.sendKeys(Keys.ENTER);
+	
+//Location
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	List<String> loc = Arrays.asList(locationText.getText().split("\\W+"));
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	String reqLoc = loc.get(2);
+	System.out.println("reqLoc:" + reqLoc);
+	inputField.sendKeys(reqLoc);
+	inputField.sendKeys(Keys.ENTER);
+
+//item
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	List<String> item = Arrays.asList(locationText.getText().split("\\W+"));
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	String reqItem = item.get(3);
+	System.out.println("reqItem:" + reqItem);
+	inputField.sendKeys(reqItem);
+	inputField.sendKeys(Keys.ENTER);
+
+//lot number
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	String lotNumber= dbutils.getLotNumber(reqItem, reqLoc);
+	System.out.println("Retrieved Lot Number: " + lotNumber);
+	inputField.sendKeys(lotNumber);
+	DriverManager.getWrapperClass().click(submitBtn);
+	
+//QTY		
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	List<String> qty = Arrays.asList(locationText.getText().split("\\W+"));
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	String reqQty = qty.get(1);
+	System.out.println("reqQty is =" + reqQty);
+	inputField.sendKeys(reqQty);
+	DriverManager.getWrapperClass().click(submitBtn);
+	
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	lstFunctionKey.click();
+	
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	TESTK1_Key.click();
+	
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	DriverManager.getWrapperClass().click(submitBtn);
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	DriverManager.getWrapperClass().click(submitBtn);
+	
+	try {
+		if (Enter_Confirm_msg.isDisplayed()) {
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	DriverManager.getWrapperClass().click(submitBtn);
+   
+		}
+	}
+	catch (NoSuchElementException e) {
+		Log.message("Enter/Confirm Button is not displayed, exception handled " +e);
+	}
+	
+//skip wrapping
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	skipFunctionKey.click();
+	
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	inputField.sendKeys("S100");
+	inputField.sendKeys(Keys.ENTER);
+//transaction complete
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	DriverManager.getWrapperClass().click(submitBtn);
+	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+
+}
+
+
+
+	public void loadingProcess() {
+		DriverManager.getWrapperClass().click(mainNavigation.f1BackFunctionKey);
+		DriverManager.getWrapperClass().click(mainNavigation.f1BackFunctionKey);
+		mainNavigation.loadingButtonK1Mobile.click();
+		inputField.sendKeys(loadGlo);
+		inputField.sendKeys(Keys.ENTER);
+		inputField.sendKeys(InboundPages.doorNum);
+		inputField.sendKeys(InboundPages.trailerNumber);
+
+////		scan the LP
+		List<String> lP = Arrays.asList(locationText.getText().split("\\W+"));
+		DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+		String reqLp = lP.get(3);
+		System.out.println("reqLp" + reqLp);
+		inputField.sendKeys(reqLp);
+		DriverManager.getWrapperClass().click(submitBtn);
+
+		inputField.sendKeys(InboundPages.doorNum);
+		inputField.sendKeys(Keys.ENTER);
+		inputField.sendKeys("L");
+		inputField.sendKeys(Keys.ENTER);
+		inputField.sendKeys(Keys.ENTER);
+	}
+	
+	public void CS_loadingProcess() {
+		for (int i = 0; i < 3; i++) { 
+			DriverManager.getWrapperClass().click(mainNavigation.f1BackFunctionKey); 
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		}
+		mainNavigation.loadingButtonK1Mobile.click();
+		DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		inputField.sendKeys(loadId);
+		DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		inputField.sendKeys(Keys.ENTER);
+		DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+		inputField.sendKeys(doorGlo);
+		DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		inputField.sendKeys(Keys.ENTER);
+		DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		inputField.sendKeys(trailerNumber);
+		DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		inputField.sendKeys(Keys.ENTER);
+
+////		scan the LP
+		//List<String> lP = Arrays.asList(locationText.getText().split("\\W+"));
+		DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+		List<String> lP = Arrays.asList(locationText.getText().split(" "));
+		DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+		String reqLp = lP.get(5).replace(".", "");
+		System.out.println("reqLp" + reqLp);
+		inputField.sendKeys(reqLp);
+		DriverManager.getWrapperClass().click(submitBtn);
+		DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		inputField.sendKeys(Keys.ENTER);
+		DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		inputField.sendKeys(Keys.ENTER);
+		DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		inputField.sendKeys(doorGlo);
+		DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		inputField.sendKeys(Keys.ENTER);
+		DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		inputField.sendKeys("L");
+		DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		inputField.sendKeys(Keys.ENTER);
+		DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		inputField.sendKeys(Keys.ENTER);
+		DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		inputField.sendKeys(Keys.ENTER);
+	}
+	
+	
+	public boolean shipping_Process() {
+		boolean flag = false;
+		try {
+		DriverManager.getWrapperClass().click(loadIdField);
+		DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		loadIdFieldValue.sendKeys(loadId);
+		DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		loadIdFieldValue.sendKeys(Keys.ENTER);
+		DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		boolean ShipStatusVisible = shipStatus.isDisplayed();
+
+		if (ShipStatusVisible) {
+			ExtentCucumberAdapter.addTestStepLog("✅ Ship status is displayed");
+		} else {
+			ExtentCucumberAdapter.addTestStepLog("❌ Ship status is NOT displayed");
+		}
+		DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		shipStatus.click();
+		DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		confirmButton.click();
+		DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		okButton.click();
+		
+		DriverManager.getWrapperClass().click(mainNavigation.menuButton);
+		DriverManager.getWrapperClass().click(mainNavigation.viewload);
+		DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		DriverManager.getWrapperClass().click(loadIdField);
+		DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		loadIdFieldValue.sendKeys(loadId);
+		DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		DriverManager.getWrapperClass().click(statusDropdown);
+		DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		DriverManager.getWrapperClass().click(statusDropdownShippedOption);
+		DriverManager.getWrapperClass().waitForTimeOutInSec(4);
+		DriverManager.getWrapperClass().click(mainNavigation.menuButton);
+		DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+
+		loadIdFieldValue.sendKeys(Keys.ENTER);
+		boolean ShippedStatusVisible = shippedStatus.isDisplayed();
+
+		if (ShippedStatusVisible) {
+			ExtentCucumberAdapter.addTestStepLog("✅ Shipped status is displayed");
+		} else {
+			ExtentCucumberAdapter.addTestStepLog("❌ Shipped status is NOT displayed");
+		}
+		flag = ShipStatusVisible && ShippedStatusVisible;
+
+		 if (flag) {
+           ExtentCucumberAdapter.addTestStepLog("✅ Full shipping process completed successfully.");
+       } else {
+           ExtentCucumberAdapter.addTestStepLog("❌ Full shipping process failed.");
+       }
+
+		}
+		catch (Exception e) {
+	        ExtentCucumberAdapter.addTestStepLog("Exception occurred: " + e.getMessage());
+	        flag = false;
+	    }
+	    return flag;
+		
+	}
+	
+	public boolean shippingProcess() {
+	    boolean success = true;
+	    try {
+	        DriverManager.getWrapperClass().click(loadIdField);
+	        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+	        loadIdFieldValue.sendKeys(loadId);
+	        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+	        loadIdFieldValue.sendKeys(Keys.ENTER);
+	        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+	        Assert.assertTrue(shipStatus.isDisplayed(), "Ready to ship status is not displayed");
+	        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+	        DriverManager.getWrapperClass().click(shipStatus);
+	        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+	        DriverManager.getWrapperClass().click(confirmButton);
+	        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+	        DriverManager.getWrapperClass().click(okButton);
+
+	        DriverManager.getWrapperClass().click(mainNavigation.menuButton);
+	        DriverManager.getWrapperClass().click(mainNavigation.viewload);
+	        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+	        DriverManager.getWrapperClass().click(loadIdField);
+	        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+	        loadIdFieldValue.sendKeys(loadId);
+	        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+	        DriverManager.getWrapperClass().click(statusDropdown);
+	        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+	        DriverManager.getWrapperClass().click(statusDropdownShippedOption);
+	        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+	        loadIdFieldValue.sendKeys(Keys.ENTER);
+	        Assert.assertTrue(shippedStatus.isDisplayed(), "Shipped status is not displayed");
+	    } catch (Exception e) {
+	        success = false;
+	        // Log or rethrow if necessary
+	    }
+	    return success;
+	}
+	
+	
+	
+	
+	
+	public boolean full_shippingProcess() {
+		boolean flag = false;
+		try {
+		DriverManager.getWrapperClass().click(loadIdField);
+		DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		loadIdFieldValue.sendKeys(loadId);
+		DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		loadIdFieldValue.sendKeys(Keys.ENTER);
+		DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		boolean ShipStatusVisible = shipStatus.isDisplayed();
+
+		if (ShipStatusVisible) {
+			ExtentCucumberAdapter.addTestStepLog("✅ Ship status is displayed");
+		} else {
+			ExtentCucumberAdapter.addTestStepLog("❌ Ship status is NOT displayed");
+		}
+		DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		shipStatus.click();
+		DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		confirmButton.click();
+		DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		okButton.click();
+		DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		DriverManager.getWrapperClass().click(mainNavigation.menuButton);
+		DriverManager.getWrapperClass().click(mainNavigation.viewload);
+		DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		DriverManager.getWrapperClass().click(loadIdField);
+		DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		loadIdFieldValue.sendKeys(loadId);
+		DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		DriverManager.getWrapperClass().click(statusDropdown);
+		DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		DriverManager.getWrapperClass().click(statusDropdownShippedOption);
+		DriverManager.getWrapperClass().waitForTimeOutInSec(4);
+		DriverManager.getWrapperClass().click(mainNavigation.menuButton);
+		DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		loadIdFieldValue.sendKeys(Keys.ENTER);
+		boolean ShippedStatusVisible = shippedStatus.isDisplayed();
+
+		if (ShippedStatusVisible) {
+			ExtentCucumberAdapter.addTestStepLog("✅ Shipped status is displayed");
+		} else {
+			ExtentCucumberAdapter.addTestStepLog("❌ Shipped status is NOT displayed");
+		}
+		 flag = ShipStatusVisible && ShippedStatusVisible;
+
+		 if (flag) {
+            ExtentCucumberAdapter.addTestStepLog("✅ Full shipping process completed successfully.");
+        } else {
+            ExtentCucumberAdapter.addTestStepLog("❌ Full shipping process failed.");
+        }
+
+		}
+
+		catch (Exception e) {
+        ExtentCucumberAdapter.addTestStepLog("Exception occurred: " + e.getMessage());
+        flag = false;
+    }
+    return flag;
+
+		
+	}
+	
+	public boolean fill_Details_N_Create_Empty_appointment() {
+		boolean flag = false;
+		try {
+		
+		//DriverManager.getWrapperClass().clickWithJS(mainNavigation.menuButton);
+		DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+
+		DriverManager.getWrapperClass().click(checkInTrailer);
+
+		koerberUtils.selectOptionFromDropdown("PO Appointment", "Empty");
+		DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+
+		koerberUtils.selectFirstOptionFromDropdown("<SELECT A YARD>");
+		DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+
+		trailerNumber = RandomUtils.generateText();
+		System.out.println("traiNum" + trailerNumber);
+		koerberUtils.enterValueInField("*Trailer Number", trailerNumber);
+		trailerNumFieldValue.sendKeys(Keys.ENTER);
+
+		DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+		koerberUtils.selectOptionFromDropdown("Carrier Code", "HJBT - JB Hunt OTR");
+		DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+
+		DriverManager.getWrapperClass().click(locationDropdown);
+		DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+		doorGlo = locationDropDownOption.getText();
+		System.out.println("doortext " + doorGlo);
+		DriverManager.getWrapperClass().click(locationDropDownOption);
+
+		DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+		DriverManager.getDriver().findElement(By.xpath(String.format(GEN_TEXT, "Insert"))).click();
+		DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		ExtentCucumberAdapter.addTestStepLog("Filled all details in check in trailer Page");
+		DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+
+		DriverManager.getWrapperClass().click(mainNavigation.trailerManagement);
+		DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		
+		koerberUtils.selectOptionFromDropdown("Warehouse ID", "US78");
+		DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+		
+		trailerNumFieldValueSearchPage.sendKeys(trailerNumber);
+		trailerNumFieldValueSearchPage.sendKeys(Keys.ENTER);
+		DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+		
+		flag=DriverManager.getDriver().findElement(By.xpath(String.format(CHECK_OUT, trailerNumber))).isDisplayed();
+		ExtentCucumberAdapter.addTestStepLog("Trailer is successfully checked in");
+		}
+		catch (Exception e) {
+	        ExtentCucumberAdapter.addTestStepLog("Trailer check-in failed: " + e.getMessage());
+	        flag = false;
+	    }
+	    return flag;
+	
+	}
+	
+	public boolean fill_Details_N_Create_Empty_appointment_Using_fedex() {
+		boolean flag = false;
+		try {
+		
+		//DriverManager.getWrapperClass().clickWithJS(mainNavigation.menuButton);
+		DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+
+		DriverManager.getWrapperClass().click(checkInTrailer);
+
+		koerberUtils.selectOptionFromDropdown("PO Appointment", "Empty");
+		DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+
+		koerberUtils.selectFirstOptionFromDropdown("<SELECT A YARD>");
+		DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+
+		trailerNumber = RandomUtils.generateText();
+		System.out.println("traiNum" + trailerNumber);
+		koerberUtils.enterValueInField("*Trailer Number", trailerNumber);
+		trailerNumFieldValue.sendKeys(Keys.ENTER);
+
+		DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+		koerberUtils.selectOptionFromDropdown("Carrier Code", "FDEG - FedEx Ground");
+		DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+
+		DriverManager.getWrapperClass().click(locationDropdown);
+		DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+		doorGlo = locationDropDownOption.getText();
+		System.out.println("doortext " + doorGlo);
+		DriverManager.getWrapperClass().click(locationDropDownOption);
+
+		DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+		DriverManager.getDriver().findElement(By.xpath(String.format(GEN_TEXT, "Insert"))).click();
+		DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		ExtentCucumberAdapter.addTestStepLog("Filled all details in check in trailer Page");
+		DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+
+		DriverManager.getWrapperClass().click(mainNavigation.trailerManagement);
+		DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		
+		koerberUtils.selectOptionFromDropdown("Warehouse ID", "US78");
+		DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+		
+		trailerNumFieldValueSearchPage.sendKeys(trailerNumber);
+		trailerNumFieldValueSearchPage.sendKeys(Keys.ENTER);
+		DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+		
+		flag=DriverManager.getDriver().findElement(By.xpath(String.format(CHECK_OUT, trailerNumber))).isDisplayed();
+		ExtentCucumberAdapter.addTestStepLog("Trailer is successfully checked in");
+		}
+		catch (Exception e) {
+	        ExtentCucumberAdapter.addTestStepLog("Trailer check-in failed: " + e.getMessage());
+	        flag = false;
+	    }
+	    return flag;
+	
+	}
+	
+	public void update_pickUp_carrier(){
+		/*DriverManager.getWrapperClass().clickWithJS(mainNavigation.menuButton);
+		DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		DriverManager.getDriver().findElement(By.xpath(String.format(GEN_TEXT, "Receiving"))).click();
+		DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		DriverManager.getWrapperClass().click(mainNavigation.yardManagement);
+		DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		DriverManager.getDriver().findElement(By.xpath(String.format(GEN_TEXT, "Trailer Management"))).click();*/
+		DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		koerberUtils.selectOptionFromDropdown("Warehouse ID", "US78");
+		DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		Actions actions = new Actions(DriverManager.getDriver());
+		actions.moveToElement(load_Id_Field).perform();
+		load_Id_Field.click();
+		load_Id_Field.sendKeys(loadId);
+		DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		DriverManager.getDriver().findElement(By.xpath(String.format(GEN_TEXT, "Query"))).click();
+		DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+	    actions.moveToElement(checkOutButton).perform();
+	    DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+	    checkOutButton.click();
+	    DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+	    DriverManager.getWrapperClass().clickWithJS(mainNavigation.menuButton);
+	    DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+	    koerberUtils.selectOptionFromDropdown("Pick Up Carrier", "JB Hunt OTR");
+	    DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+	    DriverManager.getDriver().findElement(By.xpath(String.format(GEN_TEXT, "Update"))).click();
+		ExtentCucumberAdapter.addTestStepLog("Clicked on Trailer Management");
+	}
+	
+	public void update_pickUp_Fedex_carrier(){
+		DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		koerberUtils.selectOptionFromDropdown("Warehouse ID", "US78");
+		DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		Actions actions = new Actions(DriverManager.getDriver());
+		actions.moveToElement(load_Id_Field).perform();
+		load_Id_Field.click();
+		load_Id_Field.sendKeys(loadId);
+		DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		DriverManager.getDriver().findElement(By.xpath(String.format(GEN_TEXT, "Query"))).click();
+		DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+	    actions.moveToElement(checkOutButton).perform();
+	    DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+	    checkOutButton.click();
+	    DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+	    DriverManager.getWrapperClass().clickWithJS(mainNavigation.menuButton);
+	    DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+	    koerberUtils.selectOptionFromDropdown("Pick Up Carrier", "FedEx Ground");
+	    DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+	    DriverManager.getDriver().findElement(By.xpath(String.format(GEN_TEXT, "Update"))).click();
+		ExtentCucumberAdapter.addTestStepLog("Clicked on Trailer Management");
+	}
+	
+	public void pickingNStagingFullPalletPick() {
+		  // Wait for page elements to be ready
+	    DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+	    if (mainNavigation.korberOneMobileLabel.isDisplayed()) {
+	    	DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	        DriverManager.getWrapperClass().click(mainNavigation.menuButton);
+	    }
+	   
+	    // Extract all text segments from the screen
+	    String uiText = locationText.getText();
+	    List<String> values = Arrays.asList(uiText.split("\\W+"));
+		String reqPAallet = values.get(2);
+		System.out.println("reqPAallet: " + reqPAallet);
+		
+		 // pallet number
+	    inputField.sendKeys(reqPAallet);
+	    inputField.sendKeys(Keys.ENTER);
+	    DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+	    
+	    // --- Check for Antimicrobial Handwash Jug --(NEED TO CHECK WHEN WILL IT COME ON UI)--
+	    try {
+	        if (antimicrobialHandwashJug != null && antimicrobialHandwashJug.isDisplayed()) {
+	            Log.message("Antimicrobial Handwash Jug detected on screen. Clicking Submit.");
+	            DriverManager.getWrapperClass().click(submitBtn);
+	            DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+	        } else {
+	            Log.message("Antimicrobial Handwash Jug not present on screen.");
+	        }
+	    } catch (NoSuchElementException | StaleElementReferenceException e) {
+	        Log.message("Antimicrobial Handwash Jug not found in current DOM: " + e.getMessage());
+	    }
+		
+	//lot number	    
+	    String[] lines = locationText.getText().split("\\r?\\n");
+	    String reqLot = "";
+	    for (String line : lines) {
+	        String trimmed = line.trim().toLowerCase();         
+	        if (trimmed.startsWith("lot:")) {                   
+	            int idx = line.indexOf(":");                    
+	            if (idx != -1 && idx + 1 < line.length()) {
+	                reqLot = line.substring(idx + 1).trim();    
+	                break;
+	            }
+	        }
+	    }
+	    System.out.println("reqLot: [" + reqLot + "]");
+	    if (!reqLot.isEmpty()) {
+	        inputField.sendKeys(reqLot);
+	        DriverManager.getWrapperClass().click(submitBtn);
+	    } else {
+	        System.out.println("Lot not found in UI text block!");
+	    }
+	    DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+	    
+	    //Quantity
+	    String qtyText = qtyTextElement.getText().trim(); 
+	    System.out.println("Quantity raw text: " + qtyText);
+	    String qtyValue = "";
+	    java.util.regex.Matcher matcher = java.util.regex.Pattern.compile("(\\d+)").matcher(qtyText);
+	    if (matcher.find()) {
+	        qtyValue = matcher.group(1);
+	    }
+	    System.out.println("Quantity extracted: " + qtyValue);
+	    inputField.sendKeys(qtyValue);
+	    
+	    
+	    inputField.sendKeys(Keys.ENTER);
+	    DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+	    
+	    try {
+            if (doneButton.isDisplayed()) {
+                Log.message("Done button is displayed. Clicking Done via wrapper.");
+                DriverManager.getWrapperClass().click(doneButton);
+            } else {
+                Log.message("Done button is not displayed. Skipping click.");
+            }
+        } catch (NoSuchElementException | StaleElementReferenceException e) {
+            Log.message("Done button not found or stale: " + e.getMessage());
+    
+        }
+	   
+	    
+	    lstFunctionKey.click();
+	    DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+	    testK1Button.click();
+//		print successfully
+		DriverManager.getWrapperClass().click(submitBtn);
+		
+//		skip wrapping
+		skipFunctionKey.click();
+		DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+
+//	   location extraction and input
+
+//	    String[] lines = locationText.getText().split("\\r?\\n");
+	    String locationValue = null;
+
+	    boolean orderLinePresent = false;
+	    for (String line : lines) {
+	        if (line != null && line.toLowerCase().contains("enter the staging location for order")) {
+	            orderLinePresent = true;
+	            break;
+	        }
+	    }
+
+	    if (orderLinePresent) {
+	        for (String line : lines) {
+	            if (line == null) continue;
+	            String trimmed = line.trim();
+	            if (trimmed.toUpperCase().startsWith("LOC :")) {
+	                String possibleLoc = trimmed.substring(trimmed.indexOf(":") + 1).trim();
+	                if (possibleLoc.toUpperCase().matches("S\\d+")) {
+	                    locationValue = possibleLoc.toUpperCase();
+	                    break;
+	                }
+	            }
+	        }
+	        if (locationValue == null) {
+	            locationValue = "S101";
+	        }
+	    } else {
+	        for (int i = 0; i < lines.length; i++) {
+	            if (lines[i] != null && lines[i].trim().equalsIgnoreCase("Go to location")) {
+	                if (i + 1 < lines.length) {
+	                    locationValue = lines[i + 1].trim();
+	                    break;
+	                }
+	            }
+	        }
+	        if (locationValue == null || locationValue.isEmpty()) {
+	            locationValue = "S101"; 
+	        }
+	    }
+	    System.out.println("Location to enter: " + locationValue);
+	    inputField.sendKeys(locationValue);
+	    inputField.sendKeys(Keys.ENTER);
+
+	 // --- Extract dynamic LP number ---
+	    String lpRawText = lpTextElement.getText().trim(); 
+	    System.out.println("Raw LP text: " + lpRawText);
+	    String lpValue = "";
+	    if (lpRawText.startsWith("LP:")) {
+	        lpValue = lpRawText.substring(3).trim();
+	    } else {
+	        throw new RuntimeException("LP value not found in instruction block!");
+	    }
+
+	    System.out.println("Dynamic LP to enter: " + lpValue);
+	    inputField.sendKeys(lpValue);
+	    inputField.sendKeys(Keys.ENTER);
+	    DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+	    
+	 // Transaction complete
+	    DriverManager.getWrapperClass().click(submitBtn);
+
+	}
+	
+	//This is the common method for both Full Pallet Picking
+		public void FULLloadingProcess() {
+			int attempts = 0;
+			boolean buttonVisible = false;
+			while (attempts < 4 && !buttonVisible) {
+			    try {
+			        buttonVisible = mainNavigation.loadingButtonK1Mobile.isDisplayed();
+			    } catch (NoSuchElementException | StaleElementReferenceException e) {
+			        buttonVisible = false;
+			    }
+			    if (!buttonVisible) {
+			        DriverManager.getWrapperClass().click(mainNavigation.f1BackFunctionKey);
+			        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			    }
+			    attempts++;
+			}
+
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			mainNavigation.loadingButtonK1Mobile.click();
+			
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			inputField.sendKeys(loadId);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			inputField.sendKeys(Keys.ENTER);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);	
+		
+			inputField.sendKeys(doorGlo);
+			
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			inputField.sendKeys(Keys.ENTER);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			inputField.sendKeys(trailerNumber);
+			
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			inputField.sendKeys(Keys.ENTER);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+			
+//			scan the LP
+			String uiText = locationText.getText();
+			System.out.println("UI text block: " + uiText);
+
+			String lpValue = "";
+			java.util.regex.Matcher matcher = java.util.regex.Pattern.compile("\\b\\d{10,}\\b").matcher(uiText);
+			if (matcher.find()) {
+			    lpValue = matcher.group();
+			    System.out.println("Dynamic LP extracted: " + lpValue);
+			} else {
+			    System.out.println("No dynamic LP number found! Fallback or handle as needed.");
+			}
+
+			if (!lpValue.isEmpty()) {
+			    inputField.sendKeys(lpValue);
+			    inputField.sendKeys(Keys.ENTER);
+			}
+			inputField.sendKeys(Keys.ENTER);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			inputField.sendKeys(Keys.ENTER);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			inputField.sendKeys(doorGlo);
+			
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			inputField.sendKeys(Keys.ENTER);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			inputField.sendKeys("L");
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			inputField.sendKeys(Keys.ENTER);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			inputField.sendKeys(Keys.ENTER);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			inputField.sendKeys(Keys.ENTER);
+		
+		}
+		
+		public void shortShippingProcess() {
+			DriverManager.getWrapperClass().click(loadIdField);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			loadIdFieldValue.sendKeys(loadId);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			loadIdFieldValue.sendKeys(Keys.ENTER);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			Assert.assertTrue(shipStatus.isDisplayed(), "Ready to ship status is not displayed");
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			shipStatus.click();
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		    confirmShortShipCheckbox.click();
+			
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			confirmButton.click();
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			okButton.click();
+			
+			DriverManager.getWrapperClass().click(mainNavigation.menuButton);
+			DriverManager.getWrapperClass().click(mainNavigation.viewload);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			DriverManager.getWrapperClass().click(loadIdField);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			loadIdFieldValue.sendKeys(loadId);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			DriverManager.getWrapperClass().click(statusDropdown);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			DriverManager.getWrapperClass().click(statusDropdownShippedOption);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(4);
+			DriverManager.getWrapperClass().click(mainNavigation.menuButton);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+			loadIdFieldValue.sendKeys(Keys.ENTER);
+			Assert.assertTrue(shippedStatus.isDisplayed(), "Shipped status is not displayed");
+		}
+		
+		
+		public boolean PickingNStaging_Neg_case() {
+			boolean flag = false;
+			try {
+			Actions actions = new Actions(DriverManager.getDriver());
+			actions.sendKeys(Keys.ENTER).build().perform();
+			DriverManager.getWrapperClass().clickWithJS(inputField);
+			mainNavigation.inputField.sendKeys(Keys.ENTER);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+			mainNavigation.inputField.sendKeys(Keys.ENTER);
+			
+		//Location
+			DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+			List<String> loc = Arrays.asList(locationText.getText().split("\\W+"));
+			DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+			String reqLoc = loc.get(2);
+			System.out.println("reqLoc:" + reqLoc);
+			inputField.sendKeys("ABC");
+			inputField.sendKeys(Keys.ENTER);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			boolean invalidMsgVisible = Invalid_msg.isDisplayed();
+			if (invalidMsgVisible) {
+				ExtentCucumberAdapter.addTestStepLog("✅ invalid Message is displayed");
+			} else {
+				ExtentCucumberAdapter.addTestStepLog("❌ invalid Message is NOT displayed");
+			}
+			DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+			inputField.sendKeys(reqLoc);
+			inputField.sendKeys(Keys.ENTER);
+
+		//item
+			DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+			List<String> item = Arrays.asList(locationText.getText().split("\\W+"));
+			DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+			String reqItem = item.get(3);
+			System.out.println("reqItem:" + reqItem);
+			inputField.sendKeys(reqItem);
+			inputField.sendKeys(Keys.ENTER);
+
+		//lot number
+			DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+			String lotNumber= dbutils.getLotNumber(reqItem, reqLoc);
+			System.out.println("Retrieved Lot Number: " + lotNumber);
+			inputField.sendKeys(lotNumber);
+			DriverManager.getWrapperClass().click(submitBtn);
+			
+		//QTY		
+			DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+			List<String> qty = Arrays.asList(locationText.getText().split("\\W+"));
+			DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+			String reqQty = qty.get(1);
+			System.out.println("reqQty is =" + reqQty);
+			inputField.sendKeys("1");
+			DriverManager.getWrapperClass().click(submitBtn);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+			inputField.sendKeys("0");
+			DriverManager.getWrapperClass().click(submitBtn);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+			inputField.sendKeys("N");
+			DriverManager.getWrapperClass().click(submitBtn);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+			PasswordField.sendKeys("HIGHSCORE");
+			DriverManager.getWrapperClass().click(submitBtn);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+			lstFunctionKey.click();
+			
+			DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+			TESTK1_Key.click();
+			
+			DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+			DriverManager.getWrapperClass().click(submitBtn);
+			
+		//skip wrapping
+			DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+			skipFunctionKey.click();
+			
+			DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+			inputField.sendKeys("ABC");
+			inputField.sendKeys(Keys.ENTER);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			boolean invalidLocationVisible = Invalid_Location.isDisplayed();
+			if (invalidLocationVisible) {
+				ExtentCucumberAdapter.addTestStepLog("✅ invalid Location Message is displayed");
+			} else {
+				ExtentCucumberAdapter.addTestStepLog("❌ invalid Location Message is NOT displayed");
+			}
+			DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+			inputField.sendKeys("S100");
+			inputField.sendKeys(Keys.ENTER);
+		//transaction complete
+			DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+			DriverManager.getWrapperClass().click(submitBtn);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+
+			flag = invalidMsgVisible && invalidLocationVisible;
+        if (flag) {
+            ExtentCucumberAdapter.addTestStepLog("✅ Picking and Staging Negative Case completed successfully.");
+        } else {
+            ExtentCucumberAdapter.addTestStepLog("❌ Picking and Staging Negative Case failed.");
+        }
+
+			} catch (Exception e) {
+				ExtentCucumberAdapter.addTestStepLog("❌ Exception occurred: " + e.getMessage());
+				flag = false;
+			}
+			return flag;
+
+
+
+		}
+		
+		public boolean delivery_BOL_Print() {
+			boolean flag = false;
+			try {
+			DriverManager.getWrapperClass().click(loadIdField);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			loadIdFieldValue.sendKeys(loadId);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			loadIdFieldValue.sendKeys(Keys.ENTER);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			boolean shipStatusVisible = shipStatus.isDisplayed();
+			if (shipStatusVisible) {
+				ExtentCucumberAdapter.addTestStepLog("✅ Ship Status is displayed");
+			} else {
+				ExtentCucumberAdapter.addTestStepLog("❌ Ship Status is NOT displayed");
+			}
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			DriverManager.getWrapperClass().scrollandClick(Print_Button);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			koerberUtils.selectOptionFromDropdown("Printer Id", "PDF");
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			koerberUtils.scrollClearAndType(Number_of_Copy, "1");
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			DriverManager.getWrapperClass().click(Final_Print);
+
+			 flag = shipStatusVisible;
+
+			        if (flag) {
+			            ExtentCucumberAdapter.addTestStepLog("✅ BOL Print process completed successfully.");
+			        } else {
+			            ExtentCucumberAdapter.addTestStepLog("❌ BOL Print process failed.");
+			        }
+			        
+
+			} catch (Exception e) {
+				ExtentCucumberAdapter.addTestStepLog("❌ Exception occurred during BOL Print: " + e.getMessage());
+				flag = false;
+			}
+				return flag;
+
+
+			
+		}
+		
+		
+		public boolean shippingProcess_AfterPrint_BOL() {
+			boolean flag = false;
+			try {
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			boolean ShipStatusVisible = shipStatus.isDisplayed();
+
+			if (ShipStatusVisible) {
+				ExtentCucumberAdapter.addTestStepLog("✅ Ship status is displayed");
+			} else {
+				ExtentCucumberAdapter.addTestStepLog("❌ Ship status is NOT displayed");
+			}
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			shipStatus.click();
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+//			if(DriverManager.getWrapperClass().isElementDisplayed(confirmShortShipCheckbox))
+//			{
+//		        confirmShortShipCheckbox.click();
+//			}
+//			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			confirmButton.click();
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			okButton.click();
+			
+			DriverManager.getWrapperClass().click(mainNavigation.menuButton);
+			DriverManager.getWrapperClass().click(mainNavigation.viewload);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			DriverManager.getWrapperClass().click(loadIdField);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			loadIdFieldValue.sendKeys(loadId);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			DriverManager.getWrapperClass().click(statusDropdown);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			DriverManager.getWrapperClass().click(statusDropdownShippedOption);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(4);
+			DriverManager.getWrapperClass().click(mainNavigation.menuButton);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+			
+			loadIdFieldValue.sendKeys(Keys.ENTER);
+			boolean ShippedStatusVisible = shippedStatus.isDisplayed();
+
+			if (ShippedStatusVisible) {
+				ExtentCucumberAdapter.addTestStepLog("✅ Shipped status is displayed");
+			} else {
+				ExtentCucumberAdapter.addTestStepLog("❌ Shipped status is NOT displayed");
+			}
+			flag = ShipStatusVisible && ShippedStatusVisible;
+
+			 if (flag) {
+	           ExtentCucumberAdapter.addTestStepLog("✅ Full shipping process completed successfully.");
+	       } else {
+	           ExtentCucumberAdapter.addTestStepLog("❌ Full shipping process failed.");
+	       }
+
+			}
+			catch (Exception e) {
+		        ExtentCucumberAdapter.addTestStepLog("Exception occurred: " + e.getMessage());
+		        flag = false;
+		    }
+		    return flag;
+			
+		}
+		
+		public boolean shippingProcess_OtherEcolabSite() {
+			boolean flag = false;
+			try {
+			DriverManager.getWrapperClass().waitForTimeOutInSec(4);
+			boolean ShipStatusVisible = shipStatus.isDisplayed();
+
+			if (ShipStatusVisible) {
+				ExtentCucumberAdapter.addTestStepLog("✅ Ship status is displayed");
+			} else {
+				ExtentCucumberAdapter.addTestStepLog("❌ Ship status is NOT displayed");
+			}
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			shipStatus.click();
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			confirmButton.click();
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			okButton.click();
+			
+			DriverManager.getWrapperClass().click(mainNavigation.menuButton);
+			DriverManager.getWrapperClass().click(mainNavigation.viewload);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			DriverManager.getWrapperClass().click(loadIdField);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			loadIdFieldValue.sendKeys(loadId);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			DriverManager.getWrapperClass().click(statusDropdown);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			DriverManager.getWrapperClass().click(statusDropdownShippedOption);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			loadIdFieldValue.sendKeys(Keys.ENTER);
+			boolean ShippedStatusVisible = shippedStatus.isDisplayed();
+			DriverManager.getWrapperClass().clickWithJS(mainNavigation.menuButton);
+			if (ShippedStatusVisible) {
+				ExtentCucumberAdapter.addTestStepLog("✅ Shipped status is displayed");
+			} else {
+				ExtentCucumberAdapter.addTestStepLog("❌ Shipped status is NOT displayed");
+			}
+			flag = ShipStatusVisible && ShippedStatusVisible;
+
+			 if (flag) {
+	           ExtentCucumberAdapter.addTestStepLog("✅ shipping process completed successfully.");
+	       } else {
+	           ExtentCucumberAdapter.addTestStepLog("❌ shipping process failed.");
+	       }
+
+			}
+			catch (Exception e) {
+		        ExtentCucumberAdapter.addTestStepLog("Exception occurred: " + e.getMessage());
+		        flag = false;
+		    }
+		    return flag;
+			
+		}
+		
+		public boolean verify_Transaction_History() {
+				boolean flag = false;
+			    try {
+			koerberUtils.selectOptionFromDropdown("Warehouse ID", "US78 - US78-KAY CHEM ECCC");
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			Employee_Id.sendKeys(userId.getText());
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			DriverManager.getDriver().findElement(By.xpath(String.format(GEN_TEXT, "Query"))).click();
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			boolean Transaction_Type = Trans_Type.isDisplayed();
+			if (Transaction_Type) {
+				ExtentCucumberAdapter.addTestStepLog("✅ Transaction Type is displayed");
+			} else {
+				ExtentCucumberAdapter.addTestStepLog("❌ Transaction Type  is NOT displayed");
+			}
+			
+			boolean TrailerCheckout = Trailer_Checkout.isDisplayed();
+
+			if (TrailerCheckout) {
+				ExtentCucumberAdapter.addTestStepLog("✅ Trailer Checkout is displayed");
+			} else {
+				ExtentCucumberAdapter.addTestStepLog("❌ Trailer Checkout is NOT displayed");
+			}
+			
+			boolean SourceLocation = Source_Location.isDisplayed();
+			
+			if (SourceLocation) {
+				ExtentCucumberAdapter.addTestStepLog("✅ Source Location is displayed");
+			} else {
+				ExtentCucumberAdapter.addTestStepLog("❌ Source Location is NOT displayed");
+			}
+			
+			boolean isSourceLocationCorrect = Source_Location.getText().equals(doorGlo);
+			if (isSourceLocationCorrect) {
+				ExtentCucumberAdapter.addTestStepLog("✅ Source Location is Correct");
+			} else {
+				ExtentCucumberAdapter.addTestStepLog("❌ Source location text does not match expected value.");
+			}
+			
+
+			flag = Transaction_Type && TrailerCheckout && SourceLocation && isSourceLocationCorrect ;
+			
+
+			if (flag) {
+            ExtentCucumberAdapter.addTestStepLog("✅ Transaction history verification completed successfully.");
+			} else {
+            ExtentCucumberAdapter.addTestStepLog("❌ Transaction history verification failed.");
+			}
+
+    } catch (Exception e) {
+        ExtentCucumberAdapter.addTestStepLog("❌ Exception occurred during transaction history verification: " + e.getMessage());
+        flag = false;
+    }
+    return flag;
+
+		
+		}
+
+		
+		public boolean singlePickingNStaging() {
+		    boolean success = true;
+		    try {
+		        if (mainNavigation.korberOneMobileLabel.isDisplayed()) {
+		            DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		            DriverManager.getWrapperClass().click(mainNavigation.menuButton);
+		        }
+
+		        Actions actions = new Actions(DriverManager.getDriver());
+		        actions.sendKeys(Keys.ENTER).build().perform();
+		        DriverManager.getWrapperClass().clickWithJS(inputField);
+		        mainNavigation.inputField.sendKeys(Keys.ENTER);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		        mainNavigation.inputField.sendKeys(Keys.ENTER);
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		        List<String> loc = Arrays.asList(locationText.getText().split("\\W+"));
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		        String reqLoc = loc.get(2);
+		        Log.message("reqLoc:" + reqLoc);
+		        inputField.sendKeys(reqLoc);
+		        inputField.sendKeys(Keys.ENTER);
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		        List<String> item = Arrays.asList(locationText.getText().split("\\W+"));
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		        String reqItem = item.get(3);
+		        Log.message("reqItem:" + reqItem);
+		        inputField.sendKeys(reqItem);
+		        inputField.sendKeys(Keys.ENTER);
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		        String lotNumber= dbutils.getLotNumber(reqItem, reqLoc);
+		        Log.message("Retrieved Lot Number: " + lotNumber);
+		        inputField.sendKeys(lotNumber);
+		        DriverManager.getWrapperClass().click(submitBtn);
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		        List<String> qty = Arrays.asList(locationText.getText().split("\\W+"));
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		        String reqQty = qty.get(1);
+		        Log.message("reqQty is =" + reqQty);
+		        inputField.sendKeys(reqQty);
+		        DriverManager.getWrapperClass().click(submitBtn);
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		        try {
+		            if (namespanCycleCount.isDisplayed()) {
+		                inputField.sendKeys("0");
+		                DriverManager.getWrapperClass().click(submitBtn);
+		            }
+		        } catch (NoSuchElementException | StaleElementReferenceException e) {
+		            Log.message("namespanCycleCount not present or not visible");
+		        }
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		        DriverManager.getWrapperClass().click(lstFunctionKey);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		        DriverManager.getWrapperClass().click(TESTK1_Key);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		        DriverManager.getWrapperClass().click(submitBtn);
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		        DriverManager.getWrapperClass().click(skipFunctionKey);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		        inputField.sendKeys("S101");
+		        inputField.sendKeys(Keys.ENTER);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		        DriverManager.getWrapperClass().click(submitBtn);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		    } catch (Exception e) {
+		        success = false;
+		    }
+		    return success;
+		}
+
+	/*	
+		public boolean csSwitch_FullPalletPickingNStaging() {
+		    boolean success = true;
+		    try {
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+		        if (mainNavigation.korberOneMobileLabel.isDisplayed()) {
+		            DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		            DriverManager.getWrapperClass().click(mainNavigation.menuButton);
+		        }
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        
+		     // Retry and click "Full Pallet Pick" button
+		        boolean buttonVisible = waitForElementVisibleWithRetries(
+		            () -> getDivByClassAndText("Full Pallet Pick"),
+		            6, 2
+		        );
+		        if (!buttonVisible) {
+		            throw new RuntimeException("Full Pallet Pick button not visible after retries");
+		        }
+		        getDivByClassAndText("Full Pallet Pick").click();
+//		        DriverManager.getWrapperClass().click(mainNavigation.fullPalletPickButtonK1Mobile);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		        DriverManager.getWrapperClass().waitTillElementClickable(mainNavigation.listFunctionKey);
+		        DriverManager.getWrapperClass().click(mainNavigation.listFunctionKey);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		        DriverManager.getWrapperClass().click(mainNavigation.reserveButton);
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		        String uiText = locationText.getText();
+		        List<String> values = Arrays.asList(uiText.split("\\W+"));
+		        String reqPAallet = values.get(2);
+		        Log.message("reqPAallet: " + reqPAallet);
+
+		        inputField.sendKeys(reqPAallet);
+		        inputField.sendKeys(Keys.ENTER);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		        
+		        // --- Check for Antimicrobial Handwash Jug --(NEED TO CHECK WHEN WILL IT COME ON UI)--
+			    try {
+			        if (antimicrobialHandwashJug != null && antimicrobialHandwashJug.isDisplayed()) {
+			            Log.message("Antimicrobial Handwash Jug detected on screen. Clicking Submit.");
+			            DriverManager.getWrapperClass().click(submitBtn);
+			            DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			        } else {
+			            Log.message("Antimicrobial Handwash Jug not present on screen.");
+			        }
+			    } catch (NoSuchElementException | StaleElementReferenceException e) {
+			        Log.message("Antimicrobial Handwash Jug not found in current DOM: " + e.getMessage());
+			    }
+			    
+				
+			//lot number	  
+
+		        String[] lines = locationText.getText().split("\\r?\\n");
+		        String reqLot = "";
+		        for (String line : lines) {
+		            String trimmed = line.trim().toLowerCase();
+		            if (trimmed.startsWith("lot:")) {
+		                int idx = line.indexOf(":");
+		                if (idx != -1 && idx + 1 < line.length()) {
+		                    reqLot = line.substring(idx + 1).trim();
+		                    break;
+		                }
+		            }
+		        }
+		        Log.message("reqLot: [" + reqLot + "]");
+		        if (!reqLot.isEmpty()) {
+		            inputField.sendKeys(reqLot);
+		            DriverManager.getWrapperClass().click(submitBtn);
+		        } else {
+		            Log.message("Lot not found in UI text block!");
+		        }
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+
+		        String qtyText = qtyTextElement.getText().trim();
+		        Log.message("Quantity raw text: " + qtyText);
+		        String qtyValue = "";
+		        java.util.regex.Matcher matcher = java.util.regex.Pattern.compile("(\\d+)").matcher(qtyText);
+		        if (matcher.find()) {
+		            qtyValue = matcher.group(1);
+		        }
+		        Log.message("Quantity extracted: " + qtyValue);
+		        inputField.sendKeys(qtyValue);
+
+		        inputField.sendKeys(Keys.ENTER);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        
+		        try {
+		            if (doneButton.isDisplayed()) {
+		                Log.message("Done button is displayed. Clicking Done via wrapper.");
+		                DriverManager.getWrapperClass().click(doneButton);
+		            } else {
+		                Log.message("Done button is not displayed. Skipping click.");
+		            }
+		        } catch (NoSuchElementException | StaleElementReferenceException e) {
+		            Log.message("Done button not found or stale: " + e.getMessage());
+		    
+		        }
+
+		        DriverManager.getWrapperClass().click(lstFunctionKey);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+
+		        DriverManager.getWrapperClass().click(testK1Button);
+		        DriverManager.getWrapperClass().click(submitBtn);
+
+		        DriverManager.getWrapperClass().click(skipFunctionKey);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+
+		        String locationValue = null;
+		        boolean orderLinePresent = false;
+		        for (String line : lines) {
+		            if (line != null && line.toLowerCase().contains("enter the staging location for order")) {
+		                orderLinePresent = true;
+		                break;
+		            }
+		        }
+
+		        if (orderLinePresent) {
+		            for (String line : lines) {
+		                if (line == null) continue;
+		                String trimmed = line.trim();
+		                if (trimmed.toUpperCase().startsWith("LOC :")) {
+		                    String possibleLoc = trimmed.substring(trimmed.indexOf(":") + 1).trim();
+		                    if (possibleLoc.toUpperCase().matches("S\\d+")) {
+		                        locationValue = possibleLoc.toUpperCase();
+		                        break;
+		                    }
+		                }
+		            }
+		            if (locationValue == null) {
+		                locationValue = "S101";
+		            }
+		        } else {
+		            for (int i = 0; i < lines.length; i++) {
+		                if (lines[i] != null && lines[i].trim().equalsIgnoreCase("Go to location")) {
+		                    if (i + 1 < lines.length) {
+		                        locationValue = lines[i + 1].trim();
+		                        break;
+		                    }
+		                }
+		            }
+		            if (locationValue == null || locationValue.isEmpty()) {
+		                locationValue = "S101";
+		            }
+		        }
+		        Log.message("Location to enter: " + locationValue);
+		        inputField.sendKeys(locationValue);
+		        inputField.sendKeys(Keys.ENTER);
+
+		        String lpRawText = lpTextElement.getText().trim();
+		        Log.message("Raw LP text: " + lpRawText);
+		        String lpValue = "";
+		        if (lpRawText.startsWith("LP:")) {
+		            lpValue = lpRawText.substring(3).trim();
+		        } else {
+		            throw new RuntimeException("LP value not found in instruction block!");
+		        }
+
+		        Log.message("Dynamic LP to enter: " + lpValue);
+		        inputField.sendKeys(lpValue);
+		        inputField.sendKeys(Keys.ENTER);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+
+		        DriverManager.getWrapperClass().click(submitBtn);
+		    } catch (Exception e) {
+		        success = false;
+		        Log.message("Exception in csSwitch_FullPalletPickingNStaging: " + e.getMessage());
+		    }
+		    return success;
+		}
+		*/
+		public boolean csSwitch_FullPalletPickingNStaging() {
+		    boolean success = true;
+		    try {
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+		        if (mainNavigation.korberOneMobileLabel.isDisplayed()) {
+		            DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		            DriverManager.getWrapperClass().click(mainNavigation.menuButton);
+		        }
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        
+		     // Retry and click "Full Pallet Pick" button
+		        boolean buttonVisible = waitForElementVisibleWithRetries(
+		            () -> getDivByClassAndText("Full Pallet Pick"),
+		            6, 2
+		        );
+		        if (!buttonVisible) {
+		            throw new RuntimeException("Full Pallet Pick button not visible after retries");
+		        }
+		        getDivByClassAndText("Full Pallet Pick").click();
+//		        DriverManager.getWrapperClass().click(mainNavigation.fullPalletPickButtonK1Mobile);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		        DriverManager.getWrapperClass().waitTillElementClickable(mainNavigation.listFunctionKey);
+		        DriverManager.getWrapperClass().click(mainNavigation.listFunctionKey);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		        DriverManager.getWrapperClass().click(mainNavigation.reserveButton);
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+//		        String uiText = locationText.getText();
+//		        List<String> values = Arrays.asList(uiText.split("\\W+"));
+//		        String reqPAallet = values.get(2);
+//		        Log.message("reqPAallet: " + reqPAallet);
+//		        inputField.sendKeys(reqPAallet);
+//		        inputField.sendKeys(Keys.ENTER);
+		        
+		        try {
+		            DriverManager.getWrapperClass().waitForElementToBeVisible(palletLabel);
+
+		            if (palletLabel.isDisplayed()) {
+		                String uiText = locationText.getText();
+		                List<String> values = Arrays.asList(uiText.split("\\W+"));
+		                String reqPAallet = values.get(2);
+		                Log.message("reqPAallet: " + reqPAallet);
+
+		                inputField.sendKeys(reqPAallet);
+		                inputField.sendKeys(Keys.ENTER);
+		            }
+		        } catch (Exception e) {
+		            Log.message("Failed to process PALLET label flow: " + e.getMessage());
+		        }
+
+		        
+		        
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+				inputField.sendKeys(Keys.ENTER);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+				inputField.sendKeys(Keys.ENTER);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		        
+		        // --- Check for Antimicrobial Handwash Jug --(NEED TO CHECK WHEN WILL IT COME ON UI)--
+			    try {
+			        if (antimicrobialHandwashJug != null && antimicrobialHandwashJug.isDisplayed()) {
+			            Log.message("Antimicrobial Handwash Jug detected on screen. Clicking Submit.");
+			            DriverManager.getWrapperClass().click(submitBtn);
+			            DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			        } else {
+			            Log.message("Antimicrobial Handwash Jug not present on screen.");
+			        }
+			    } catch (NoSuchElementException | StaleElementReferenceException e) {
+			        Log.message("Antimicrobial Handwash Jug not found in current DOM: " + e.getMessage());
+			    }
+			    
+				
+			//lot number	  
+
+		        String[] lines = locationText.getText().split("\\r?\\n");
+		        String reqLot = "";
+		        for (String line : lines) {
+		            String trimmed = line.trim().toLowerCase();
+		            if (trimmed.startsWith("lot:")) {
+		                int idx = line.indexOf(":");
+		                if (idx != -1 && idx + 1 < line.length()) {
+		                    reqLot = line.substring(idx + 1).trim();
+		                    break;
+		                }
+		            }
+		        }
+		        Log.message("reqLot: [" + reqLot + "]");
+		        if (!reqLot.isEmpty()) {
+		            inputField.sendKeys(reqLot);
+		            DriverManager.getWrapperClass().click(submitBtn);
+		        } else {
+		            Log.message("Lot not found in UI text block!");
+		        }
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+
+		        String qtyText = qtyTextElement.getText().trim();
+		        Log.message("Quantity raw text: " + qtyText);
+		        String qtyValue = "";
+		        java.util.regex.Matcher matcher = java.util.regex.Pattern.compile("(\\d+)").matcher(qtyText);
+		        if (matcher.find()) {
+		            qtyValue = matcher.group(1);
+		        }
+		        Log.message("Quantity extracted: " + qtyValue);
+		        inputField.sendKeys(qtyValue);
+
+		        inputField.sendKeys(Keys.ENTER);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        
+		        try {
+		            if (doneButton.isDisplayed()) {
+		                Log.message("Done button is displayed. Clicking Done via wrapper.");
+		                DriverManager.getWrapperClass().click(doneButton);
+		            } else {
+		                Log.message("Done button is not displayed. Skipping click.");
+		            }
+		        } catch (NoSuchElementException | StaleElementReferenceException e) {
+		            Log.message("Done button not found or stale: " + e.getMessage());
+		    
+		        }
+
+		        DriverManager.getWrapperClass().click(lstFunctionKey);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+
+		        DriverManager.getWrapperClass().click(testK1Button);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        //PRINT
+		        inputField.sendKeys(Keys.ENTER);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+				inputField.sendKeys(Keys.ENTER);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        DriverManager.getWrapperClass().click(skipFunctionKey);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+
+		        String locationValue = null;
+		        boolean orderLinePresent = false;
+		        for (String line : lines) {
+		            if (line != null && line.toLowerCase().contains("enter the staging location for order")) {
+		                orderLinePresent = true;
+		                break;
+		            }
+		        }
+
+		        if (orderLinePresent) {
+		            for (String line : lines) {
+		                if (line == null) continue;
+		                String trimmed = line.trim();
+		                if (trimmed.toUpperCase().startsWith("LOC :")) {
+		                    String possibleLoc = trimmed.substring(trimmed.indexOf(":") + 1).trim();
+		                    if (possibleLoc.toUpperCase().matches("S\\d+")) {
+		                        locationValue = possibleLoc.toUpperCase();
+		                        break;
+		                    }
+		                }
+		            }
+		            if (locationValue == null) {
+		                locationValue = "S101";
+		            }
+		        } else {
+		            for (int i = 0; i < lines.length; i++) {
+		                if (lines[i] != null && lines[i].trim().equalsIgnoreCase("Go to location")) {
+		                    if (i + 1 < lines.length) {
+		                        locationValue = lines[i + 1].trim();
+		                        break;
+		                    }
+		                }
+		            }
+		            if (locationValue == null || locationValue.isEmpty()) {
+		                locationValue = "S101"; //S101 WRAPPER1
+		            }
+		        }
+		        Log.message("Location to enter: " + locationValue);
+		        inputField.sendKeys(locationValue);
+		        inputField.sendKeys(Keys.ENTER);
+
+		        String lpRawText = lpTextElement.getText().trim();
+		        Log.message("Raw LP text: " + lpRawText);
+		        String lpValue = "";
+		        if (lpRawText.startsWith("LP:")) {
+		            lpValue = lpRawText.substring(3).trim();
+		        } else {
+		            throw new RuntimeException("LP value not found in instruction block!");
+		        }
+
+		        Log.message("Dynamic LP to enter: " + lpValue);
+		        inputField.sendKeys(lpValue);
+		        inputField.sendKeys(Keys.ENTER);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+
+		        DriverManager.getWrapperClass().click(submitBtn);
+		    } catch (Exception e) {
+		        success = false;
+		        Log.message("Exception in csSwitch_FullPalletPickingNStaging: " + e.getMessage());
+		    }
+		    return success;
+		}
+
+		
+		public boolean cs_fullLoadingProcess() {
+		    boolean success = true;
+		    try {
+		    	 // Retry and click "Loading" button
+		        boolean buttonVisible = waitForElementVisibleWithRetries(
+		            () -> getDivByClassAndText("Loading"),
+		            6, 2
+		        );
+		        if (!buttonVisible) {
+		            throw new RuntimeException("Loading button not visible after retries");
+		        }
+		        getDivByClassAndText("Loading").click();
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        inputField.sendKeys(loadId); 
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        inputField.sendKeys(Keys.ENTER);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+
+		        try {
+		            if (sepYDiv.isDisplayed()) {
+		                DriverManager.getWrapperClass().click(submitBtn);
+		            }
+		        } catch (NoSuchElementException | StaleElementReferenceException e) {
+		            Log.message("Element not present:");
+		        }
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        inputField.sendKeys(doorGlo);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        inputField.sendKeys(Keys.ENTER);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        inputField.sendKeys(trailerNumber);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        inputField.sendKeys(Keys.ENTER);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+
+		        // First LP scan
+		        scanAndEnterLP();   
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        // Second LP scan
+		        scanAndEnterLP();
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        inputField.sendKeys(doorGlo);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        inputField.sendKeys(Keys.ENTER);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        inputField.sendKeys("L");
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        inputField.sendKeys(Keys.ENTER);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        inputField.sendKeys(Keys.ENTER);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        inputField.sendKeys(Keys.ENTER);
+		    } catch (Exception e) {
+		        success = false;
+		        Log.message("Exception in cs_fullLoadingProcess: " + e.getMessage());
+		    }
+		    return success;
+		}
+
+		//  method reused for LP scan
+		private void scanAndEnterLP() {
+		    String uiText = locationText.getText();
+		    Log.message("UI text block: " + uiText);
+
+		    String lpValue = "";
+		    java.util.regex.Matcher matcher = java.util.regex.Pattern.compile("\\b\\d{10,}\\b").matcher(uiText);
+		    if (matcher.find()) {
+		        lpValue = matcher.group();
+		        Log.message("Dynamic LP extracted: " + lpValue);
+		    } else {
+		        Log.message("No dynamic LP number found! Fallback or handle as needed.");
+		    }
+		    if (!lpValue.isEmpty()) {
+		        inputField.sendKeys(lpValue);
+		        inputField.sendKeys(Keys.ENTER);
+		    }
+		    inputField.sendKeys(Keys.ENTER);
+		}
+		
+		// Generic retry method to check element visibility with retries and waits
+	    public boolean waitForElementVisibleWithRetries(Supplier<WebElement> elementSupplier, int maxAttempts, int waitSecondsBetween) {
+	        int attempts = 0;
+	        boolean isVisible = false;
+	        while (attempts < maxAttempts && !isVisible) {
+	            try {
+	                WebElement element = elementSupplier.get();
+	                isVisible = element.isDisplayed();
+	            } catch (NoSuchElementException | StaleElementReferenceException e) {
+	                isVisible = false;
+	            }
+	            if (!isVisible) {
+	                DriverManager.getWrapperClass().click(mainNavigation.f1BackFunctionKey);
+	                DriverManager.getWrapperClass().waitForTimeOutInSec(waitSecondsBetween);
+	            }
+	            attempts++;
+	        }
+	        return isVisible;
+	    }
+
+		
+		public boolean yardTrailerInspect() {
+		    boolean success = true;
+		    try {
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        
+		        // Click the button once visible  
+		        navigationInsideKOneMobile("Yard|Trailer Inspect");
+		        koerberUtils.enterValueInField(trailerNumber);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		        getDivByClassAndText("Empty").click();
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        koerberUtils.enterValueInField("N");
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        koerberUtils.enterValueInField("Y");
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        DriverManager.getWrapperClass().click(submitBtn);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        DriverManager.getWrapperClass().click(submitBtn);
+		        
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		      
+		        int maxAttempts = 10;
+
+		        for (int i = 0; i < maxAttempts; i++) {
+		            Log.message("Attempt #" + (i + 1) + ": Clicking f1BackFunctionKey.");
+		            DriverManager.getWrapperClass().click(mainNavigation.f1BackFunctionKey);
+		            DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+
+		            boolean found = false;
+		            try {
+		                found = applicationServerName.isDisplayed();
+		                Log.message("Attempt #" + (i + 1) + ": applicationServerName is " + (found ? "visible" : "not visible") + ".");
+		            } catch (NoSuchElementException | StaleElementReferenceException e) {
+		                Log.message("Attempt #" + (i + 1) + ": applicationServerName not present or stale (" + e.getClass().getSimpleName() + ").");
+		            }
+
+		            if (found) {
+		                Log.message("applicationServerName found after " + (i + 1) + " back clicks.");
+		                break;
+		            }
+		        }
+
+		        if (!applicationServerName.isDisplayed()) {
+		            Log.message("applicationServerName not found after " + maxAttempts + " back button clicks.");
+		        }
+
+
+
+		    } catch (Exception e) {
+		        success = false;
+		        Log.message("Exception in yardTrailerInspect: " + e.getMessage());
+		    }
+		    return success;
+		}
+		
+		
+		public boolean verifyLoadReleaseSection() {
+		    try {
+		        boolean success = false;
+		        int retries = 2; 
+		        while (retries > 0 && !success) {
+		            try {
+		                DriverManager.getWrapperClass().clickWithJS(refresh_page);
+		                DriverManager.getWrapperClass().clickWithJS(refresh_page);
+		                DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+
+		                success = hold_link.isDisplayed();
+		                if (success) {
+		                    Log.message("Hold link is displayed");
+		                }
+		            } catch (org.openqa.selenium.StaleElementReferenceException e) {
+		                retries--;
+		                Log.message("StaleElementReferenceException: retrying. Attempts left: " + retries);
+		            }
+		        }
+		        if (success) {
+		            ExtentCucumberAdapter.addTestStepLog("Load Release Is Verified");
+		            WrapperClass.embedScreenshot();
+		        }
+		        return success;
+		    } catch (Exception e) {
+		        Log.message("Error in verifyLoadRelease: " + e.getMessage());
+		        e.printStackTrace();
+		        return false;
+		    }
+		       
+		}
+		
+		public boolean navigationInsideKOneMobile(String pages) {
+		    boolean flag = false;
+		    try {
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+
+		        String[] menuLabels = pages.split("\\|");
+		        for (String label : menuLabels) {
+		            label = label.trim();
+		            Log.message("Clicking on menu: " + label);
+
+		            WebElement menuItem = DriverManager.getWrapperClass()
+		                .waitForElementToBeVisible(getDivByClassAndText(label));
+		            flag = DriverManager.getWrapperClass().clickElement(menuItem);
+
+		            DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        }
+		    } catch (Exception e) {
+		        Log.message("Unable to navigate menu: " + e.getMessage());
+		        flag = false;
+		    }
+		    return flag;
+		}
+		
+		
+        public void CS_LPAudit() {
+			
+			for (int i = 0; i < 3; i++) { 
+				DriverManager.getWrapperClass().click(mainNavigation.f1BackFunctionKey); 
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			}
+			DriverManager.getWrapperClass().click(mainNavigation.LP_Audit_ButtonK1Mobile); 
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			DriverManager.getWrapperClass().enterTextByElement(inputField,LP_Num);
+			//inputField.sendKeys(LP_Num);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			DriverManager.getWrapperClass().click(submitBtn);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+			DriverManager.getWrapperClass().enterTextByElement(inputField,Item1);
+			//inputField.sendKeys(Item1);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			DriverManager.getWrapperClass().click(submitBtn);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+			DriverManager.getWrapperClass().enterTextByElement(inputField,lotNumber1);
+			//inputField.sendKeys(lotNumber1);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			DriverManager.getWrapperClass().click(submitBtn);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+			DriverManager.getWrapperClass().enterTextByElement(inputField,ItemQty1);
+			//inputField.sendKeys(ItemQty1);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			DriverManager.getWrapperClass().click(submitBtn);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+			DriverManager.getWrapperClass().enterTextByElement(inputField,Item2);
+			//inputField.sendKeys(Item2);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			DriverManager.getWrapperClass().click(submitBtn);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+			DriverManager.getWrapperClass().enterTextByElement(inputField,lotNumber2);
+			//inputField.sendKeys(lotNumber2);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			DriverManager.getWrapperClass().click(submitBtn);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+			DriverManager.getWrapperClass().enterTextByElement(inputField,ItemQty2);
+			//inputField.sendKeys(ItemQty2);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			DriverManager.getWrapperClass().click(submitBtn);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+			DriverManager.getWrapperClass().click(mainNavigation.f3FunctionKey);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			inputField.sendKeys(Keys.ENTER);
+
+			 int maxAttempts = 10;
+
+		        for (int i = 0; i < maxAttempts; i++) {
+		            Log.message("Attempt #" + (i + 1) + ": Clicking f1BackFunctionKey.");
+		            DriverManager.getWrapperClass().click(mainNavigation.f1BackFunctionKey);
+		            DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+
+		            boolean found = false;
+		            try {
+		                found = applicationServerName.isDisplayed();
+		                Log.message("Attempt #" + (i + 1) + ": applicationServerName is " + (found ? "visible" : "not visible") + ".");
+		            } catch (NoSuchElementException | StaleElementReferenceException e) {
+		                Log.message("Attempt #" + (i + 1) + ": applicationServerName not present or stale (" + e.getClass().getSimpleName() + ").");
+		            }
+
+		            if (found) {
+		                Log.message("applicationServerName found after " + (i + 1) + " back clicks.");
+		                break;
+		            }
+		        }
+
+		        if (!applicationServerName.isDisplayed()) {
+		            Log.message("applicationServerName not found after " + maxAttempts + " back button clicks.");
+		        }
+		}
+		
+        public boolean costcoCsPickingNStaging() {
+		    boolean success = true;
+		    try {
+		        if (mainNavigation.korberOneMobileLabel.isDisplayed()) {
+		            DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		            DriverManager.getWrapperClass().click(mainNavigation.menuButton);
+		        }
+		        
+		        DriverManager.getWrapperClass().click(submitBtn);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        DriverManager.getWrapperClass().click(submitBtn);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        DriverManager.getWrapperClass().click(submitBtn);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		     // Enter Location
+
+		        String reqLoc = extractAndEnterLocation(locationText);
+		        koerberUtils.enterValueInField(reqLoc);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		     //Item   
+		        String reqItem = extractAndEnterReqItem(locationText);
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        String lotNumber= dbutils.getLotNumber(reqItem, reqLoc);
+		        Log.message("Retrieved Lot Number: " + lotNumber);
+		        inputField.sendKeys(lotNumber);
+		        DriverManager.getWrapperClass().click(submitBtn);
+		        
+		     // Enter Quantity
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		     // Call the method with the quantity text element
+		        extractAndEnterQuantityCsPick(locationText);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        DriverManager.getWrapperClass().click(lstFunctionKey);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        DriverManager.getWrapperClass().click(TESTK1_Key);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        DriverManager.getWrapperClass().click(submitBtn);
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        DriverManager.getWrapperClass().click(skipFunctionKey);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        String doorreqLOC = extractLocation(locationText);
+		        // Enter location into input using enterValueInField
+		        koerberUtils.enterValueInField(doorreqLOC);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        DriverManager.getWrapperClass().click(submitBtn);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		    } catch (Exception e) {
+		        success = false;
+		    }
+		    return success;
+		}
+		
+		public String extractAndEnterQuantityCsPick(WebElement locationText) {
+		    List<String> qty = Arrays.asList(locationText.getText().split("\\W+"));
+		    DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		    String reqQty = qty.size() > 1 ? qty.get(1) : "";
+		    Log.message("reqQty is = " + reqQty);
+		    if (!reqQty.isEmpty()) {
+		        koerberUtils.enterValueInField(reqQty);
+		    } else {
+		        Log.message("Quantity not found in UI text block!");
+		    }
+		    return reqQty;
+		}
+		
+		public String extractLocation(WebElement locationTextElement) {
+		    String[] lines = locationTextElement.getText().split("\\r?\\n");
+		    String locationValue = null;
+		    boolean orderLinePresent = false;
+
+		    for (String line : lines) {
+		        if (line != null && line.toLowerCase().contains("enter the staging location for order")) {
+		            orderLinePresent = true;
+		            break;
+		        }
+		    }
+		    if (orderLinePresent) {
+		        for (String line : lines) {
+		            if (line == null) continue;
+		            String trimmed = line.trim();
+		            if (trimmed.toUpperCase().startsWith("LOC :")) {
+		                String possibleLoc = trimmed.substring(trimmed.indexOf(":") + 1).trim();
+		                if (possibleLoc.toUpperCase().matches("S\\d+")) {
+		                    locationValue = possibleLoc.toUpperCase();
+		                    break;
+		                }
+		            }
+		        }
+		        if (locationValue == null) {
+		            locationValue = "S101";
+		        }
+		    } else {
+		        for (int i = 0; i < lines.length; i++) {
+		            if (lines[i] != null && lines[i].trim().equalsIgnoreCase("Go to location")) {
+		                if (i + 1 < lines.length) {
+		                    locationValue = lines[i + 1].trim();
+		                    break;
+		                }
+		            }
+		        }
+		        if (locationValue == null || locationValue.isEmpty()) {
+		            locationValue = "S101";
+		        }
+		    }
+		    Log.message("Location to enter: " + locationValue);
+		    return locationValue;
+		}
+		
+		public String extractAndEnterLocation(WebElement locationText) {
+		    List<String> loc = Arrays.asList(locationText.getText().split("\\W+"));
+		    DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		    String reqLoc = loc.size() > 2 ? loc.get(2) : "";
+		    Log.message("reqLoc: " + reqLoc);
+		    if (!reqLoc.isEmpty()) {
+		        koerberUtils.enterValueInField(reqLoc);
+		    } else {
+		        Log.message("Location not found in UI text block!");
+		    }
+		    return reqLoc;
+		}
+		
+		public String extractAndEnterReqItem(WebElement locationText) {
+		    List<String> item = Arrays.asList(locationText.getText().split("\\W+"));
+		    DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		    String reqItem = item.size() > 3 ? item.get(3) : "";
+		    Log.message("reqItem:" + reqItem);
+		    if (!reqItem.isEmpty()) {
+		        koerberUtils.enterValueInField(reqItem);
+		    } else {
+		        Log.message("Required item not found in UI text block!");
+		    }
+		    return reqItem;
+		}
+		
+		public boolean costco_CsSwitch_FullPalletPickingNStaging() {
+		    boolean success = false;
+		    try {
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+
+		        if (mainNavigation.korberOneMobileLabel.isDisplayed()) {
+		            DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		            Log.message("KorberOneMobileLabel is displayed. Clicking Menu Button.");
+		            DriverManager.getWrapperClass().click(mainNavigation.menuButton);
+		        }
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+
+		        Log.message("Waiting for 'Full Pallet Pick' button to be visible.");
+		        boolean buttonVisible = waitForElementVisibleWithRetries(
+		            () -> getDivByClassAndText("Full Pallet Pick"),
+		            6, 2
+		        );
+		        if (!buttonVisible) {
+		            Log.message("Full Pallet Pick button was not visible after retries!");
+		            throw new RuntimeException("Full Pallet Pick button not visible after retries");
+		        }
+		        Log.message("Clicking 'Full Pallet Pick' button.");
+		        getDivByClassAndText("Full Pallet Pick").click();
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+
+		        Log.message("Waiting for List Function Key to be clickable.");
+		        DriverManager.getWrapperClass().waitTillElementClickable(mainNavigation.listFunctionKey);
+
+		        Log.message("Clicking List Function Key.");
+		        DriverManager.getWrapperClass().click(mainNavigation.listFunctionKey);
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+
+		        Log.message("Clicking Reserve Button.");
+		        DriverManager.getWrapperClass().click(mainNavigation.reserveButton);
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+
+		        Log.message("Entering PAallet value.");
+		        extractAndEnterPAallet(locationText, inputField);
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+
+		        Log.message("Clicking Submit Button (1st time after PAallet).");
+		        DriverManager.getWrapperClass().click(submitBtn);
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+
+		        Log.message("Clicking Submit Button (2nd time after PAallet).");
+		        DriverManager.getWrapperClass().click(submitBtn);
+
+		        Log.message("Entering Lot number.");
+		        extractAndEnterLotNumber();
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+
+		        Log.message("Entering Quantity for Full Pallet.");
+		        extractAndEnterQuantityFullPallet(qtyTextElement);
+		        
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        
+		        try {
+		            if (doneButton.isDisplayed()) {
+		                Log.message("Done button is displayed. Clicking Done via wrapper.");
+		                DriverManager.getWrapperClass().click(doneButton);
+		            } else {
+		                Log.message("Done button is not displayed. Skipping click.");
+		            }
+		        } catch (NoSuchElementException | StaleElementReferenceException e) {
+		            Log.message("Done button not found or stale: " + e.getMessage());
+		    
+		        }
+
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+
+		        Log.message("Clicking List Function Key.");
+		        DriverManager.getWrapperClass().click(lstFunctionKey);
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+
+		        Log.message("Clicking TestK1 Button.");
+		        DriverManager.getWrapperClass().click(testK1Button);
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+//             PRINTER
+		        Log.message("Waiting for Submit Button to be visible after TestK1.");
+		        DriverManager.getWrapperClass().waitForElementToBeVisible(submitBtn);
+
+		        Log.message("Waiting for Submit Button to be clickable after TestK1.");
+		        DriverManager.getWrapperClass().waitTillElementClickable(submitBtn);
+
+		        Log.message("Clicking Submit Button for printer action.");
+		        try {
+		            DriverManager.getWrapperClass().clickWithJS(submitBtn);
+		        } catch (Exception e) {
+		            Log.message("clickWithJS on Submit Button failed: " + e.getMessage());
+		            Log.message("Trying normal click on Submit Button.");
+		            DriverManager.getWrapperClass().click(submitBtn);
+		        }
+
+		        // Wait a short duration before second submit
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+
+		        Log.message("Clicking Submit Button again for printer action.");
+		        try {
+		            DriverManager.getWrapperClass().clickWithJS(submitBtn);
+		        } catch (Exception e) {
+		            Log.message("Second clickWithJS on Submit Button failed: " + e.getMessage());
+		            Log.message("Trying normal click on Submit Button for second click.");
+		            DriverManager.getWrapperClass().click(submitBtn);
+		        }
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		        Log.message("Clicking Skip Function Key.");
+		        DriverManager.getWrapperClass().click(skipFunctionKey);
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+
+		        Log.message("Extracting and entering location value.");
+		        String doorreqLOC = extractLocation(locationText);
+		        koerberUtils.enterValueInField(doorreqLOC);
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+
+		        Log.message("Extracting and entering LP value.");
+		        extractAndEnterLP(lpTextElement, inputField, submitBtn);
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+
+		        Log.message("Clicking Submit Button (final).");
+		        DriverManager.getWrapperClass().click(submitBtn);
+		     // All steps completed successfully
+		        success = true;
+
+		    } catch (Exception e) {
+		        success = false;
+		        Log.message("Exception in costco_CsSwitch_FullPalletPickingNStaging: " + e.getMessage());
+		    }
+		    return success;
+		}
+		
+		public void extractAndEnterPAallet(WebElement locationText, WebElement inputField) {
+		    String uiText = locationText.getText();
+		    List<String> values = Arrays.asList(uiText.split("\\W+"));
+		    String reqPAallet = "";
+		    if (values.size() > 2) {
+		        reqPAallet = values.get(2);
+		    }
+		    Log.message("reqPAallet: " + reqPAallet);
+		    if (!reqPAallet.isEmpty()) {
+		        inputField.sendKeys(reqPAallet);
+		        inputField.sendKeys(Keys.ENTER);
+		    } else {
+		        Log.message("PAallet value not found in UI text block!");
+		    }
+		}
+		
+		public void extractAndEnterLP(WebElement lpTextElement, WebElement inputField, WebElement submitBtn) {
+		    String lpRawText = lpTextElement.getText().trim();
+		    Log.message("Raw LP text: " + lpRawText);
+		    String lpValue = "";
+		    if (lpRawText.startsWith("LP:")) {
+		        lpValue = lpRawText.substring(3).trim();
+		    } else {
+		        throw new RuntimeException("LP value not found in instruction block!");
+		    }
+		    Log.message("Dynamic LP to enter: " + lpValue);
+		    inputField.sendKeys(lpValue);
+		    inputField.sendKeys(Keys.ENTER);
+		    DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		    DriverManager.getWrapperClass().click(submitBtn);
+		}
+		
+		public void extractAndEnterLotNumber() {
+		    WebDriver driver = DriverManager.getDriver();
+		    try {
+		        WebElement lotElement = driver.findElement(By.xpath("//div[contains(text(),'Lot:')]"));
+		        String lotText = lotElement.getText();
+		        Log.message("Raw lot element text: [" + lotText + "]");
+		        String reqLot = "";
+		        Pattern pattern = Pattern.compile("(?i)lot:\\s*(\\S+)");
+		        Matcher matcher = pattern.matcher(lotText);
+		        if (matcher.find()) {
+		            reqLot = matcher.group(1);
+		            Log.message("reqLot: [" + reqLot + "]");
+		            koerberUtils.enterValueInField(reqLot);
+		        } else {
+		            Log.message("No 'Lot:' pattern found in element text.");
+		        }
+		    } catch (NoSuchElementException e) {
+		        Log.message("Lot element not found on the page. Skipping lot entry.");
+		    }
+		}
+		
+		public void extractAndEnterQuantityFullPallet(WebElement qtyTextElement) {
+		    String qtyText = qtyTextElement.getText().trim();
+		    Log.message("Quantity raw text: " + qtyText);
+		    String qtyValue = "";
+		    java.util.regex.Matcher matcher = java.util.regex.Pattern.compile("(\\d+)").matcher(qtyText);
+		    if (matcher.find()) {
+		        qtyValue = matcher.group(1);
+		    }
+		    Log.message("Quantity extracted: " + qtyValue);
+		    if (!qtyValue.isEmpty()) {
+		        koerberUtils.enterValueInField(qtyValue);
+		    } else {
+		        Log.message("Quantity value not found in UI text block!");
+		    }
+		}
+		
+		public boolean costco_Cs_fullLoadingProcess() {
+		    boolean success = false;
+		    try {
+		    	
+		        Log.message("Waiting for 'Loading' button to be visible.");
+		        boolean buttonVisible = waitForElementVisibleWithRetries(
+		            () -> getDivByClassAndText("Loading"),
+		            6, 2
+		        );
+		        if (!buttonVisible) {
+		            Log.message("Loading button not found after retries!");
+		            throw new RuntimeException("Loading button not visible after retries");
+		        }
+		        Log.message("'Loading' button found, clicking.");
+		        getDivByClassAndText("Loading").click();
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+
+		        Log.message("Entering Load ID: " + loadId);
+		        koerberUtils.enterValueInField(loadId);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+
+		        try {
+		            Log.message("Checking if sepYDiv is displayed...");
+		            if (sepYDiv.isDisplayed()) {
+		                Log.message("sepYDiv displayed, clicking submit.");
+		                DriverManager.getWrapperClass().click(submitBtn);
+		            } else {
+		                Log.message("sepYDiv not displayed.");
+		            }
+		        } catch (NoSuchElementException | StaleElementReferenceException e) {
+		            Log.message("sepYDiv element not present in DOM: " + e.getMessage());
+		        }
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+
+		        Log.message("Entering Door value: " + doorGlo);
+		        koerberUtils.enterValueInField(doorGlo);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+
+		        Log.message("Entering Trailer Number: " + trailerNumber);
+		        koerberUtils.enterValueInField(trailerNumber);
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+
+		        // First LP scan
+		        
+		        Log.message("First scanAndEnterLP()");
+		        scanAndEnterLP();
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(8);
+
+		        
+		     // Wait until 'palletsInfo' element is visible by repeatedly pressing ENTER
+		        int maxRetries = 10; // adjust as needed for reliability and timing
+		        for (int i = 0; i < maxRetries; i++) {
+		            inputField.sendKeys(Keys.ENTER);
+		            DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		            try {
+		                if (palletsInfo.isDisplayed()) {
+		                    Log.message("'palletsInfo' is now displayed after " + (i + 1) + " ENTER presses.");
+		                    break;
+		                }
+		            } catch (Exception e) {
+		                // If isDisplayed() throws (not found, stale), just continue
+		            }
+		        }
+
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(8);
+
+		        
+		     // Second LP scan
+
+		        Log.message("Second scanAndEnterLP() after detecting LP number: ");
+		        scanAndEnterLP();
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		        Log.message("Clicking submit after second LP scan.");
+		        inputField.sendKeys(Keys.ENTER);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        inputField.sendKeys(Keys.ENTER);
+		  
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+
+		        Log.message("Entering Door value again: " + doorGlo);
+		        koerberUtils.enterValueInField(doorGlo);
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+
+		        Log.message("Entering 'L'.");
+		        koerberUtils.enterValueInField("L");
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+
+		        Log.message("Sending ENTER key (1st time).");
+		        DriverManager.getWrapperClass().click(submitBtn);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+
+		        Log.message("Sending ENTER key (2nd time).");
+		        DriverManager.getWrapperClass().click(submitBtn);
+		        
+		     // If everything above ran without throwing, mark success as true
+		        success = true;
+
+		    } catch (Exception e) {
+		        success = false;
+		        Log.message("Exception in cs_fullLoadingProcess: " + e.getMessage());
+		    }
+		    return success;
+		}
+		
+		
+		public boolean pickingNStagingFullPalletPickWithTwoItems() {
+			boolean flag = true;
+			try {
+				// Wait for page elements to be ready
+				DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+				if (mainNavigation.korberOneMobileLabel.isDisplayed()) {
+					DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+					DriverManager.getWrapperClass().click(mainNavigation.menuButton);
+				}
+
+				// Extract all text segments from the screen
+				String uiText = locationText.getText();
+				List<String> values = Arrays.asList(uiText.split("\\W+"));
+				Pallet_Number1 = values.get(2);
+				itemNumber_1 = values.get(4);
+				System.out.println("itemNumber: " + itemNumber_1);
+				System.out.println("Pallet_Number: " + Pallet_Number1);
+
+				// pallet number--> one
+				DriverManager.getWrapperClass().enterTextByElement(inputField, Pallet_Number1);
+				inputField.sendKeys(Keys.ENTER);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+				inputField.sendKeys(Keys.ENTER);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+				inputField.sendKeys(Keys.ENTER);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+
+				// lot number--->one
+				String[] lines = locationText.getText().split("\\r?\\n");
+				Lot_Number1 = "";
+				for (String line : lines) {
+					String trimmed = line.trim().toLowerCase();
+					if (trimmed.startsWith("lot:")) {
+						int idx = line.indexOf(":");
+						if (idx != -1 && idx + 1 < line.length()) {
+							Lot_Number1 = line.substring(idx + 1).trim();
+							break;
+						}
+					}
+				}
+				System.out.println("reqLot: [" + Lot_Number1 + "]");
+				if (!Lot_Number1.isEmpty()) {
+					DriverManager.getWrapperClass().enterTextByElement(inputField, Lot_Number1);
+					DriverManager.getWrapperClass().click(submitBtn);
+				} else {
+					System.out.println("Lot not found in UI text block!");
+				}
+				DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+
+				// Quantity-->One
+				String qtyText = qtyTextElement.getText().trim();
+				System.out.println("Quantity raw text: " + qtyText);
+				String qtyValue = "";
+				java.util.regex.Matcher matcher = java.util.regex.Pattern.compile("(\\d+)").matcher(qtyText);
+				if (matcher.find()) {
+					qtyValue = matcher.group(1);
+				}
+				System.out.println("Quantity extracted: " + qtyValue);
+				DriverManager.getWrapperClass().enterTextByElement(inputField, qtyValue);
+				inputField.sendKeys(Keys.ENTER);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+
+				// Second LP
+				String uiText_2 = locationText.getText();
+				List<String> values_2 = Arrays.asList(uiText_2.split("\\W+"));
+				Pallet_Number2 = values_2.get(2);
+				itemNumber_2 = values_2.get(4);
+				System.out.println("reqPAallet: " + Pallet_Number2);
+
+				// pallet number--> two
+				DriverManager.getWrapperClass().enterTextByElement(inputField, Pallet_Number2);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+				inputField.sendKeys(Keys.ENTER);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+				inputField.sendKeys(Keys.ENTER);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+				inputField.sendKeys(Keys.ENTER);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+
+				// lot number--->Two
+				String[] lines_1 = locationText.getText().split("\\r?\\n");
+				Lot_Number2 = "";
+				for (String line : lines_1) {
+					String trimmed = line.trim().toLowerCase();
+					if (trimmed.startsWith("lot:")) {
+						int idx = line.indexOf(":");
+						if (idx != -1 && idx + 1 < line.length()) {
+							Lot_Number2 = line.substring(idx + 1).trim();
+							break;
+						}
+					}
+				}
+				System.out.println("reqLot: [" + Lot_Number2 + "]");
+				if (!Lot_Number2.isEmpty()) {
+					DriverManager.getWrapperClass().enterTextByElement(inputField, Lot_Number2);
+					DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+					DriverManager.getWrapperClass().click(submitBtn);
+				} else {
+					System.out.println("Lot_2 not found in UI text block!");
+				}
+				DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+
+				// Quantity-->Two
+				String qtyText_1 = qtyTextElement.getText().trim();
+				System.out.println("Quantity raw text: " + qtyText_1);
+				String qtyValue_1 = "";
+				java.util.regex.Matcher matcher_1 = java.util.regex.Pattern.compile("(\\d+)").matcher(qtyText_1);
+				if (matcher_1.find()) {
+					qtyValue_1 = matcher_1.group(1);
+				}
+				System.out.println("Quantity extracted: " + qtyValue_1);
+				DriverManager.getWrapperClass().enterTextByElement(inputField, qtyValue_1);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+				inputField.sendKeys(Keys.ENTER);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+				if (DriverManager.getWrapperClass().isElementDisplyed(mainNavigation.f3FunctionKey)) {
+					DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+					DriverManager.getWrapperClass().click(mainNavigation.f3FunctionKey);
+				}
+				else {
+					System.out.println("F3 function key is not displayed");
+				}
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+				if (mainNavigation.f5FunctionKey.isDisplayed()) {
+					DriverManager.getWrapperClass().click(mainNavigation.f5FunctionKey);
+					DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+				} else {
+					// PRINT
+					lstFunctionKey.click();
+					DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+					testK1Button.click();
+					// print successfully
+					DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+					DriverManager.getWrapperClass().click(submitBtn);
+				}
+
+				// skip wrapping
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+				if (!DriverManager.getWrapperClass().isElementDisplyed(skipFunctionKey)) {
+			        flag = false;
+			        ExtentCucumberAdapter.addTestStepLog("❌ Skip Functionkey Button is not displayed");
+			    }
+				else {
+					ExtentCucumberAdapter.addTestStepLog("✅ Skip Functionkey Button is displayed");
+				}
+				DriverManager.getWrapperClass().click(skipFunctionKey);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+
+//  	   location extraction and input
+
+//  	    String[] lines = locationText.getText().split("\\r?\\n");
+				String locationValue = null;
+
+				boolean orderLinePresent = false;
+				for (String line : lines) {
+					if (line != null && line.toLowerCase().contains("enter the staging location for order")) {
+						orderLinePresent = true;
+						break;
+					}
+				}
+
+				if (orderLinePresent) {
+					for (String line : lines) {
+						if (line == null)
+							continue;
+						String trimmed = line.trim();
+						if (trimmed.toUpperCase().startsWith("LOC :")) {
+							String possibleLoc = trimmed.substring(trimmed.indexOf(":") + 1).trim();
+							if (possibleLoc.toUpperCase().matches("S\\d+")) {
+								locationValue = possibleLoc.toUpperCase();
+								break;
+							}
+						}
+					}
+					if (locationValue == null) {
+						locationValue = "S100";
+					}
+				} else {
+					for (int i = 0; i < lines.length; i++) {
+						if (lines[i] != null && lines[i].trim().equalsIgnoreCase("Go to location")) {
+							if (i + 1 < lines.length) {
+								locationValue = lines[i + 1].trim();
+								break;
+							}
+						}
+					}
+					if (locationValue == null || locationValue.isEmpty()) {
+						locationValue = "S100";
+					}
+				}
+				System.out.println("Location to enter: " + locationValue);
+				DriverManager.getWrapperClass().enterTextByElement(inputField, locationValue);
+				inputField.sendKeys(Keys.ENTER);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+
+				if (DriverManager.getWrapperClass().isPresent(Confirm_msg)) {
+					DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+					inputField.sendKeys("Y");
+					DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+					inputField.sendKeys(Keys.ENTER);
+				} else {
+					System.out.println("There is No ConfirmY/N field is found");
+				}
+
+				// PRINT
+				lstFunctionKey.click();
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+				testK1Button.click();
+				DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+				inputField.sendKeys(Keys.ENTER);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+				inputField.sendKeys(Keys.ENTER);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+				inputField.sendKeys(Keys.ENTER);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+				// print successfully
+				DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+				DriverManager.getWrapperClass().click(submitBtn);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+
+			} catch (Exception e) {
+				Log.message("Unexpected error during Picking & Staging: " + e.getMessage());
+				ExtentCucumberAdapter.addTestStepLog("Unexpected error during Picking & Staging: " + e.getMessage());
+				flag = false;
+			}
+			
+			return flag;
+			
+		}
+		
+		
+		public boolean  FP_Unpick() {
+			boolean flag = true;
+			try {
+				for (int i = 0; i < 3; i++) {
+					DriverManager.getWrapperClass().click(mainNavigation.f1BackFunctionKey);
+					DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+				}
+				if (!DriverManager.getWrapperClass().isElementDisplyed(mainNavigation.UnPick_ButtonK1Mobile)) {
+			        flag = false;
+			        ExtentCucumberAdapter.addTestStepLog("❌ Unpick/Unload Button is NOT displayed");
+			    }
+
+				else {
+					ExtentCucumberAdapter.addTestStepLog("✅ Unpick/Unload Button is displayed");
+				}
+
+				DriverManager.getWrapperClass().click(mainNavigation.UnPick_ButtonK1Mobile);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+				DriverManager.getWrapperClass().enterTextByElement(inputField, Pallet_Number1);
+				// inputField.sendKeys(LP_Num);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+				DriverManager.getWrapperClass().click(submitBtn);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+				DriverManager.getWrapperClass().enterTextByElement(inputField, itemNumber_1);
+				// inputField.sendKeys(Item1);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+				DriverManager.getWrapperClass().click(submitBtn);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+				DriverManager.getWrapperClass().enterTextByElement(inputField, Lot_Number1);
+				// inputField.sendKeys(lotNumber1);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+				DriverManager.getWrapperClass().click(submitBtn);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+				// DriverManager.getWrapperClass().enterTextByElement(inputField,ItemQty1);
+				// inputField.sendKeys(ItemQty1);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+				DriverManager.getWrapperClass().click(submitBtn);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+				DriverManager.getWrapperClass().enterTextByElement(inputField, Pallet_Number2);
+				// inputField.sendKeys(Item2);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+				DriverManager.getWrapperClass().click(submitBtn);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+				DriverManager.getWrapperClass().enterTextByElement(inputField, itemNumber_2);
+				// inputField.sendKeys(lotNumber2);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+				DriverManager.getWrapperClass().click(submitBtn);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+				DriverManager.getWrapperClass().enterTextByElement(inputField, Lot_Number2);
+				// inputField.sendKeys(ItemQty2);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+				DriverManager.getWrapperClass().click(submitBtn);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+				DriverManager.getWrapperClass().click(submitBtn);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+				if (!DriverManager.getWrapperClass().isElementDisplyed(mainNavigation.f3FunctionKey)) {
+			        flag = false;
+			        ExtentCucumberAdapter.addTestStepLog("❌ F3 Functionkey Button is not displayed");
+			    }
+				else {
+					ExtentCucumberAdapter.addTestStepLog("✅ F3 Functionkey Button is displayed");
+				}
+				DriverManager.getWrapperClass().click(mainNavigation.f3FunctionKey);
+				DriverManager.getWrapperClass().waitForElementToBeVisible1(mainNavigation.f4FunctionKey);
+				if (!DriverManager.getWrapperClass().isElementDisplyed(mainNavigation.f4FunctionKey)) {
+			        flag = false;
+			        ExtentCucumberAdapter.addTestStepLog("❌ F4 Functionkey Button is not displayed");
+			    }
+				else {
+					ExtentCucumberAdapter.addTestStepLog("✅ F4 Functionkey Button is displayed");
+				}
+				DriverManager.getWrapperClass().click(mainNavigation.f4FunctionKey);
+				DriverManager.getWrapperClass().waitForElementToBeVisible1(Location);
+				if (!DriverManager.getWrapperClass().isElementDisplyed(Location)) {
+			        flag = false;
+			        ExtentCucumberAdapter.addTestStepLog("❌ Location Field is not displayed after clicking F4 function key");
+			    }
+				else {
+					ExtentCucumberAdapter.addTestStepLog("✅ Location Field is displayed");
+				}
+				
+				String Location = locationText.getText();
+				List<String> Loc_values = Arrays.asList(Location.split("\\W+"));
+				Destination_Loc = Loc_values.get(3);
+				System.out.println("Location : " + Destination_Loc);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+				DriverManager.getWrapperClass().enterTextByElement(inputField, Destination_Loc);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+				inputField.sendKeys(Keys.ENTER);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+
+				// Double-click the value (optional, if required by UI)
+				Actions actions = new Actions(DriverManager.getDriver());
+				actions.doubleClick(inputField).perform();
+
+				// Fetch the value from the input field
+				String lpValue = inputField.getAttribute("value");
+				System.out.println("LP Value: " + lpValue);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+				inputField.sendKeys(Keys.ENTER);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+				lstFunctionKey.click();
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+				testK1Button.click();
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+				inputField.sendKeys(Keys.ENTER);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+				inputField.sendKeys(Keys.ENTER);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+
+				int maxAttempts = 10;
+
+				for (int i = 0; i < maxAttempts; i++) {
+					Log.message("Attempt #" + (i + 1) + ": Clicking f1BackFunctionKey.");
+					DriverManager.getWrapperClass().click(mainNavigation.f1BackFunctionKey);
+					DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+
+					boolean found = false;
+					try {
+						found = applicationServerName.isDisplayed();
+						Log.message("Attempt #" + (i + 1) + ": applicationServerName is "
+								+ (found ? "visible" : "not visible") + ".");
+					} catch (NoSuchElementException | StaleElementReferenceException e) {
+						Log.message("Attempt #" + (i + 1) + ": applicationServerName not present or stale ("
+								+ e.getClass().getSimpleName() + ").");
+					}
+
+					if (found) {
+						Log.message("applicationServerName found after " + (i + 1) + " back clicks.");
+						break;
+					}
+				}
+
+				if (!applicationServerName.isDisplayed()) {
+					Log.message("applicationServerName not found after " + maxAttempts + " back button clicks.");
+				}
+			} catch (Exception e) {
+				Log.message("FP_Unpick unexpected error: " + e.getMessage());
+				ExtentCucumberAdapter.addTestStepLog("FP_Unpick unexpected error: " + e.getMessage());
+				flag = false;
+			}
+			
+			return flag;
+
+		}
+		
+		
+		public boolean Verify_the_Current_Inventory() {
+			boolean flag = false;
+			try {
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+				koerberUtils.selectOptionFromDropdown("Warehouse ID", "US78 - US78-KAY CHEM ECCC");
+
+				DriverManager.getWrapperClass().waitForElementToBeVisible(location_Id);
+				koerberUtils.scrollClearAndType(location_Id, Destination_Loc);
+
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+				DriverManager.getDriver().findElement(By.xpath(String.format(GEN_TEXT, "Query"))).click();
+
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+				DriverManager.getDriver().findElement(By.xpath(String.format(GEN_TEXT, "Current Inventory"))).click();
+
+				if (tableRows.isEmpty()) {
+					throw new RuntimeException("No rows found in the table!");
+				}
+
+				List<String> itemNumbers = new ArrayList<>();
+
+				for (WebElement cell : itemCells) {
+					String value;
+					// If Item Number is a link, fetch anchor text
+					List<WebElement> anchors = cell.findElements(By.xpath(".//a"));
+					value = anchors.isEmpty() ? cell.getText().trim() : anchors.get(0).getText().trim();
+
+					if (!value.isEmpty()) {
+						itemNumbers.add(value);
+					}
+				}
+
+				boolean hasItem1 = itemNumbers.contains(itemNumber_1);
+				boolean hasItem2 = itemNumbers.contains(itemNumber_2);
+
+				if (hasItem1 && hasItem2) {
+					System.out.println("Both items are available.");
+					flag = true;
+				} else {
+					System.out.println("Inventory check failed: Missing one or both items.");
+					flag = false;
+				}
+
+			} catch (Exception e) {
+
+				ExtentCucumberAdapter.addTestStepLog("Inventory verification failed: " + e.getMessage());
+				flag = false;
+
+			}
+			return flag;
+
+		}
+		
+		
+
+		public boolean Full_loading_Process() {
+			boolean flag = false; // start as false; set true only when all validations pass
+
+			try {
+				// --- Step 0: Ensure 'Loading' button visible (with back retries) ---
+				int attempts = 0;
+				boolean loadingBtnVisible = false;
+				while (attempts < 4 && !loadingBtnVisible) {
+					try {
+						loadingBtnVisible = mainNavigation.loadingButtonK1Mobile.isDisplayed();
+					} catch (NoSuchElementException | StaleElementReferenceException e) {
+						loadingBtnVisible = false;
+					}
+					if (!loadingBtnVisible) {
+						DriverManager.getWrapperClass().click(mainNavigation.f1BackFunctionKey);
+						DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+					}
+					attempts++;
+				}
+
+				DriverManager.getWrapperClass().logValidation(loadingBtnVisible, "Loading button is displayed");
+				if (!loadingBtnVisible) {
+					// Early exit if critical UI entry point is missing
+					return false;
+				}
+
+				// --- Step 1: Click 'Loading' & enter Load ID ---
+				DriverManager.getWrapperClass().click(mainNavigation.loadingButtonK1Mobile);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+
+				DriverManager.getWrapperClass().enterTextByElement(inputField, loadId);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+				inputField.sendKeys(Keys.ENTER);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+
+				// Confirm prompt handling (if present)
+				boolean confirmHandled = false;
+				if (DriverManager.getWrapperClass().isPresent(Enter_Confirm_msg)) {
+					DriverManager.getWrapperClass().enterTextByElement(inputField, "Y");
+					DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+					inputField.sendKeys(Keys.ENTER);
+					confirmHandled = true;
+				}
+				DriverManager.getWrapperClass().logValidation(confirmHandled, "Confirm message handled");
+
+				// --- Step 2: Enter Door and Trailer ---
+				DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+				DriverManager.getWrapperClass().enterTextByElement(inputField, doorGlo);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+				inputField.sendKeys(Keys.ENTER);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+
+				DriverManager.getWrapperClass().enterTextByElement(inputField, trailerNumber);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+				inputField.sendKeys(Keys.ENTER);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+
+				// Wait until LP field potentially appears (defensive)
+				DriverManager.getWrapperClass().waitForElementToBeVisible(LP_Text);
+
+				// --- Step 3: Scan LP #1 ---
+				String lp1TextBlock = locationText.getText();
+				String lp1 = DriverManager.getWrapperClass().extractLP(lp1TextBlock);
+				boolean lp1Scanned = false;
+				if (!lp1.isEmpty()) {
+					DriverManager.getWrapperClass().enterTextByElement(inputField, lp1);
+					inputField.sendKeys(Keys.ENTER);
+					DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+					lp1Scanned = true;
+				}
+				DriverManager.getWrapperClass().logValidation(lp1Scanned, "LP-1 scanned");
+
+				// Press ENTER until LP field (or next state) is visible
+				DriverManager.getWrapperClass().pressEnterUntilVisible(LP_Text, 10, 5, "'LP Field'");
+
+				// --- Step 4: Scan LP #2 ---
+				String lp2TextBlock = locationText.getText();
+				String lp2 = DriverManager.getWrapperClass().extractLP(lp2TextBlock);
+				boolean lp2Scanned = false;
+				if (!lp2.isEmpty()) {
+					DriverManager.getWrapperClass().enterTextByElement(inputField, lp2);
+					DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+					inputField.sendKeys(Keys.ENTER);
+					DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+					inputField.sendKeys(Keys.ENTER);
+					DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+					lp2Scanned = true;
+				}
+				DriverManager.getWrapperClass().logValidation(lp2Scanned, "LP-2 scanned");
+
+				// --- Step 5: Door & Load commands ---
+				DriverManager.getWrapperClass().enterTextByElement(inputField, doorGlo);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+				inputField.sendKeys(Keys.ENTER);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+				inputField.sendKeys("L"); // load confirmation
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+				inputField.sendKeys(Keys.ENTER);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+				inputField.sendKeys(Keys.ENTER);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+				inputField.sendKeys(Keys.ENTER);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+				boolean loadDoorVisible = DriverManager.getWrapperClass().isElementDisplyed(load_Door_txt);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+				DriverManager.getWrapperClass().logValidation(loadDoorVisible, "Load/Door text is displayed");
+				DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+				// --- Back out to application server name (safe navigation) ---
+				int maxBackAttempts = 10;
+				for (int i = 0; i < maxBackAttempts; i++) {
+					DriverManager.getWrapperClass().click(mainNavigation.f1BackFunctionKey);
+					DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+					boolean found = false;
+					try {
+						found = applicationServerName.isDisplayed();
+					} catch (NoSuchElementException | StaleElementReferenceException ignore) {
+					}
+					if (found) {
+						break;
+					}
+				}
+
+				// --- Final cumulative flag ---
+				flag = loadingBtnVisible && lp1Scanned && lp2Scanned && loadDoorVisible;
+
+				if (flag) {
+					ExtentCucumberAdapter.addTestStepLog("✅ Full Loading Process completed successfully");
+				} else {
+					ExtentCucumberAdapter.addTestStepLog("❌ Full Loading Process did not pass all validations");
+				}
+
+			} catch (Exception e) {
+				ExtentCucumberAdapter.addTestStepLog("❌ Full Loading Process failed: " + e.getMessage());
+				flag = false;
+			}
+
+			return flag;
+		}
+		
+		public boolean sams_CsSwitch_FullPalletPickingNStaging() {
+		    boolean success = false;
+		    try {
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+
+		        if (mainNavigation.korberOneMobileLabel.isDisplayed()) {
+		            DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		            Log.message("KorberOneMobileLabel is displayed. Clicking Menu Button.");
+		            DriverManager.getWrapperClass().click(mainNavigation.menuButton);
+		        }
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+
+		        Log.message("Waiting for 'Full Pallet Pick' button to be visible.");
+		        boolean buttonVisible = waitForElementVisibleWithRetries(
+		            () -> getDivByClassAndText("Full Pallet Pick"),
+		            6, 2
+		        );
+		        if (!buttonVisible) {
+		            Log.message("Full Pallet Pick button was not visible after retries!");
+		            throw new RuntimeException("Full Pallet Pick button not visible after retries");
+		        }
+		        Log.message("Clicking 'Full Pallet Pick' button.");
+		        getDivByClassAndText("Full Pallet Pick").click();
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+
+		        Log.message("Waiting for List Function Key to be clickable.");
+		        DriverManager.getWrapperClass().waitTillElementClickable(mainNavigation.listFunctionKey);
+
+		        Log.message("Clicking List Function Key.");
+		        DriverManager.getWrapperClass().click(mainNavigation.listFunctionKey);
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+
+		        Log.message("Clicking Reserve Button.");
+		        DriverManager.getWrapperClass().click(mainNavigation.reserveButton);
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+
+		        Log.message("Entering PAallet value.");
+		        extractAndEnterPAallet(locationText, inputField);
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+
+		        Log.message("Entering Lot number.");
+		        extractAndEnterLotNumber();
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+
+		        Log.message("Entering Quantity for Full Pallet.");
+		        extractAndEnterQuantityFullPallet(qtyTextElement);
+		        
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        
+		        try {
+		            if (doneButton.isDisplayed()) {
+		                Log.message("Done button is displayed. Clicking Done via wrapper.");
+		                DriverManager.getWrapperClass().click(doneButton);
+		            } else {
+		                Log.message("Done button is not displayed. Skipping click.");
+		            }
+		        } catch (NoSuchElementException | StaleElementReferenceException e) {
+		            Log.message("Done button not found or stale: " + e.getMessage());
+		    
+		        }
+
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+
+		        Log.message("Clicking List Function Key.");
+		        DriverManager.getWrapperClass().click(lstFunctionKey);
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+
+		        Log.message("Clicking TestK1 Button.");
+		        DriverManager.getWrapperClass().click(testK1Button);
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+//             PRINTER
+		        Log.message("Waiting for Submit Button to be visible after TestK1.");
+		        DriverManager.getWrapperClass().waitForElementToBeVisible(submitBtn);
+
+		        Log.message("Waiting for Submit Button to be clickable after TestK1.");
+		        DriverManager.getWrapperClass().waitTillElementClickable(submitBtn);
+
+		        Log.message("Clicking Submit Button for printer action.");
+		        DriverManager.getWrapperClass().clickWithJS(submitBtn);
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		        Log.message("Clicking Skip Function Key.");
+		        DriverManager.getWrapperClass().click(skipFunctionKey);
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+
+		        Log.message("Extracting and entering location value.");
+		        String doorreqLOC = extractLocation(locationText);
+		        koerberUtils.enterValueInField(doorreqLOC);
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+
+		        Log.message("Extracting and entering LP value.");
+		        extractAndEnterLP(lpTextElement, inputField, submitBtn);
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+
+		        Log.message("Clicking Submit Button (final).");
+		        DriverManager.getWrapperClass().click(submitBtn);
+		        success = true;
+
+		    } catch (Exception e) {
+		        success = false;
+		        Log.message("Exception in costco_CsSwitch_FullPalletPickingNStaging: " + e.getMessage());
+		    }
+		    return success;
+		}
+		
+		
+/*		
+		public boolean Full_loading_Process_doorGlo() {
+			boolean flag = false; // start as false; set true only when all validations pass
+
+			try {
+				// --- Step 0: Ensure 'Loading' button visible (with back retries) ---
+				int attempts = 0;
+				boolean loadingBtnVisible = false;
+				while (attempts < 4 && !loadingBtnVisible) {
+					try {
+						loadingBtnVisible = mainNavigation.loadingButtonK1Mobile.isDisplayed();
+					} catch (NoSuchElementException | StaleElementReferenceException e) {
+						loadingBtnVisible = false;
+					}
+					if (!loadingBtnVisible) {
+						DriverManager.getWrapperClass().click(mainNavigation.f1BackFunctionKey);
+						DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+					}
+					attempts++;
+				}
+
+				DriverManager.getWrapperClass().logValidation(loadingBtnVisible, "Loading button is displayed");
+				if (!loadingBtnVisible) {
+					// Early exit if critical UI entry point is missing
+					return false;
+				}
+
+				// --- Step 1: Click 'Loading' & enter Load ID ---
+				DriverManager.getWrapperClass().click(mainNavigation.loadingButtonK1Mobile);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+
+				DriverManager.getWrapperClass().enterTextByElement(inputField, doorGlo);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+				inputField.sendKeys(Keys.ENTER);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+
+				// Confirm prompt handling (if present)
+				boolean confirmHandled = false;
+				if (DriverManager.getWrapperClass().isPresent(Enter_Confirm_msg)) {
+					DriverManager.getWrapperClass().enterTextByElement(inputField, "Y");
+					DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+					inputField.sendKeys(Keys.ENTER);
+					confirmHandled = true;
+				}
+				DriverManager.getWrapperClass().logValidation(confirmHandled, "Confirm message handled");
+
+				// --- Step 2: Enter Door and Trailer ---
+				DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+				DriverManager.getWrapperClass().enterTextByElement(inputField, doorGlo);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+				inputField.sendKeys(Keys.ENTER);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+
+				DriverManager.getWrapperClass().enterTextByElement(inputField, trailerNumber);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+				inputField.sendKeys(Keys.ENTER);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+
+				// Wait until LP field potentially appears (defensive)
+				DriverManager.getWrapperClass().waitForElementToBeVisible(LP_Text);
+
+				// --- Step 3: Scan LP #1 ---
+				String lp1TextBlock = locationText.getText();
+				String lp1 = DriverManager.getWrapperClass().extractLP(lp1TextBlock);
+				boolean lp1Scanned = false;
+				if (!lp1.isEmpty()) {
+					DriverManager.getWrapperClass().enterTextByElement(inputField, lp1);
+					inputField.sendKeys(Keys.ENTER);
+					DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+					lp1Scanned = true;
+				}
+				DriverManager.getWrapperClass().logValidation(lp1Scanned, "LP-1 scanned");
+
+				// Press ENTER until LP field (or next state) is visible
+				DriverManager.getWrapperClass().pressEnterUntilVisible(LP_Text, 10, 5, "'LP Field'");
+
+				// --- Step 4: Scan LP #2 ---
+				String lp2TextBlock = locationText.getText();
+				String lp2 = DriverManager.getWrapperClass().extractLP(lp2TextBlock);
+				boolean lp2Scanned = false;
+				if (!lp2.isEmpty()) {
+					DriverManager.getWrapperClass().enterTextByElement(inputField, lp2);
+					DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+					inputField.sendKeys(Keys.ENTER);
+					DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+					inputField.sendKeys(Keys.ENTER);
+					DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+					lp2Scanned = true;
+				}
+				DriverManager.getWrapperClass().logValidation(lp2Scanned, "LP-2 scanned");
+
+				// --- Step 5: Door & Load commands ---
+				DriverManager.getWrapperClass().enterTextByElement(inputField, doorGlo);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+				inputField.sendKeys(Keys.ENTER);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+				inputField.sendKeys("L"); // load confirmation
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+				inputField.sendKeys(Keys.ENTER);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+				inputField.sendKeys(Keys.ENTER);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+				inputField.sendKeys(Keys.ENTER);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+				boolean loadDoorVisible = DriverManager.getWrapperClass().isElementDisplyed(load_Door_txt);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+				DriverManager.getWrapperClass().logValidation(loadDoorVisible, "Load/Door text is displayed");
+				DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+				// --- Back out to application server name (safe navigation) ---
+				int maxBackAttempts = 10;
+				for (int i = 0; i < maxBackAttempts; i++) {
+					DriverManager.getWrapperClass().click(mainNavigation.f1BackFunctionKey);
+					DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+					boolean found = false;
+					try {
+						found = applicationServerName.isDisplayed();
+					} catch (NoSuchElementException | StaleElementReferenceException ignore) {
+					}
+					if (found) {
+						break;
+					}
+				}
+
+				// --- Final cumulative flag ---
+				flag = loadingBtnVisible && lp1Scanned && lp2Scanned && loadDoorVisible;
+
+				if (flag) {
+					ExtentCucumberAdapter.addTestStepLog("✅ Full Loading Process completed successfully");
+				} else {
+					ExtentCucumberAdapter.addTestStepLog("❌ Full Loading Process did not pass all validations");
+				}
+
+			} catch (Exception e) {
+				ExtentCucumberAdapter.addTestStepLog("❌ Full Loading Process failed: " + e.getMessage());
+				flag = false;
+			}
+
+			return flag;
+		}
+
+*/
+		
+		public boolean Full_loading_Process_doorGlo() {
+			boolean flag = false; // start as false; set true only when all validations pass
+
+			try {
+				// --- Step 0: Ensure 'Loading' button visible (with back retries) ---
+				int attempts = 0;
+				boolean loadingBtnVisible = false;
+				while (attempts < 4 && !loadingBtnVisible) {
+					try {
+						loadingBtnVisible = mainNavigation.loadingButtonK1Mobile.isDisplayed();
+					} catch (NoSuchElementException | StaleElementReferenceException e) {
+						loadingBtnVisible = false;
+					}
+					if (!loadingBtnVisible) {
+						DriverManager.getWrapperClass().click(mainNavigation.f1BackFunctionKey);
+						DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+					}
+					attempts++;
+				}
+
+				DriverManager.getWrapperClass().logValidation(loadingBtnVisible, "Loading button is displayed");
+				if (!loadingBtnVisible) {
+					// Early exit if critical UI entry point is missing
+					return false;
+				}
+
+				// --- Step 1: Click 'Loading' & enter Load ID ---
+				DriverManager.getWrapperClass().click(mainNavigation.loadingButtonK1Mobile);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+
+				DriverManager.getWrapperClass().enterTextByElement(inputField, doorGlo);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+				inputField.sendKeys(Keys.ENTER);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+
+				// Confirm prompt handling (if present)
+				boolean confirmHandled = false;
+				if (DriverManager.getWrapperClass().isPresent(Enter_Confirm_msg)) {
+					DriverManager.getWrapperClass().enterTextByElement(inputField, "Y");
+					DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+					inputField.sendKeys(Keys.ENTER);
+					confirmHandled = true;
+				}
+				DriverManager.getWrapperClass().logValidation(confirmHandled, "Confirm message handled");
+
+				// --- Step 2: Enter Trailer ---
+				
+				DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+				DriverManager.getWrapperClass().enterTextByElement(inputField, trailerNumber);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+				inputField.sendKeys(Keys.ENTER);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+
+				// Wait until LP field potentially appears (defensive)
+				DriverManager.getWrapperClass().waitForElementToBeVisible(LP_Text);
+
+				// --- Step 3: Scan LP #1 ---
+				String lp1TextBlock = locationText.getText();
+				String lp1 = DriverManager.getWrapperClass().extractLP(lp1TextBlock);
+				boolean lp1Scanned = false;
+				if (!lp1.isEmpty()) {
+					DriverManager.getWrapperClass().enterTextByElement(inputField, lp1);
+					inputField.sendKeys(Keys.ENTER);
+					DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+					lp1Scanned = true;
+				}
+				DriverManager.getWrapperClass().logValidation(lp1Scanned, "LP-1 scanned");
+
+				// Press ENTER until LP field (or next state) is visible
+				DriverManager.getWrapperClass().pressEnterUntilVisible(LP_Text, 10, 5, "'LP Field'");
+
+				// --- Step 4: Scan LP #2 ---
+				String lp2TextBlock = locationText.getText();
+				String lp2 = DriverManager.getWrapperClass().extractLP(lp2TextBlock);
+				boolean lp2Scanned = false;
+				if (!lp2.isEmpty()) {
+					DriverManager.getWrapperClass().enterTextByElement(inputField, lp2);
+					DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+					inputField.sendKeys(Keys.ENTER);
+					DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+					inputField.sendKeys(Keys.ENTER);
+					DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+					lp2Scanned = true;
+				}
+				DriverManager.getWrapperClass().logValidation(lp2Scanned, "LP-2 scanned");
+
+				// --- Step 5: Door & Load commands ---
+				DriverManager.getWrapperClass().enterTextByElement(inputField, doorGlo);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+				inputField.sendKeys(Keys.ENTER);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+				inputField.sendKeys("L"); // load confirmation
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+				inputField.sendKeys(Keys.ENTER);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+				inputField.sendKeys(Keys.ENTER);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+				inputField.sendKeys(Keys.ENTER);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+				boolean loadDoorVisible = DriverManager.getWrapperClass().isElementDisplyed(load_Door_txt);
+				DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+				DriverManager.getWrapperClass().logValidation(loadDoorVisible, "Load/Door text is displayed");
+				DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+				// --- Back out to application server name (safe navigation) ---
+				int maxBackAttempts = 10;
+				for (int i = 0; i < maxBackAttempts; i++) {
+					DriverManager.getWrapperClass().click(mainNavigation.f1BackFunctionKey);
+					DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+					boolean found = false;
+					try {
+						found = applicationServerName.isDisplayed();
+					} catch (NoSuchElementException | StaleElementReferenceException ignore) {
+					}
+					if (found) {
+						break;
+					}
+				}
+
+				// --- Final cumulative flag ---
+				flag = loadingBtnVisible && lp1Scanned && lp2Scanned && loadDoorVisible;
+
+				if (flag) {
+					ExtentCucumberAdapter.addTestStepLog("✅ Full Loading Process completed successfully");
+				} else {
+					ExtentCucumberAdapter.addTestStepLog("❌ Full Loading Process did not pass all validations");
+				}
+
+			} catch (Exception e) {
+				ExtentCucumberAdapter.addTestStepLog("❌ Full Loading Process failed: " + e.getMessage());
+				flag = false;
+			}
+
+			return flag;
+		}
+		
+		
+		public boolean selectTibcoLoadIdDoor(String tibcoLoadID) {
+			boolean flag = false;
+			try {
+			DriverManager.getWrapperClass().click(tibcoLoadIdField);
+			tibcoLoadIdFieldValue.sendKeys(tibcoLoadID);
+			tibcoLoadIdFieldValue.sendKeys(Keys.ENTER);
+			boolean newStatusVisible = newStatus.isDisplayed();
+
+			if (newStatusVisible) {
+				ExtentCucumberAdapter.addTestStepLog("✅ New status is displayed");
+			} else {
+				ExtentCucumberAdapter.addTestStepLog("❌ New status is NOT displayed");
+			}
+			loadId = viewLoadLoadId.getText();
+			Log.message("loadId " + loadId);
+
+			DriverManager.getWrapperClass().click(release);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+			
+			 // Click dropdown arrow
+	        DriverManager.getWrapperClass().click(doorLocationDropdownArrow);
+	        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+	        
+	        // Wait for first door option to be visible
+	        DriverManager.getWrapperClass().waitForElementToBeVisible(firstDoorOption);
+	        DriverManager.getWrapperClass().waitForTimeOutInSec(1);
+	        
+	        // Get door text before clicking
+	        doorLoc = firstDoorOption.getText();
+	        Log.message("doortext " + doorLoc);
+	        
+	        // Click the first door option
+	        DriverManager.getWrapperClass().click(firstDoorOption);
+	        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+			
+			DriverManager.getWrapperClass().waitForElementToBeVisible(priorityTextInput);		
+			koerberUtils.scrollClearAndType(priorityTextInput, "90");	
+			DriverManager.getWrapperClass().click(release);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(20);
+			DriverManager.getWrapperClass().clickWithJS(inventoryPages.refresh_page);
+			DriverManager.getWrapperClass().clickWithJS(inventoryPages.refresh_page);
+			DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+
+			boolean releasedStatusVisible = releasedStatus.isDisplayed();
+	        if (releasedStatusVisible) {
+	            ExtentCucumberAdapter.addTestStepLog("Verified the released status of new load");
+	        } else {
+	            ExtentCucumberAdapter.addTestStepLog("Released status is not displayed");
+	        }
+	        
+	        flag = newStatusVisible && releasedStatusVisible;
+			}
+
+			catch (Exception e) {
+	        ExtentCucumberAdapter.addTestStepLog("Exception occurred: " + e.getMessage());
+	        flag = false;
+	    }
+	    return flag;
+
+		}
+		
+		public boolean home_Depot_CsPickingNStaging() {
+		    boolean success = false;
+		    try {
+		        if (mainNavigation.korberOneMobileLabel.isDisplayed()) {
+		            DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		            Log.message("KorberOneMobileLabel is displayed. Clicking Menu Button.");
+		            DriverManager.getWrapperClass().click(mainNavigation.menuButton);
+		        }
+		        
+		        Log.message("Clicking first Submit button.");
+		        DriverManager.getWrapperClass().click(submitBtn);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        
+		        Log.message("Clicking second Submit button.");
+		        DriverManager.getWrapperClass().click(submitBtn);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        
+		        // Enter Location
+		        Log.message("Extracting and entering location.");
+		        String reqLoc = extractAndEnterLocation(locationText);
+		        koerberUtils.enterValueInField(reqLoc);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        
+		        // Item   
+		        Log.message("Extracting required item.");
+		        String reqItem = extractAndEnterReqItem(locationText);
+		        
+		        // Lot   
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        String lotNumber = dbutils.getLotNumber(reqItem, reqLoc);
+		        Log.message("Retrieved Lot Number: " + lotNumber);
+		        inputField.sendKeys(lotNumber);
+		        Log.message("Entering lot number and clicking Submit.");
+		        DriverManager.getWrapperClass().click(submitBtn);
+		        
+		        // Enter Quantity
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        Log.message("Extracting and entering quantity for CS Pick.");
+		        extractAndEnterQuantityCsPick(locationText);
+		        
+		        // Choose Printer   
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        Log.message("Clicking List Function Key for printer selection.");
+		        DriverManager.getWrapperClass().click(lstFunctionKey);
+		        
+		        // TESTK1 
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        Log.message("Clicking TESTK1 Key.");
+		        DriverManager.getWrapperClass().click(TESTK1_Key);
+		        
+		        // Print
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        Log.message("Clicking Submit for print action.");
+		        DriverManager.getWrapperClass().click(submitBtn);
+		        
+		        // Wrapping location   
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        Log.message("Clicking Skip Function Key for wrapping location.");
+		        DriverManager.getWrapperClass().click(skipFunctionKey);
+		        
+		        // Staging loc   
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        String doorreqLOC = extractLocation(locationText);
+		        Log.message("Extracting staging location: " + doorreqLOC);
+		        koerberUtils.enterValueInField(doorreqLOC);
+		        
+		        // Transaction complete  
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        Log.message("Clicking final Submit button to complete transaction.");
+		        DriverManager.getWrapperClass().click(submitBtn);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        
+		        Log.message("home_Depot_CsPickingNStaging completed successfully.");
+		        success = true;
+		        
+		    } catch (Exception e) {
+		        success = false;
+		        Log.message("Exception in home_Depot_CsPickingNStaging: " + e.getMessage());
+		    }
+		    return success;
+		}
+
+		
+		public boolean home_Depot_CsSwitch_FullPalletPickingNStaging() {
+		    boolean success = false;
+		    try {
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(3);
+
+		        if (mainNavigation.korberOneMobileLabel.isDisplayed()) {
+		            DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		            Log.message("KorberOneMobileLabel is displayed. Clicking Menu Button.");
+		            DriverManager.getWrapperClass().click(mainNavigation.menuButton);
+		        }
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+
+		        Log.message("Waiting for 'Full Pallet Pick' button to be visible.");
+		        boolean buttonVisible = waitForElementVisibleWithRetries(
+		            () -> getDivByClassAndText("Full Pallet Pick"),
+		            6, 2
+		        );
+		        if (!buttonVisible) {
+		            Log.message("Full Pallet Pick button was not visible after retries!");
+		            throw new RuntimeException("Full Pallet Pick button not visible after retries");
+		        }
+		        Log.message("Clicking 'Full Pallet Pick' button.");
+		        getDivByClassAndText("Full Pallet Pick").click();
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+
+		        Log.message("Waiting for List Function Key to be clickable.");
+		        DriverManager.getWrapperClass().waitTillElementClickable(mainNavigation.listFunctionKey);
+
+		        Log.message("Clicking List Function Key.");
+		        DriverManager.getWrapperClass().click(mainNavigation.listFunctionKey);
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+
+		        Log.message("Clicking Reserve Button.");
+		        DriverManager.getWrapperClass().click(mainNavigation.reserveButton);
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+
+		        Log.message("Entering PAallet value.");
+		        extractAndEnterPAallet(locationText, inputField);
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        DriverManager.getWrapperClass().click(submitBtn);
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        Log.message("Entering Lot number.");
+		        extractAndEnterLotNumber();
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+
+		        Log.message("Entering Quantity for Full Pallet.");
+		        extractAndEnterQuantityFullPallet(qtyTextElement);
+		        
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        
+		        try {
+		            if (doneButton.isDisplayed()) {
+		                Log.message("Done button is displayed. Clicking Done via wrapper.");
+		                DriverManager.getWrapperClass().click(doneButton);
+		            } else {
+		                Log.message("Done button is not displayed. Skipping click.");
+		            }
+		        } catch (NoSuchElementException | StaleElementReferenceException e) {
+		            Log.message("Done button not found or stale: " + e.getMessage());
+		    
+		        }
+
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+
+		        Log.message("Clicking List Function Key.");
+		        DriverManager.getWrapperClass().click(lstFunctionKey);
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+
+		        Log.message("Clicking TestK1 Button.");
+		        DriverManager.getWrapperClass().click(testK1Button);
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+//             PRINTER
+		        Log.message("Waiting for Submit Button to be visible after TestK1.");
+		        DriverManager.getWrapperClass().waitForElementToBeVisible(submitBtn);
+
+		        Log.message("Waiting for Submit Button to be clickable after TestK1.");
+		        DriverManager.getWrapperClass().waitTillElementClickable(submitBtn);
+
+		        Log.message("Clicking Submit Button for printer action.");
+		        DriverManager.getWrapperClass().clickWithJS(submitBtn);
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		        Log.message("Clicking Skip Function Key.");
+		        DriverManager.getWrapperClass().click(skipFunctionKey);
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+
+		        Log.message("Extracting and entering staging location value.");
+		        String doorreqLOC = extractLocation(locationText);
+		        koerberUtils.enterValueInField(doorreqLOC);
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+
+		        Log.message("Extracting and entering LP value.");
+		        extractAndEnterLP(lpTextElement, inputField, submitBtn);
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+
+		        Log.message("Clicking Submit Button (final).");
+		        DriverManager.getWrapperClass().click(submitBtn);
+		        success = true;
+
+		    } catch (Exception e) {
+		        success = false;
+		        Log.message("Exception in home_Depot_CsSwitch_FullPalletPickingNStaging: " + e.getMessage());
+		    }
+		    return success;
+		}
+		
+		public void openMenuIfOnKorberHome() {
+		    try {
+		        if (mainNavigation.korberOneMobileLabel.isDisplayed()) {
+		            DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		            Log.message("KorberOneMobileLabel is displayed. Clicking Menu Button.");
+		            DriverManager.getWrapperClass().click(mainNavigation.menuButton);
+		        }
+		    } catch (Exception e) {
+		        Log.message("Korber home/menu check failed or label not visible: " + e.getMessage());
+		    }
+		}
+		
+		public boolean nov_CsPickingNStaging() {
+		    boolean success = false;
+		    try {
+		    	openMenuIfOnKorberHome();
+		    	 // validate CHEP PALLETS REQUIRED screen
+		        if (!chepPalletsRequiredLabel.isDisplayed()) {
+		            Log.message("CHEP PALLETS REQUIRED label not displayed.");
+		            return false;
+		        }
+		        Log.message("Clicking first Submit button.");
+		        DriverManager.getWrapperClass().click(submitBtn);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        
+		        Log.message("Clicking second Submit button.");
+		        DriverManager.getWrapperClass().click(submitBtn);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        
+		        // Enter Location
+		        Log.message("Extracting and entering location.");
+		        String reqLoc = extractAndEnterLocation(locationText);
+		        koerberUtils.enterValueInField(reqLoc);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        
+		        // Item   
+		        Log.message("Extracting required item.");
+		        String reqItem = extractAndEnterReqItem(locationText);
+		        
+		        // Lot   
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        String lotNumber = dbutils.getLotNumber(reqItem, reqLoc);
+		        Log.message("Retrieved Lot Number: " + lotNumber);
+		        inputField.sendKeys(lotNumber);
+		        Log.message("Entering lot number and clicking Submit.");
+		        DriverManager.getWrapperClass().click(submitBtn);
+		        
+		        // Enter Quantity
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        Log.message("Extracting and entering quantity for CS Pick.");
+		        extractAndEnterQuantityCsPick(locationText);
+		        
+		        // Choose Printer   
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        Log.message("Clicking List Function Key for printer selection.");
+		        DriverManager.getWrapperClass().click(lstFunctionKey);
+		        
+		        // TESTK1 
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        Log.message("Clicking TESTK1 Key.");
+		        DriverManager.getWrapperClass().click(TESTK1_Key);
+		        
+		        // Print
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        Log.message("Clicking Submit for print action.");
+		        DriverManager.getWrapperClass().click(submitBtn);
+		        
+		        // Wrapping location   
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        Log.message("Clicking Skip Function Key for wrapping location.");
+		        DriverManager.getWrapperClass().click(skipFunctionKey);
+		        
+		        // Staging loc   
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        String doorreqLOC = extractLocation(locationText);
+		        Log.message("Extracting staging location: " + doorreqLOC);
+		        koerberUtils.enterValueInField(doorreqLOC);
+		        
+		        // Transaction complete  
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        Log.message("Clicking final Submit button to complete transaction.");
+		        DriverManager.getWrapperClass().click(submitBtn);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        
+		        Log.message("home_Depot_CsPickingNStaging completed successfully.");
+		        success = true;
+		        
+		    } catch (Exception e) {
+		        success = false;
+		        Log.message("Exception in home_Depot_CsPickingNStaging: " + e.getMessage());
+		    }
+		    return success;
+		}
+		
+		public boolean nov_LoadingProcess() {
+		    boolean success = false;
+		    try {
+		        // Retry and click "Loading" button
+		        boolean buttonVisible = waitForElementVisibleWithRetries(
+		            () -> getDivByClassAndText("Loading"),
+		            6, 2
+		        );
+		        if (!buttonVisible) {
+		            throw new RuntimeException("Loading button not visible after retries");
+		        }
+		        getDivByClassAndText("Loading").click();
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        
+		        Log.message("Entering Load ID: " + loadId);
+		        inputField.sendKeys(loadId); 
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        inputField.sendKeys(Keys.ENTER);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+
+		        try {
+		            if (sepYDiv.isDisplayed()) {
+		                DriverManager.getWrapperClass().click(submitBtn);
+		            }
+		        } catch (NoSuchElementException | StaleElementReferenceException e) {
+		            Log.message("SEP Y element not present - continuing.");
+		        }
+
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        Log.message("Entering Door GLO: " + doorGlo);
+		        inputField.sendKeys(doorGlo);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        inputField.sendKeys(Keys.ENTER);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        
+		        Log.message("Entering Trailer Number: " + trailerNumber);
+		        inputField.sendKeys(trailerNumber);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        inputField.sendKeys(Keys.ENTER);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+
+		        // First LP scan
+		        Log.message("Scanning first LP.");
+		        scanAndEnterLP();   
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        
+		        // Second LP scan
+		        inputField.sendKeys(Keys.ENTER);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+
+		        Log.message("Entering Door GLO for staging.");
+		        inputField.sendKeys(doorGlo);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        inputField.sendKeys(Keys.ENTER);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        inputField.sendKeys("L");
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        inputField.sendKeys(Keys.ENTER);
+		        
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        inputField.sendKeys(doorGlo);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        inputField.sendKeys(Keys.ENTER);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        inputField.sendKeys("L");
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        inputField.sendKeys(Keys.ENTER);
+		        
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        inputField.sendKeys(Keys.ENTER);
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        inputField.sendKeys(Keys.ENTER);
+		        
+		        Log.message("nov_LoadingProcess completed successfully.");
+		        success = true;
+		        
+		    } catch (Exception e) {
+		        success = false;
+		        Log.message("Exception in nov_LoadingProcess: " + e.getMessage());
+		    }
+		    return success;
+		}
+		
+
+		public boolean enterTibcoLoadIdAndSubmit(String tibcoLoadID) {
+		    boolean flag = false;
+		
+		    try {
+		        Log.message("Clicking the Tibco Load ID field.");
+		        DriverManager.getWrapperClass().click(tibcoLoadIdField);
+		        Log.message("Clicked the Tibco Load ID field.");
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		
+		        Log.message("Typing Tibco Load ID: " + tibcoLoadID);
+		        tibcoLoadIdFieldValue.sendKeys(tibcoLoadID);
+		        Log.message("Entered Tibco Load ID.");
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		
+		        Log.message("Pressing ENTER to submit the Load ID.");
+		        tibcoLoadIdFieldValue.sendKeys(Keys.ENTER);
+		        Log.message("Pressed ENTER.");
+		
+		        flag = true; // success
+		    } catch (Exception e) {
+		        Log.message("Exception occurred in enterTibcoLoadId: " + e.getMessage());
+		        flag = false;
+		    }
+		
+		    return flag;
+		}
+		
+		public boolean loadDelete() {
+		    boolean flag = false;
+
+		    try {
+		    	DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        Log.message("Attempting to click the Delete button (span).");
+		        DriverManager.getWrapperClass().scrollandClick(deleteSpan);
+		        Log.message("Successfully clicked the Delete button (span).");
+
+		        Log.message("Waiting for 2 seconds before clicking Confirm.");
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(2);
+		        Log.message("Wait completed. Proceeding to click Confirm.");
+
+		        Log.message("Clicking the Confirm button.");
+		        DriverManager.getWrapperClass().click(confirmButton);
+		        Log.message("Successfully clicked the Confirm button.");
+
+		        Log.message("Waiting for 2 seconds before clicking OK.");
+		        DriverManager.getWrapperClass().waitForTimeOutInSec(5);
+		        Log.message("Wait completed. Proceeding to click OK.");
+
+		        Log.message("Clicking the OK button.");
+		        DriverManager.getWrapperClass().click(okButton);
+		        Log.message("Successfully clicked the OK button.");
+
+		        flag = true; // success
+		    } catch (Exception e) {
+		        Log.message("Exception occurred in loadDelete: " + e.getMessage());
+		        flag = false;
+		    }
+
+		    return flag;
+		}
+		
+
+
+
+	}
+
+
