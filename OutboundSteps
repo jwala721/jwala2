@@ -1,0 +1,307 @@
+package ecolab.koerber.stepdefinition.outbound;
+
+import ecolab.koerber.base.BaseTest;
+import ecolab.koerber.base.DBUtils;
+import ecolab.koerber.base.KoerberUtils;
+import io.cucumber.java.en.And;
+import ecolab.koerber.pages.module.outbound.OutboundPages;
+import ecolab.koerber.pages.navigation.MainNavigation;
+import ecolab.koerber.utils.PropertyStorage;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
+import org.testng.Assert;
+
+public class OutboundSteps extends BaseTest {
+
+	private OutboundPages outbound = new OutboundPages();
+	MainNavigation mainNavigation = new MainNavigation();
+	DBUtils dbUtils = new DBUtils();
+	KoerberUtils kbUtils = new KoerberUtils();
+
+	@And("Verify the picking and staging functionality")
+	public void verify_the_picking_and_staging_functionality() {
+		outbound.pickingNStaging();
+	}
+	
+	@And("Verify the cs picking and staging for other ecolab site")
+	public void verify_the_cs_picking_and_staging_for_other_ecolab_site() {
+		outbound.PickingNStagingForOtherEcolabSite();
+	}
+	
+	@And("Verify the cs picking and staging for fedex order")
+	public void verify_the_cs_picking_and_staging_for_fedex_order() {
+		outbound.PickingNStagingForFedexOrder();
+	}
+	
+	@Then("Verify the cs picking and staging functionality")
+	public void verify_the_cs_picking_and_staging_functionality() {
+		outbound.csPickingNStaging();
+	}
+	
+	@Then("Verify the cs Full picking and staging functionality")
+	public void verify_the_cs_full_picking_and_staging_functionality() {
+	    outbound.full_PickingNStaging();
+	}
+	
+	@Then("verify the cs picking and staging for audits an outbound pallet")
+	public void verify_the_cs_picking_and_staging_for_audits_an_outbound_pallet() {
+	    outbound.PickingNStagingForpalletAudit();
+	}
+	
+	@Then("Verify the cs picking and staging functionality with Single item")
+	public void verify_the_cs_picking_and_staging_functionality_with_Single_item() {
+	    outbound.csPickingNStaging_Single_Item();
+	}
+	
+	@Then("Verify the Negative Scenario of Partial picking and staging functionality")
+	public void Verify_the_Negative_Scenario_of_Partial_picking_and_staging_functionality() {
+		boolean flag = outbound.PickingNStaging_Neg_case();
+		Assert.assertTrue(flag, "Picking and Staging Negative Case failed");
+		
+	}
+
+	@Then("Perform Loading functionality")
+	public void verify_Loading_functionality() {
+		outbound.loadingProcess();
+	}
+	
+	@Then("Perform CS Loading functionality")
+	public void perform_cs_loading_functionality() {
+		outbound.CS_loadingProcess();
+	}
+
+	@And("Select Tibco load id {string} and find the load id")
+	public void select_Tibco_load_id_and_find_the_load_id(String tibcoLoadID) {
+		boolean flag=outbound.selectTibcoLoadId(tibcoLoadID);
+		Assert.assertTrue(flag, "Failed to select and release Tibco load ID");
+	}
+	
+	@And("Verify shipping functionality")
+    public void verify_shipping_functionality() {
+        boolean flag = outbound.shipping_Process();
+        Assert.assertTrue(flag, "Shipping functionality failed");
+    }
+	
+	@Then("Verify CS Full shipping functionality")
+	public void verify_cs_full_shipping_functionality() {
+	    boolean flag=outbound.full_shippingProcess();
+	    Assert.assertTrue(flag, "Full shipping process verification failed.");
+	}
+	
+	@Then("Fill the details and Create Empty Appointment in Trailer management")
+	public void fill_the_details_and_create_empty_appointment_in_trailer_management() {
+		boolean flag = outbound.fill_Details_N_Create_Empty_appointment();
+		Assert.assertTrue(flag, "Trailer check-in failed in Trailer Management");
+	}
+	
+	@Then("Fill the details and Create Empty Appointment in Trailer management Using Fedex")
+	public void fill_the_details_and_create_empty_appointment_in_trailer_management_Using_Fedex() {
+		boolean flag = outbound.fill_Details_N_Create_Empty_appointment_Using_fedex();
+		Assert.assertTrue(flag, "Trailer check-in failed in Trailer Management");
+	}
+	
+	@And("verify the Checkout functionality")
+	public void verify_the_checkout_functionality() {
+	    outbound.update_pickUp_carrier();
+	}
+	
+	@And("verify the Fedex Checkout functionality")
+	public void verify_the_fedex_checkout_functionality() {
+	    outbound.update_pickUp_Fedex_carrier();
+	}
+	
+	@And("Verify the picking and staging functionality for Full Pallet Pick")
+	public void verify_the_picking_and_staging_functionality_for_Full_Pallet_Pick() {
+	    outbound.pickingNStagingFullPalletPick();
+	}
+	
+	@And("Verify the picking and staging functionality for Full Pallet Pick With Two Items")
+	public void verify_the_picking_and_staging_functionality_for_Full_Pallet_Pick_With_Two_Items() {
+	    boolean flag = outbound.pickingNStagingFullPalletPickWithTwoItems();
+	    Assert.assertTrue(flag, "Picking and Staging for FP validation failed: One or more checks did not pass.");
+	}
+	
+	@Then("Perform Full Loading functionality")
+	public void perform_full_loading_functionality() {
+		outbound.FULLloadingProcess();
+	}
+	
+	@Then("Perform FP Loading functionality")
+	public void perform_FP_Loading_functionality() {
+		boolean flag = outbound.Full_loading_Process();
+		Assert.assertTrue(flag, "Full Pallet Loading validation failed: One or more checks did not pass.");
+		
+	}
+	
+	@Then("Verify short shipping functionality")
+	public void verify_short_shipping_functionality() {
+		outbound.shortShippingProcess();
+	}
+	
+	@Then("Click on Print button Under Delivery BOL")
+	public void Click_on_Print_button_Under_Delivery_BOL() {
+		boolean flag=outbound.delivery_BOL_Print();
+		Assert.assertTrue(flag, "Delivery BOL Print process failed.");
+	}
+	
+	@And("verify the Shipping Process after BOL Print")
+	public void verify_the_Shipping_Process_after_BOL_Print() {
+		boolean flag=outbound.shippingProcess_AfterPrint_BOL();
+		Assert.assertTrue(flag, "shipping process verification failed.");
+	}
+	
+	@And("verify the Shipping Process for other ecolab site")
+	public void verify_the_Shipping_Process_for_other_ecolab_site() {
+		boolean flag=outbound.shippingProcess_OtherEcolabSite();
+		Assert.assertTrue(flag, "shipping process verification failed.");
+	}
+	
+	@And("verify Transaction History")
+	public void verify_Transaction_History() {
+		boolean flag =outbound.verify_Transaction_History();
+		Assert.assertTrue(flag, "Transaction history verification failed.");
+	}
+	
+	
+	@Then("Verify the single cs Full picking and staging functionality")
+    public void verify_the_single_cs_full_picking_and_staging_functionality() {
+        boolean flag = outbound.singlePickingNStaging();
+        Assert.assertTrue(flag, "Single CS full picking and staging functionality failed");
+    }
+	
+
+	@Then("Verify the cs switch Full picking and staging functionality")
+    public void verify_the_cs_switch_full_picking_and_staging_functionality() {
+        boolean flag = outbound.csSwitch_FullPalletPickingNStaging();
+        Assert.assertTrue(flag, "CS switch full picking and staging functionality failed");
+    }
+	
+	
+	 @Then("Perform cs and Full pick Loading functionality")
+	    public void perform_cs_and_full_pick_loading_functionality() {
+	        boolean flag = outbound.cs_fullLoadingProcess();
+	        Assert.assertTrue(flag, "CS and full pick loading functionality failed");
+	    }
+	 
+	 @Then("Execute Pick Work Queue Query")
+	    public void Execute_Pick_Work_Queue_Query() {
+		 dbUtils.executePickWorkQueueQuery();
+	    }
+	 
+	 @Then("Select Warehouse and Query")
+	    public void Select_Warehouse_and_Query() {
+	        boolean flag = kbUtils.selectOptionFromDropdownAndClickQuery("Warehouse ID", PropertyStorage.getWarehouseId());
+	        Assert.assertTrue(flag, "Unable to select warehouse");
+	    }
+	 
+	 @Then("Verify the yard Trailer Inspect")
+	 public void verify_the_yard_trailer_inspect() {
+	     boolean flag = outbound.yardTrailerInspect();
+	     Assert.assertTrue(flag, "Yard Trailer Inspect functionality failed");
+	 }
+	 
+	 @Then("Verify Load Release section is present")
+	 public void verify_load_release_section_is_present() {
+	     boolean flag = outbound.verifyLoadReleaseSection();
+	     Assert.assertTrue(flag, "Load Release section verification failed");
+	 }
+	 
+	 @Then("Perform cs LP Audit functionality")
+	 public void perform_cs_LP_Audit_functionality() {
+		 outbound.CS_LPAudit();
+	     
+	 }
+	 
+	 @Then("The Costco picking and staging should complete successfully")
+	 public void the_costco_picking_and_staging_should_complete_successfully() {
+		 boolean success = outbound.costcoCsPickingNStaging();
+	        Assert.assertTrue(success, "Costco Picking and Staging operation failed");
+	 }
+	 
+	 @Then("Verify the Costco CS switch Full Pallet Picking and Staging functionality")
+	 public void verify_the_costco_cs_switch_full_pallet_picking_and_staging_functionality() {
+		 boolean success = outbound.costco_CsSwitch_FullPalletPickingNStaging();
+	        Assert.assertTrue(success, "Costco CS switch Full Pallet Picking and Staging functionality failed");
+	 }
+	 
+	 @Then("The Costco full loading process should complete successfully")
+	 public void the_costco_full_loading_process_should_complete_successfully() {
+		 boolean success = outbound.costco_Cs_fullLoadingProcess();
+		    Assert.assertTrue(success, "Costco full loading process failed");
+	 }
+	 
+	 @Then("Perform FP Unload and Unpick functionality")
+	 public void perform_FP_Unload_and_Unpick_functionality() {
+		 boolean flag = outbound.FP_Unpick();
+		 Assert.assertTrue(flag, "FP Unpick validation failed: One or more checks did not pass.");
+	     
+	 }
+	 
+	 @Then("Verify the Current Inventory of Items")
+	 public void Verify_the_Current_Inventory_of_Items() {
+		 boolean flag = outbound.Verify_the_Current_Inventory();
+		 Assert.assertTrue(flag, "Current Inventory verification failed: Both items not found.");
+	     
+	 }
+	 
+	 @Then("Verify the Sams CS switch Full Pallet Picking and Staging functionality")
+	 public void verify_the_sams_cs_switch_full_pallet_picking_and_staging_functionality() {
+		 boolean success = outbound.sams_CsSwitch_FullPalletPickingNStaging();
+	        Assert.assertTrue(success, "Full Pallet Picking & Staging flow failed");
+	 }
+	 
+	 @Then("Perform FP Loading functionality with door and trailer")
+	 public void perform_FP_Loading_functionality_with_door_and_trailer() {
+	     boolean flag = outbound.Full_loading_Process_doorGlo();
+	     Assert.assertTrue(flag, "Full Pallet Loading (door & trailer) validation failed: One or more checks did not pass.");
+	 }
+	 
+	 @Then("select Tibco Load ID {string} and find the load ID with door assignment")
+	 public void select_tibco_load_id_and_find_the_load_id_with_door_assignment(String tibcoLoadID) {
+	     boolean flag = outbound.selectTibcoLoadIdDoor(tibcoLoadID);
+	     Assert.assertTrue(flag, "Failed to select Tibco Load ID, assign door, and release");
+	 }
+	 
+	 @Then("Verify the Home Depot CS Picking and Staging functionality")
+	 public void verify_the_home_depot_cs_picking_and_staging_functionality() {
+	     boolean success = outbound.home_Depot_CsPickingNStaging();
+	     Assert.assertTrue(success, "Home Depot CS Picking & Staging flow failed");
+	 }
+
+	 @Then("Verify the Home Depot CS Switch Full Pallet Picking and Staging functionality")
+	 public void verify_the_home_depot_cs_switch_full_pallet_picking_and_staging_functionality() {
+	     boolean success = outbound.home_Depot_CsSwitch_FullPalletPickingNStaging();
+	     Assert.assertTrue(success, "Home Depot CS Switch Full Pallet Picking & Staging flow failed");
+	 }
+	 
+	 @Then("Verify the NOV CS Picking and Staging functionality")
+	 public void verify_the_nov_cs_picking_and_staging_functionality() {
+	     boolean flag = outbound.nov_CsPickingNStaging();
+	     Assert.assertTrue(flag, "NOV CS Picking & Staging flow failed");
+	 }
+	 
+	 @Then("Verify the NOV Loading Process functionality")
+	 public void verify_the_nov_loading_process_functionality() {
+	     boolean flag = outbound.nov_LoadingProcess();
+	     Assert.assertTrue(flag, "NOV Loading Process flow failed");
+	 }
+	 
+
+	@And("Enter Tibco load id {string} and submit")
+	    public void enter_Tibco_load_id_and_submit(String tibcoLoadID) {
+	        boolean flag = outbound.enterTibcoLoadIdAndSubmit(tibcoLoadID);
+	        Assert.assertTrue(flag, "Failed to enter and submit Tibco load ID: " + tibcoLoadID);
+	    }
+	
+
+	@And("Click Delete and confirm")
+	    public void click_delete_and_confirm() {
+	        boolean flag = outbound.loadDelete();
+	        Assert.assertTrue(flag, "Failed to delete: Click Delete → Confirm → OK sequence did not complete.");
+	    }
+
+
+
+
+
+}
